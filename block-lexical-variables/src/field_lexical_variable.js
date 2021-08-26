@@ -12,6 +12,7 @@
 
 import * as Blockly from 'blockly/core';
 import './msg';
+import './instrument'
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
