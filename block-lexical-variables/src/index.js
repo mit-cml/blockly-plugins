@@ -11,11 +11,17 @@
 
 import Blockly from 'blockly/core';
 
-// TODO: Update block definition.
-Blockly.defineBlocksWithJsonArray([
-  {
-    'type': 'block_template',
-    'message0': 'block template',
-    'style': 'math_blocks',
-  },
-]);
+import './flydown';
+import './field_flydown';
+import './field_global_flydown';
+import './field_lexical_variable';
+import './field_parameter_flydown';
+import './lexical-variables';
+// TODO: Remove JSON block definition or convert from JavaScript definitions.
+// Blockly.defineBlocksWithJsonArray([
+//   {
+//     'type': 'global_declaration',
+//     'message0': 'block template',
+//     'style': 'math_blocks',
+//   },
+// ]);
