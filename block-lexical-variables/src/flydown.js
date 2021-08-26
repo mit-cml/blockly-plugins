@@ -12,7 +12,20 @@
  */
 'use strict';
 
-goog.provide('AI.Blockly.Flydown');
+import * as Blockly from 'blockly/core';
+// TODO: Maybe make a single importable goog compatibility object
+const goog = {
+  provide: (_) => {},
+  require: (_) => {},
+  inherits: Blockly.utils.object.inherits,
+  dom: Blockly.utils.dom,
+  userAgent: Blockly.utils.userAgent,
+  asserts: {
+    assertObject: (_) => {},
+  },
+};
+Blockly.utils.addClass = Blockly.utils.dom.addClass;
+Blockly.utils.removeClass = Blockly.utils.dom.removeClass;
 
 goog.require('Blockly.Flyout');
 goog.require('Blockly.Block');
@@ -44,7 +57,7 @@ Blockly.Flydown.prototype.VERTICAL_SEPARATION_FACTOR = 1;
 
 /**
  * Creates the flydown's DOM.  Only needs to be called once.  Overrides the flyout createDom method.
- * @param {!String} cssClassName The name of the CSS class for this flydown. 
+ * @param {!String} cssClassName The name of the CSS class for this flydown.
  * @return {!Element} The flydown's SVG group.
  */
 Blockly.Flydown.prototype.createDom = function(cssClassName) {

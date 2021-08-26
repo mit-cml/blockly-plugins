@@ -14,7 +14,7 @@ import '../src/index';
 
 
 // TODO: Edit list of blocks.
-const allBlocks = ['block_template'];
+const allBlocks = ['global_declaration'];
 
 /**
  * Create a workspace.

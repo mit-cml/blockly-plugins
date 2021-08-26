@@ -13,6 +13,21 @@
 
 'use strict';
 
+import * as Blockly from 'blockly/core';
+// TODO: Maybe make a single importable goog compatibility object
+const goog = {
+  provide: (_) => {},
+  require: (_) => {},
+  inherits: Blockly.utils.object.inherits,
+  dom: Blockly.utils.dom,
+  userAgent: Blockly.utils.userAgent,
+  asserts: {
+    assertObject: (_) => {},
+  },
+};
+Blockly.utils.addClass = Blockly.utils.dom.addClass;
+Blockly.utils.removeClass = Blockly.utils.dom.removeClass;
+
 goog.provide('AI.Blockly.FieldFlydown');
 
 goog.require('Blockly.FieldTextInput');
@@ -141,7 +156,7 @@ Blockly.FieldFlydown.prototype.showFlydownMaker_ = function() {
   var field = this; // Name receiver in variable so can close over this variable in returned thunk
   return function() {
     if (Blockly.FieldFlydown.showPid_ !== 0 &&
-        Blockly.dragMode_ === Blockly.DRAG_NONE && 
+        Blockly.dragMode_ === Blockly.DRAG_NONE &&
         !Blockly.FieldTextInput.htmlInput_) {
       try {
         field.showFlydown_();

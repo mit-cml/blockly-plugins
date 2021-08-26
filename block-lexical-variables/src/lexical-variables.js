@@ -75,6 +75,19 @@ function myStringify (obj) {
 
 'use strict';
 
+import * as Blockly from 'blockly/core';
+// TODO: Maybe make a single importable goog compatibility object
+const goog = {
+  provide: (_) => {},
+  require: (_) => {},
+  inherits: Blockly.utils.object.inherits,
+  dom: Blockly.utils.dom,
+  userAgent: Blockly.utils.userAgent,
+  asserts: {
+    assertObject: (_) => {},
+  },
+};
+
 goog.provide('Blockly.Blocks.lexicalvariables');
 goog.require('Blockly.Blocks.Utilities');
 goog.require('goog.dom');
@@ -87,7 +100,6 @@ Blockly.Blocks['global_declaration'] = {
   category: 'Variables',
   helpUrl: Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_HELPURL,
   init: function() {
-    this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
     this.appendValueInput('VALUE')
         .appendField(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TITLE_INIT)
         .appendField(new Blockly.FieldGlobalFlydown(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_NAME,

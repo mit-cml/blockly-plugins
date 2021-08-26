@@ -10,6 +10,19 @@
 
 'use strict';
 
+import * as Blockly from 'blockly/core';
+// TODO: Maybe make a single importable goog compatibility object
+const goog = {
+  provide: (_) => {},
+  require: (_) => {},
+  inherits: Blockly.utils.object.inherits,
+  dom: Blockly.utils.dom,
+  userAgent: Blockly.utils.userAgent,
+  asserts: {
+    assertObject: (_) => {},
+  },
+};
+
 /**
  * Lyn's History:
  *  *  [lyn, written 11/15-17/13 but added 07/01/14] Overhauled parameter renaming:
