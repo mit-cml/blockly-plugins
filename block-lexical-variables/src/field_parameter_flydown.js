@@ -12,6 +12,8 @@
 'use strict';
 
 import * as Blockly from 'blockly/core';
+import './msg';
+
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
   provide: (_) => {},

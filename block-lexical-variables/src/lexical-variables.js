@@ -76,6 +76,8 @@ function myStringify (obj) {
 'use strict';
 
 import * as Blockly from 'blockly/core';
+import './msg';
+
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
   provide: (_) => {},
@@ -100,6 +102,8 @@ Blockly.Blocks['global_declaration'] = {
   category: 'Variables',
   helpUrl: Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_HELPURL,
   init: function() {
+    // Let the theme determine the color.
+    // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
     this.appendValueInput('VALUE')
         .appendField(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TITLE_INIT)
         .appendField(new Blockly.FieldGlobalFlydown(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_NAME,
@@ -127,7 +131,8 @@ Blockly.Blocks['lexical_variable_get'] = {
   category: 'Variables',
   helpUrl: Blockly.Msg.LANG_VARIABLES_GET_HELPURL,
   init: function() {
-    this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
+    // Let the theme determine the color.
+    // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
     this.fieldVar_ = new Blockly.FieldLexicalVariable(" ");
     this.fieldVar_.setBlock(this);
     this.appendDummyInput()
@@ -194,7 +199,8 @@ Blockly.Blocks['lexical_variable_set'] = {
   category: 'Variables',
   helpUrl: Blockly.Msg.LANG_VARIABLES_SET_HELPURL, // *** [lyn, 11/10/12] Fix this
   init: function() {
-    this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
+    // Let the theme determine the color.
+    // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
     this.fieldVar_ = new Blockly.FieldLexicalVariable(" ");
     this.fieldVar_.setBlock(this);
     this.appendValueInput('VALUE')
@@ -269,7 +275,8 @@ Blockly.Blocks['local_declaration_statement'] = {
     this.setTooltip(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_TOOLTIP);
   },
   initLocals: function() {
-    this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
+    // Let the theme determine the color.
+    // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
     this.localNames_ = [Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_DEFAULT_NAME];
     var declInput = this.appendValueInput('DECL0');
     declInput.appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_TITLE_INIT)
@@ -623,7 +630,8 @@ Blockly.Blocks['local_declaration_expression'] = {
 Blockly.Blocks['local_mutatorcontainer'] = {
   // Local variable container (for mutator dialog).
   init: function() {
-    this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
+    // Let the theme determine the color.
+    // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
     this.appendDummyInput()
         .appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_MUTATOR_CONTAINER_TITLE_LOCAL_NAMES);
     this.appendStatementInput('STACK');
@@ -656,7 +664,8 @@ Blockly.Blocks['local_mutatorcontainer'] = {
 Blockly.Blocks['local_mutatorarg'] = {
   // Procedure argument (for mutator dialog).
   init: function() {
-    this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
+    // Let the theme determine the color.
+    // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
     this.appendDummyInput()
         .appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_MUTATOR_ARG_TITLE_NAME)
         .appendField(new Blockly.FieldTextInput(Blockly.Msg.LANG_VARIABLES_LOCAL_MUTATOR_ARG_DEFAULT_VARIABLE,
