@@ -104,6 +104,7 @@ Blockly.Blocks['global_declaration'] = {
   init: function() {
     // Let the theme determine the color.
     // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
+    this.setStyle("variable_blocks");
     this.appendValueInput('VALUE')
         .appendField(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TITLE_INIT)
         .appendField(new Blockly.FieldGlobalFlydown(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_NAME,
@@ -133,6 +134,7 @@ Blockly.Blocks['lexical_variable_get'] = {
   init: function() {
     // Let the theme determine the color.
     // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
+    this.setStyle("variable_blocks");
     this.fieldVar_ = new Blockly.FieldLexicalVariable(" ");
     this.fieldVar_.setBlock(this);
     this.appendDummyInput()
@@ -203,6 +205,7 @@ Blockly.Blocks['lexical_variable_set'] = {
   init: function() {
     // Let the theme determine the color.
     // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
+    this.setStyle("variable_blocks");
     this.fieldVar_ = new Blockly.FieldLexicalVariable(" ");
     this.fieldVar_.setBlock(this);
     this.appendValueInput('VALUE')
@@ -279,6 +282,7 @@ Blockly.Blocks['local_declaration_statement'] = {
   initLocals: function() {
     // Let the theme determine the color.
     // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
+    this.setStyle("variable_blocks");
     this.localNames_ = [Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_DEFAULT_NAME];
     var declInput = this.appendValueInput('DECL0');
     declInput.appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_TITLE_INIT)
@@ -634,6 +638,7 @@ Blockly.Blocks['local_mutatorcontainer'] = {
   init: function() {
     // Let the theme determine the color.
     // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
+    this.setStyle("variable_blocks");
     this.appendDummyInput()
         .appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_MUTATOR_CONTAINER_TITLE_LOCAL_NAMES);
     this.appendStatementInput('STACK');
@@ -668,6 +673,7 @@ Blockly.Blocks['local_mutatorarg'] = {
   init: function() {
     // Let the theme determine the color.
     // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
+    this.setStyle("variable_blocks");
     this.appendDummyInput()
         .appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_MUTATOR_ARG_TITLE_NAME)
         .appendField(new Blockly.FieldTextInput(Blockly.Msg.LANG_VARIABLES_LOCAL_MUTATOR_ARG_DEFAULT_VARIABLE,
