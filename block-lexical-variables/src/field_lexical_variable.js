@@ -187,7 +187,9 @@ Blockly.FieldLexicalVariable.prototype.setCachedParent = function(parent) {
 // * Removed from prototype and stripped off "global" prefix (add it elsewhere)
 // * Add optional excluded block argument as in Neil's code to avoid global declaration being created
 Blockly.FieldLexicalVariable.getGlobalNames = function (optExcludedBlock) {
+  // TODO: Maybe switch to injectable warning/error handling
   if (Blockly.Instrument.useLynCacheGlobalNames && Blockly.getMainWorkspace() &&
+      Blockly.getMainWorkspace().getWarningHandler &&
       Blockly.getMainWorkspace().getWarningHandler().cacheGlobalNames) {
     return Blockly.getMainWorkspace().getWarningHandler().cachedGlobalNames;
   }
@@ -387,7 +389,11 @@ Blockly.FieldLexicalVariable.dropdownCreate = function() {
 Blockly.FieldLexicalVariable.dropdownChange = function(text) {
   if (text) {
     this.setValue(text);
-    this.sourceBlock_.getTopWorkspace().getWarningHandler().checkErrors(this.sourceBlock_);
+    // TODO: Maybe switch to injectable warning/error handling
+    if (this.sourceBlock_.getTopWorkspace().getWarningHandler) {
+      this.sourceBlock_.getTopWorkspace().getWarningHandler()
+          .checkErrors(this.sourceBlock_);
+    }
   }
   // window.setTimeout(Blockly.Variables.refreshFlyoutCategory, 1);
 };
@@ -1171,7 +1177,9 @@ Blockly.LexicalVariable.eventParamDomToMutation = function (block, xmlElement) {
           block.fieldVar_.setValue(untranslatedEventName);
           block.fieldVar_.setText(block.workspace.getTopWorkspace().getComponentDatabase().getInternationalizedParameterName(untranslatedEventName));
           block.eventparam = untranslatedEventName;
-          block.workspace.requestErrorChecking(block);
+          // TODO: Maybe switch to injectable warning/error handling
+          block.workspace.requestErrorChecking &&
+            block.workspace.requestErrorChecking(block);
           Blockly.Events.enable();
         }, 0);
       }

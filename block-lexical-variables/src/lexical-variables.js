@@ -140,6 +140,8 @@ Blockly.Blocks['lexical_variable_get'] = {
         .appendField(this.fieldVar_, 'VAR');
     this.setOutput(true, null);
     this.setTooltip(Blockly.Msg.LANG_VARIABLES_GET_TOOLTIP);
+    // Note that the following will only be referenced if there is a
+    // warning/error handler like App Inventor's
     this.errors = [{name:"checkIsInDefinition"},{name:"checkDropDownContainsValidValue",dropDowns:["VAR"]}];
   },
   mutationToDom: function() { // Handle getters for event parameters specially (to support i8n)
