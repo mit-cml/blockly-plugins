@@ -220,25 +220,53 @@ Blockly.FieldFlydown.hide = function() {
 };
 
 
+/**
+ * Calls the validation function for this field, as well as all the validation
+ * function for the field's class and its parents.
+ * @param {Blockly.Field} field The field to validate.
+ * @param {string} text Proposed text.
+ * @return {?string} Revised text, or null if invalid.
+ */
+function callAllValidators(field, text) {
+  const classResult = field.doClassValidation_(text);
+  if (classResult === null) {
+    // Class validator rejects value.  Game over.
+    return null;
+  } else if (classResult !== undefined) {
+    text = classResult;
+  }
+  const userValidator = field.getValidator();
+  if (userValidator) {
+    const userResult = userValidator.call(field, text);
+    if (userResult === null) {
+      // User validator rejects value.  Game over.
+      return null;
+    } else if (userResult !== undefined) {
+      text = userResult;
+    }
+  }
+  return text;
+}
+
 // TODO: Changing how validators work is not very future proof.
 // Override Blockly's behavior; they call the validator after setting the text,
 // which is incompatible with how our validators work (we expect to be called
 // before the change since in order to find the old references to be renamed).
 Blockly.FieldFlydown.prototype.onHtmlInputChange_ = function(e) {
-  goog.asserts.assertObject(Blockly.FieldTextInput.htmlInput_);
-  var htmlInput = Blockly.FieldTextInput.htmlInput_;
+  goog.asserts.assertObject(this.htmlInput_);
+  var htmlInput = this.htmlInput_;
   var text = htmlInput.value;
   if (text !== htmlInput.oldValue_) {
     htmlInput.oldValue_ = text;
     var valid = true;
     if (this.sourceBlock_) {
-      valid = this.callValidator(htmlInput.value);
+      valid = callAllValidators(this, htmlInput.value);
     }
     if (valid === null) {
       Blockly.utils.addClass(htmlInput, 'blocklyInvalidInput');
     } else {
       Blockly.utils.removeClass(htmlInput, 'blocklyInvalidInput');
-      this.setText(valid);
+      this.doValueUpdate_(valid);
     }
   } else if (goog.userAgent.WEBKIT) {
     // Cursor key.  Render the source block to show the caret moving.
