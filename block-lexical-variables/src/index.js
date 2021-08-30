@@ -9,8 +9,7 @@
  * @fileoverview Block overview.
  */
 
-import Blockly from 'blockly/core';
-
+import './utilities';
 import './flydown';
 import './field_flydown';
 import './field_global_flydown';

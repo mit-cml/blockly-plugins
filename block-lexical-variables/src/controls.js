@@ -53,7 +53,9 @@ Blockly.Blocks['controls_forRange'] = {
   category: 'Control',
   helpUrl: Blockly.Msg.LANG_CONTROLS_FORRANGE_HELPURL,
   init: function() {
-    this.setColour(Blockly.CONTROL_CATEGORY_HUE);
+    // Let the theme determine the color.
+    // this.setColour(Blockly.CONTROL_CATEGORY_HUE);
+    this.setStyle('loop_blocks');
     // this.setOutput(true, null);
     // Need to deal with variables here
     // [lyn, 11/30/12] Changed variable to be text input box that does renaming right (i.e., avoids variable capture)
@@ -153,7 +155,9 @@ Blockly.Blocks['controls_forEach'] = {
   category: 'Control',
   helpUrl: Blockly.Msg.LANG_CONTROLS_FOREACH_HELPURL,
   init: function() {
-    this.setColour(Blockly.CONTROL_CATEGORY_HUE);
+    // Let the theme determine the color.
+    // this.setColour(Blockly.CONTROL_CATEGORY_HUE);
+    this.setStyle('loop_blocks');
     // this.setOutput(true, null);
     // [lyn, 10/07/13] Changed default name from "i" to "item"
     // [lyn, 11/29/12] Changed variable to be text input box that does renaming right (i.e., avoids variable capture)
