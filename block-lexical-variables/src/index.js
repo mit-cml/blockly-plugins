@@ -17,6 +17,8 @@ import './field_global_flydown';
 import './field_lexical_variable';
 import './field_parameter_flydown';
 import './lexical-variables';
+import './controls';
+import './procedures';
 // TODO: Remove JSON block definition or convert from JavaScript definitions.
 // Blockly.defineBlocksWithJsonArray([
 //   {

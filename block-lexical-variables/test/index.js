@@ -14,7 +14,7 @@ import '../src/index';
 
 
 // TODO: Edit list of blocks.
-const allBlocks = ['global_declaration'];
+const allBlocks = ['global_declaration', 'controls_forRange'];
 
 /**
  * Create a workspace.
