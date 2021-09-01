@@ -69,7 +69,7 @@ export const possiblyPrefixMenuNameWith = function(prefix) {
 
 export const prefixGlobalMenuName = function(name) {
   return Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX +
-    Blockly.menuSeparator + name;
+    menuSeparator + name;
 };
 
 // Return a list of (1) prefix (if it exists, "" if not) and (2) unprefixed name

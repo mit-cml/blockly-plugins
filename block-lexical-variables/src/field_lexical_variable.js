@@ -306,7 +306,7 @@ Blockly.FieldLexicalVariable.getLexicalNamesInScope = function (block) {
     // Add prefix as annotation only when Shared.showPrefixToUser is true
     allLexicalNames = allLexicalNames.map(
       function (name) {
-        // return ((possiblyPrefixNameWith(menuSeparator)) (innermostPrefix[name])) (name);
+        // return ((possiblyPrefixNameWith(Shared.menuSeparator)) (innermostPrefix[name])) (name);
         return (Shared.possiblyPrefixMenuNameWith (innermostPrefix[name])) (name);
       }
     )
@@ -462,10 +462,10 @@ Blockly.LexicalVariable.renameGlobal = function (newName) {
         var renamingFunction = block.renameLexicalVar;
         if (renamingFunction) {
             renamingFunction.call(block,
-              Blockly.GLOBAL_KEYWORD + menuSeparator + oldName,
-              Blockly.GLOBAL_KEYWORD + menuSeparator + newName,
-              Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + menuSeparator + oldName,
-              Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + menuSeparator + newName);
+              Blockly.GLOBAL_KEYWORD + Shared.menuSeparator + oldName,
+              Blockly.GLOBAL_KEYWORD + Shared.menuSeparator + newName,
+              Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + Shared.menuSeparator + oldName,
+              Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + Shared.menuSeparator + newName);
         }
       }
     }
