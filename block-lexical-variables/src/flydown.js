@@ -28,6 +28,7 @@ Blockly.utils.addClass = Blockly.utils.dom.addClass;
 Blockly.utils.removeClass = Blockly.utils.dom.removeClass;
 
 goog.require('Blockly.Flyout');
+goog.require('Blockly.VerticalFlyout');
 goog.require('Blockly.Block');
 goog.require('Blockly.Comment');
 
@@ -39,7 +40,7 @@ Blockly.Flydown = function(workspaceOptions) {
   Blockly.Flydown.superClass_.constructor.call(this, workspaceOptions);
   this.dragAngleRange_ = 360;
 };
-goog.inherits(Blockly.Flydown, Blockly.Flyout);
+goog.inherits(Blockly.Flydown, Blockly.VerticalFlyout);
 
 /**
  * Previous CSS class for this flydown
@@ -68,8 +69,8 @@ Blockly.Flydown.prototype.createDom = function(cssClassName) {
   </g>
   */
   this.previousCSSClassName_ = cssClassName; // Remember class name for later
-  this.svgGroup_ = Blockly.utils.createSvgElement('g', {'class': cssClassName}, null);
-  this.svgBackground_ = Blockly.utils.createSvgElement('path', {}, this.svgGroup_);
+  this.svgGroup_ = Blockly.utils.dom.createSvgElement('g', {'class': cssClassName}, null);
+  this.svgBackground_ = Blockly.utils.dom.createSvgElement('path', {}, this.svgGroup_);
   this.svgGroup_.appendChild(this.workspace_.createDom());
   return this.svgGroup_;
 };
@@ -80,8 +81,8 @@ Blockly.Flydown.prototype.createDom = function(cssClassName) {
  */
 Blockly.Flydown.prototype.setCSSClass = function(newCSSClassName) {
   if (newCSSClassName !== this.previousCSSClassName_) {
-    Blockly.utils.removeClass(this.svgGroup_, this.previousCSSClassName_);
-    Blockly.utils.addClass(this.svgGroup_, newCSSClassName);
+    Blockly.utils.dom.removeClass(this.svgGroup_, this.previousCSSClassName_);
+    Blockly.utils.dom.addClass(this.svgGroup_, newCSSClassName);
     this.previousCSSClassName_ = newCSSClassName;
   }
 }
@@ -143,7 +144,7 @@ Blockly.Flydown.prototype.showAt = function(xmlList,x,y) {
  * For RTL: Lay out the blocks right-aligned.
  */
 Blockly.Flydown.prototype.reflow = function() {
-  this.workspace_.scale = this.targetWorkspace_.scale;
+  this.workspace_.scale = this.targetWorkspace.scale;
   var scale = this.workspace_.scale;
   var flydownWidth = 0;
   var flydownHeight = 0;
@@ -155,15 +156,20 @@ Blockly.Flydown.prototype.reflow = function() {
     flydownWidth = Math.max(flydownWidth, blockHW.width * scale);
     flydownHeight += blockHW.height * scale;
   }
-  flydownWidth += 2*margin + Blockly.BlockSvg.TAB_WIDTH * scale; // TAB_WIDTH is with of plug
-  flydownHeight += 2*margin + margin*this.VERTICAL_SEPARATION_FACTOR*(blocks.length - 1) + Blockly.BlockSvg.START_HAT_HEIGHT*scale/2.0;
+  flydownWidth += 2 * margin + this.tabWidth_ * scale; // tabWidth is width of a plug
+  const rendererConstants = this.workspace_.getRenderer().getConstants();
+  const startHatHeight = rendererConstants.ADD_START_HATS ?
+    rendererConstants.START_HAT_HEIGHT : 0;
+  flydownHeight += 2 * margin +
+    margin * this.VERTICAL_SEPARATION_FACTOR * (blocks.length - 1) +
+    startHatHeight * scale /2.0;
   if (this.width_ != flydownWidth) {
     for (var j = 0, block; block = blocks[j]; j++) {
       var blockHW = block.getHeightWidth();
       var blockXY = block.getRelativeToSurfaceXY();
       if (this.RTL) {
         // With the FlydownWidth known, right-align the blocks.
-        var dx = flydownWidth - margin - scale * (Blockly.BlockSvg.TAB_WIDTH - blockXY.x);
+        var dx = flydownWidth - margin - scale * (this.tabWidth_ - blockXY.x);
         block.moveBy(dx, 0);
         blockXY.x += dx;
       }
@@ -193,7 +199,7 @@ Blockly.Flydown.prototype.onMouseMove_ = function(e) {
  * @private
  */
 Blockly.Flydown.prototype.placeNewBlock_ = function(originBlock) {
-  var targetWorkspace = this.targetWorkspace_;
+  var targetWorkspace = this.targetWorkspace;
   var svgRootOld = originBlock.getSvgRoot();
   if (!svgRootOld) {
     throw 'originBlock is not rendered.';

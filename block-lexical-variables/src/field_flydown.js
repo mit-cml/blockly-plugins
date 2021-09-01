@@ -25,6 +25,55 @@ const goog = {
     assertObject: (_) => {},
   },
 };
+
+// The following is taken from the Google Closure Library source, see:
+// https://github.com/google/closure-library/blob/master/closure/goog/dom/dom.js#L1364
+// /**
+//  * Constants for the nodeType attribute in the Node interface.
+//  *
+//  * These constants match those specified in the Node interface. These are
+//  * usually present on the Node object in recent browsers, but not in older
+//  * browsers (specifically, early IEs) and thus are given here.
+//  *
+//  * In some browsers (early IEs), these are not defined on the Node object,
+//  * so they are provided here.
+//  *
+//  * See http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-1950641247
+//  * @enum {number}
+//  */
+// goog.dom.NodeType = {
+//   ELEMENT: 1,
+//   ATTRIBUTE: 2,
+//   TEXT: 3,
+//   CDATA_SECTION: 4,
+//   ENTITY_REFERENCE: 5,
+//   ENTITY: 6,
+//   PROCESSING_INSTRUCTION: 7,
+//   COMMENT: 8,
+//   DOCUMENT: 9,
+//   DOCUMENT_TYPE: 10,
+//   DOCUMENT_FRAGMENT: 11,
+//   NOTATION: 12
+// };
+/**
+ * Returns an array containing just the element children of the given element.
+ * @param {Element} element The element whose element children we want.
+ * @return {!(Array<!Element>|NodeList<!Element>)} An array or array-like list
+ *     of just the element children of the given element.
+ */
+goog.dom.getChildren = function(element) {
+  'use strict';
+  // We check if the children attribute is supported for child elements
+  // since IE8 misuses the attribute by also including comments.
+  if (element.children != undefined) {
+    return element.children;
+  }
+  // Fall back to manually filtering the element's child nodes.
+  return Array.prototype.filter.call(element.childNodes, function(node) {
+    return node.nodeType == goog.dom.NodeType.ELEMENT;
+  });
+};
+
 Blockly.utils.addClass = Blockly.utils.dom.addClass;
 Blockly.utils.removeClass = Blockly.utils.dom.removeClass;
 
@@ -156,7 +205,7 @@ Blockly.FieldFlydown.prototype.showFlydownMaker_ = function() {
   var field = this; // Name receiver in variable so can close over this variable in returned thunk
   return function() {
     if (Blockly.FieldFlydown.showPid_ !== 0 &&
-        Blockly.dragMode_ === Blockly.DRAG_NONE &&
+        !field.getSourceBlock().workspace.isDragging() &&
         !Blockly.FieldTextInput.htmlInput_) {
       try {
         field.showFlydown_();
@@ -183,7 +232,7 @@ Blockly.FieldFlydown.prototype.showFlydown_ = function() {
   Blockly.getMainWorkspace().getParentSvg().appendChild(flydown.svgGroup_);
 
   // Adjust scale for current zoom level
-  var scale = flydown.targetWorkspace_.scale;
+  var scale = flydown.targetWorkspace.scale;
   flydown.workspace_.setScale(scale);
 
   flydown.setCSSClass(this.flyoutCSSClassName);
