@@ -17,8 +17,8 @@ import {
   localNamePrefix,
   loopParameterPrefix,
   loopRangeParameterPrefix,
-  possiblyPrefixMenuNameWith,
-  procedureParameterPrefix,
+  possiblyPrefixMenuNameWith, prefixGlobalMenuName,
+  procedureParameterPrefix, showPrefixToUser,
   unprefixName,
   usePrefixInYail,
 } from './shared';
@@ -72,7 +72,6 @@ const goog = {
  *    + renameParam is similar for procedure and loop names.
  *    + define referenceResult, which is renaming workhorse
  *  [lyn, 11/18/12] nameNotIn function for renaming by adding number at end
- *  [lyn, 11/17/12] handle eventParams in getNamesInScope
  *  [lyn, 11/10/12] getGlobalNames and getNamesInScope
  */
 
@@ -118,7 +117,6 @@ Blockly.FieldLexicalVariable.prototype.setValue = function(text) {
     }
   }
   Blockly.FieldLexicalVariable.superClass_.setValue.call(this, text);
-  this.updateMutation();
 };
 
 // /**
@@ -140,44 +138,7 @@ Blockly.FieldLexicalVariable.prototype.setValue = function(text) {
 //     }
 //   }
 //   Blockly.FieldLexicalVariable.superClass_.doValueUpdate_.call(this, text);
-//   this.updateMutation();
 // };
-
-/**
- * Update the eventparam mutation associated with the field's source block.
- */
-Blockly.FieldLexicalVariable.prototype.updateMutation = function() {
-  var text = this.getText();
-  if (this.sourceBlock_ && this.sourceBlock_.getParent()) {
-    this.sourceBlock_.eventparam = undefined;
-    if (text.indexOf(Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + ' ') === 0) {
-      this.sourceBlock_.eventparam = null;
-      return;
-    }
-    var i, parent = this.sourceBlock_.getParent();
-    while (parent) {
-      var variables = parent.declaredVariables ? parent.declaredVariables() : [];
-      if (parent.type != 'component_event') {
-        for (i = 0; i < variables.length; i++) {
-          if (variables[i] == text) {
-            // Innermost scope is not an event block, so eventparam can be nulled.
-            this.sourceBlock_.eventparam = null;
-            return;
-          }
-        }
-      } else {
-        for (i = 0; i < variables.length; i++) {
-          if (variables[i] == text) {
-            // text is an event parameter so compute the eventparam value
-            this.sourceBlock_.eventparam = parent.getParameters()[i].name;
-            return;
-          }
-        }
-      }
-      parent = parent.getParent();
-    }
-  }
-};
 
 /**
  * Get the block holding this drop-down variable chooser
@@ -252,14 +213,13 @@ Blockly.FieldLexicalVariable.getGlobalNames = function (optExcludedBlock) {
 // [lyn, 11/29/12] Now handle params in control constructs
 // [lyn, 11/18/12] Clarified structure of namespaces
 // [lyn, 11/17/12]
-// * Now handle event params.
 // * Commented out loop params because AI doesn't handle loop variables correctly yet.
 // [lyn, 11/10/12]
 // Returns the names of all names in lexical scope for the block associated with this menu.
 // including global variable names.
 // * Each global name is prefixed with "global "
-// * If Blockly.showPrefixToUser is false, non-global names are not prefixed.
-// * If Blockly.showPrefixToUser is true, non-global names are prefixed with labels
+// * If showPrefixToUser is false, non-global names are not prefixed.
+// * If showPrefixToUser is true, non-global names are prefixed with labels
 //   specified in blocklyeditor.js
 Blockly.FieldLexicalVariable.prototype.getNamesInScope = function () {
   return Blockly.FieldLexicalVariable.getNamesInScope(this.block_);
@@ -276,7 +236,7 @@ Blockly.FieldLexicalVariable.getNamesInScope = function (block) {
   // [lyn, 11/24/12] Sort and remove duplicates from namespaces
   globalNames = Blockly.LexicalVariable.sortAndRemoveDuplicates(globalNames);
   globalNames = globalNames.map(function(name) {
-    return [Blockly.prefixGlobalMenuName(name), 'global ' + name];
+    return [prefixGlobalMenuName(name), 'global ' + name];
   });
   var allLexicalNames = Blockly.FieldLexicalVariable.getLexicalNamesInScope(block);
   // Return a list of all names in scope: global names followed by lexical ones.
@@ -292,7 +252,6 @@ Blockly.FieldLexicalVariable.getNamesInScope = function (block) {
 // [lyn, 11/15/13] Factored this out from getNamesInScope to work on any block
 Blockly.FieldLexicalVariable.getLexicalNamesInScope = function (block) {
   var procedureParamNames = []; // from procedure/function declarations
-  var handlerParamNames = []; // from event handlers
   var loopNames = []; // from for loops
   var rangeNames = []; // from range loops
   var localNames = []; // from local variable declaration
@@ -321,23 +280,16 @@ Blockly.FieldLexicalVariable.getLexicalNamesInScope = function (block) {
           if ((parent.type === "procedures_defnoreturn") || (parent.type === "procedures_defreturn")) {
             params = parent.declaredNames(); // [lyn, 10/13/13] Names from block, not arguments_ instance var
             for (i = 0; i < params.length; i++) {
-              rememberName(params[i], procedureParamNames, Blockly.procedureParameterPrefix);
+              rememberName(params[i], procedureParamNames, procedureParameterPrefix);
             }
-          } else if (parent.category === "Component" && parent.getEventTypeObject && parent.getParameters) {
-            // Parameter names in event handlers
-            params = parent.getParameters().map(function(entry) { return entry['name'] });
-            for (var j = 0; j < params.length; j++) {
-              rememberName(params[j], handlerParamNames, Blockly.handlerParameterPrefix);
-            }
-          // [lyn, 11/29/12] Added parameters for control constructs.
           } else if ((parent.type === "controls_forEach")
                      && (parent.getInputTargetBlock('DO') == child)) {// Only DO is in scope, not other inputs!
             var loopName = parent.getFieldValue('VAR');
-            rememberName(loopName, loopNames, Blockly.loopParameterPrefix);
+            rememberName(loopName, loopNames, loopParameterPrefix);
           } else if ((parent.type === "controls_forRange")
                      && (parent.getInputTargetBlock('DO') == child)) {// Only DO is in scope, not other inputs!
               var rangeName = parent.getFieldValue('VAR');
-              rememberName(rangeName, rangeNames, Blockly.loopRangeParameterPrefix);
+              rememberName(rangeName, rangeNames, loopRangeParameterPrefix);
           } else if ((parent.type === "local_declaration_expression"
                         && parent.getInputTargetBlock('RETURN') == child) // only body is in scope of names
                       || (parent.type === "local_declaration_statement"
@@ -345,7 +297,7 @@ Blockly.FieldLexicalVariable.getLexicalNamesInScope = function (block) {
                            ) {
             params = parent.declaredNames(); // [lyn, 10/13/13] Names from block, not localNames_ instance var
             for (i = 0; i < params.length; i++) {
-              rememberName(params[i], localNames, Blockly.localNamePrefix);
+              rememberName(params[i], localNames, localNamePrefix);
             }
           }
           child = parent;
@@ -359,10 +311,10 @@ Blockly.FieldLexicalVariable.getLexicalNamesInScope = function (block) {
                                          .concat(rangeNames)
                                          .concat(localNames);
     allLexicalNames = Blockly.LexicalVariable.sortAndRemoveDuplicates(allLexicalNames);
-    // Add prefix as annotation only when Blockly.showPrefixToUser is true
+    // Add prefix as annotation only when showPrefixToUser is true
     allLexicalNames = allLexicalNames.map(
       function (name) {
-        // return ((Blockly.possiblyPrefixNameWith(Blockly.menuSeparator)) (innermostPrefix[name])) (name);
+        // return ((possiblyPrefixNameWith(menuSeparator)) (innermostPrefix[name])) (name);
         return (possiblyPrefixMenuNameWith (innermostPrefix[name])) (name);
       }
     )
@@ -377,14 +329,7 @@ Blockly.FieldLexicalVariable.getLexicalNamesInScope = function (block) {
   }
   return allLexicalNames.map(function(name) {
     return [name, name]
-  }).concat(
-    handlerParamNames.map(function(name) {
-      var translatedName = block.workspace.getTopWorkspace().getComponentDatabase()
-        .getInternationalizedParameterName(name);
-      var prefix = usePrefixInYail ? Blockly.handlerParameterPrefix : innermostPrefix[name];
-      return [possiblyPrefixMenuNameWith(prefix)(translatedName), name];
-    })
-  );
+  });
 }
 
 /**
@@ -525,10 +470,10 @@ Blockly.LexicalVariable.renameGlobal = function (newName) {
         var renamingFunction = block.renameLexicalVar;
         if (renamingFunction) {
             renamingFunction.call(block,
-              Blockly.GLOBAL_KEYWORD + Blockly.menuSeparator + oldName,
-              Blockly.GLOBAL_KEYWORD + Blockly.menuSeparator + newName,
-              Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + Blockly.menuSeparator + oldName,
-              Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + Blockly.menuSeparator + newName);
+              Blockly.GLOBAL_KEYWORD + menuSeparator + oldName,
+              Blockly.GLOBAL_KEYWORD + menuSeparator + newName,
+              Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + menuSeparator + oldName,
+              Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + menuSeparator + newName);
         }
       }
     }
@@ -547,7 +492,7 @@ Blockly.LexicalVariable.renameGlobal = function (newName) {
  *   of this name).
  */
 // [lyn, 11/19/12 (revised 10/11/13)]
-// Rename procedure parameter, event parameter, local name, or loop index variable to a new name,
+// Rename procedure parameter, local name, or loop index variable to a new name,
 // avoiding variable capture in the scope of the param. Consistently renames all
 // references to the name in getter and setter blocks. The proposed new name
 // may be changed (by adding numbers to the end) so that it does not conflict
@@ -583,7 +528,7 @@ Blockly.LexicalVariable.renameParam = function (newName) {
  * Refactored from renameParam and extended.
  * Rename oldName to newName in the block assembly rooted at this block
  * (where "this" names the block of interest). The names may refer to any nonglobal
- * parameter name (procedure parameter, event parameter, local name, or loop index variable).
+ * parameter name (procedure parameter, local name, or loop index variable).
  * This function consistently renames all references to oldName by newName in all
  * getter and setter blocks that refer to oldName, correctly handling inner declarations
  * that use oldName. In cases where renaming oldName to newName would result in variable
@@ -717,20 +662,20 @@ Blockly.LexicalVariable.renameParamWithoutRenamingCapturables = function (source
 //        " is not in declarations {" + namesDeclaredHere.join(',') + "}";
 //  }
   var sourcePrefix = "";
-  if (Blockly.showPrefixToUser) {
+  if (showPrefixToUser) {
     var type = sourceBlock.type;
     if (type == "procedures_mutatorarg"
         || type == "procedures_defnoreturn"
         || type == "procedures_defreturn") {
-      sourcePrefix = Blockly.procedureParameterPrefix;
+      sourcePrefix = procedureParameterPrefix;
     } else if (type == "controls_forEach") {
-      sourcePrefix = Blockly.loopParameterPrefix;
+      sourcePrefix = loopParameterPrefix;
     } else if (type == "controls_forRange") {
-      sourcePrefix = Blockly.loopRangeParameterPrefix;
+      sourcePrefix = loopRangeParameterPrefix;
     } else if (type == "local_declaration_statement"
         || type == "local_declaration_expression"
         || type == "local_mutatorarg") {
-      sourcePrefix = Blockly.localNamePrefix;
+      sourcePrefix = localNamePrefix;
     }
   }
   var helperInfo = Blockly.LexicalVariable.renameParamWithoutRenamingCapturablesInfo(sourceBlock, oldName, sourcePrefix);
@@ -810,7 +755,6 @@ Blockly.LexicalVariable.renameParamWithoutRenamingCapturablesInfo = function (so
     //   (last two added by lyn on 10/11/13).
     // * For local name: local_mutatorarg, local_declaration_statement, local_declaration_expression
     // * For loop name: controls_forEach, controls_forRange
-    // * For event param, event handler block (new on 10/13/13)
   var inScopeBlocks = []; // list of root blocks in scope of oldName and in which
                           // renaming must take place.
   if (sourceBlock.blocksInScope) { // Find roots of blocks in scope.
@@ -896,7 +840,7 @@ Blockly.LexicalVariable.makeLegalIdentifier = function(ident) {
 // [lyn, 11/19/12] Given a block, return an Array of
 //   (0) all getter/setter blocks referring to name in block and its children
 //   (1) all (unprefixed) names within block that would be captured if name were renamed to one of those names.
-// If Blockly.showPrefixToUser, prefix is the prefix associated with name; otherwise prefix is "".
+// If showPrefixToUser, prefix is the prefix associated with name; otherwise prefix is "".
 // env is a list of internally declared names in scope at this point;
 //   if usePrefixInYail is true, the env names have prefixes, otherwise they do not.
 // [lyn, 12/25-27/2012] Updated to
@@ -912,8 +856,8 @@ Blockly.LexicalVariable.referenceResult = function (block, name, prefix, env) {
   // Handle constructs that can introduce names here specially (should figure out a better way to generalize this!)
   if (block.type === "controls_forEach") {
     var loopVar = block.getFieldValue('VAR');
-    if (usePrefixInYail) { // Invariant: Blockly.showPrefixToUser must also be true!
-      loopVar = (possiblyPrefixMenuNameWith(Blockly.loopParameterPrefix))(loopVar)
+    if (usePrefixInYail) { // Invariant: showPrefixToUser must also be true!
+      loopVar = (possiblyPrefixMenuNameWith(loopParameterPrefix))(loopVar)
     }
     var newEnv = env.concat([loopVar]);
     var listResults = Blockly.LexicalVariable.referenceResult(block.getInputTargetBlock('LIST'), name, prefix, env);
@@ -922,8 +866,8 @@ Blockly.LexicalVariable.referenceResult = function (block, name, prefix, env) {
     referenceResults = [listResults, doResults, nextResults];
   } else if (block.type === "controls_forRange") {
     var loopVar = block.getFieldValue('VAR');
-    if (usePrefixInYail) { // Invariant: Blockly.showPrefixToUser must also be true!
-      loopVar = (possiblyPrefixMenuNameWith(Blockly.loopRangeParameterPrefix))(loopVar)
+    if (usePrefixInYail) { // Invariant: showPrefixToUser must also be true!
+      loopVar = (possiblyPrefixMenuNameWith(loopRangeParameterPrefix))(loopVar)
     }
     var newEnv = env.concat([loopVar]);
     var startResults = Blockly.LexicalVariable.referenceResult(block.getInputTargetBlock('START'), name, prefix, env);
@@ -937,8 +881,8 @@ Blockly.LexicalVariable.referenceResult = function (block, name, prefix, env) {
     var localDeclNames = [];
     for(var i=0; block.getInput('DECL' + i); i++) {
       var localName = block.getFieldValue('VAR' + i);
-      if (usePrefixInYail) { // Invariant: Blockly.showPrefixToUser must also be true!
-        localName = (possiblyPrefixMenuNameWith(Blockly.localNamePrefix))(localName)
+      if (usePrefixInYail) { // Invariant: showPrefixToUser must also be true!
+        localName = (possiblyPrefixMenuNameWith(localNamePrefix))(localName)
       }
       localDeclNames.push(localName);
     }
@@ -997,9 +941,6 @@ Blockly.LexicalVariable.referenceResult = function (block, name, prefix, env) {
         capturables.push(referenceName);
       }
     }
-    if (block.eventparam) {  // also capture untranslated param names
-      capturables.push(block.eventparam);
-    }
   }
   /* console.log("referenceResult from block of type " + block.type +
              " with name " + name +
@@ -1057,127 +998,3 @@ Blockly.LexicalVariable.stringListsEqual = function (strings1, strings2) {
   }
   return true; // get here iff lists are equal
 }
-
-/**
- * [lyn, 07/03/14] Created
- * [jis, 09/18/15] Refactored into two procedures
- * @param block: a getter or setter block
- *
- * Creates the mutation for the eventparam attribute
- */
-Blockly.LexicalVariable.eventParamMutationToDom = function (block) {
-  if (!block.eventparam) {      // Newly created block won't have one
-    Blockly.LexicalVariable.getEventParam(block);
-  }
-  // At this point, if the variable is an event parameter, the
-  // eventparam field will be set. Otherwise it won't be and
-  // we return null
-  if (!block.eventparam) {
-    return null;
-  }
-  var mutation = document.createElement('mutation');
-  var eventParam = document.createElement('eventparam');
-  eventParam.setAttribute('name', block.eventparam);
-  mutation.appendChild(eventParam);
-  return mutation;
-}
-
-/**
- * @param block: a getter or setter block
- *
- * For getter or setter block of event parameters, sets the eventparam
- * field of the block which contains the default (untranslated =
- * English) name for event parameters.
- *
- */
-
-Blockly.LexicalVariable.getEventParam = function (block) {
-  // If it isn't undefined, then we have already computed it.
-  if (block.eventparam !== undefined) {
-    return block.eventparam;
-  }
-  block.eventparam = null;      // So if we leave without setting it to
-                                // some value, we know we have already
-                                // evaluated it.
-  var prefixPair = unprefixName(block.getFieldValue("VAR"));
-  var prefix = prefixPair[0];
-  if (prefix !== Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX) {
-    var name = prefixPair[1];
-    var child = block;
-    var parent = block.getParent();
-    while (parent) {
-       var type = parent.type;
-       // Walk up ancestor tree to determine if name is an event parameter name.
-       if ((type === "local_declaration_expression"
-          && parent.getInputTargetBlock('RETURN') == child ) // only body is in scope of names
-          || (type === "local_declaration_statement"
-          && parent.getInputTargetBlock('STACK') == child ) // only body is in scope of names
-           ) {
-          var params = parent.getVars(); // [lyn, 10/13/13] Names from block, not localNames_ instance var
-          if (params.indexOf(name) != -1) {
-            return null; // Name is locally bound, not an event parameter.
-          }
-       } else if ((type === "controls_forEach" || type === "controls_forRange")
-           && (parent.getInputTargetBlock('DO') == child) ) { // Only DO is in scope, not other inputs!
-         var loopName = parent.getFieldValue('VAR');
-         if (loopName == name) {
-           return null; // Name is locally bound, not an event parameter.
-         }
-       }
-      child = parent;
-      parent = parent.getParent(); // keep moving up the chain.
-    }
-    return null; // If get to this point, there is no mutation
-  }
-}
-
-/**
- * [lyn, 07/03/14] Created
- * @param block: a getter or setter block
- * @param xmlElement: an XML element
- * For getters and setters of event parameters, marks them specially
- * with a eventparam property to support i8n.
- * This is used only by Blockly.LexicalVariable.eventParameterDict
- */
-Blockly.LexicalVariable.eventParamDomToMutation = function (block, xmlElement) {
-  var children = goog.dom.getChildren(xmlElement);
-  if (children.length == 1) { // Should be exactly one eventParam child
-    var childNode = children[0];
-    if (childNode.nodeName.toLowerCase() == 'eventparam') {
-      var untranslatedEventName = childNode.getAttribute('name');
-      block.eventparam = untranslatedEventName; // special property viewed by Blockly.LexicalVariable.eventParameterDict
-      if (!Blockly.Events.isEnabled() && !block.isInFlyout) {  // Loading or flyout
-        setTimeout(function() {
-          Blockly.Events.disable();  // we don't want to save this change since it is visual
-          block.fieldVar_.setValue(untranslatedEventName);
-          block.fieldVar_.setText(block.workspace.getTopWorkspace().getComponentDatabase().getInternationalizedParameterName(untranslatedEventName));
-          block.eventparam = untranslatedEventName;
-          // TODO: Maybe switch to injectable warning/error handling
-          block.workspace.requestErrorChecking &&
-            block.workspace.requestErrorChecking(block);
-          Blockly.Events.enable();
-        }, 0);
-      }
-    }
-  }
-}
-
-/**
- * [lyn, 07/03/14] Created
- * @param block: a block
- * @returns a "dictionary" object that maps all default event parameter names
- *   used in the block to their translated names.
- */
-Blockly.LexicalVariable.eventParameterDict = function (block) {
-  var dict = {};
-  var descendants = block.getDescendants();
-  for (var i = 0, descendant; descendant = descendants[i]; i++) {
-    if (descendant.eventparam) {
-      // descendant.eventparam is the default event parameter name
-      // descendant.getFieldValue('VAR') is the possibly translated name
-      dict[descendant.eventparam] = descendant.getFieldValue('VAR');
-    }
-  }
-  return dict;
-}
-

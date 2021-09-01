@@ -146,12 +146,6 @@ Blockly.Blocks['lexical_variable_get'] = {
     // warning/error handler like App Inventor's
     this.errors = [{name:"checkIsInDefinition"},{name:"checkDropDownContainsValidValue",dropDowns:["VAR"]}];
   },
-  mutationToDom: function() { // Handle getters for event parameters specially (to support i8n)
-    return Blockly.LexicalVariable.eventParamMutationToDom(this);
-  },
-  domToMutation: function(xmlElement) { // Handler getters for event parameters specially (to support i8n)
-    Blockly.LexicalVariable.eventParamDomToMutation(this, xmlElement);
-  },
   getVars: function() {
     return [this.getFieldValue('VAR')];
   },
@@ -216,12 +210,6 @@ Blockly.Blocks['lexical_variable_set'] = {
     this.setNextStatement(true);
     this.setTooltip(Blockly.Msg.LANG_VARIABLES_SET_TOOLTIP);
     this.errors = [{name:"checkIsInDefinition"},{name:"checkDropDownContainsValidValue",dropDowns:["VAR"]}];
-  },
-  mutationToDom: function() { // Handle setters for event parameters specially (to support i8n)
-    return Blockly.LexicalVariable.eventParamMutationToDom(this);
-  },
-  domToMutation: function(xmlElement) { // Handler setters for event parameters specially (to support i8n)
-    Blockly.LexicalVariable.eventParamDomToMutation(this, xmlElement);
   },
   getVars: function() {
     return [this.getFieldValue('VAR')];
