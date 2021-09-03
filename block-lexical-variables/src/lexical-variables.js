@@ -157,10 +157,15 @@ Blockly.Blocks['lexical_variable_get'] = {
       }
     } else if (oldTranslatedName && oldTranslatedName === this.fieldVar_.getText()) {
       // Global variables
-      this.fieldVar_.setText(newTranslatedName);
+
+      // Force a regeneration of the dropdown options, so the subsequent
+      // calls to setValue and setFieldValue will work properly.
+      this.fieldVar_.getOptions(false);
+      this.fieldVar_.setValue(newName);
       if (oldName === newName) {
         this.setFieldValue(newName, 'VAR');
       }
+      this.fieldVar_.forceRerender();
     }
   },
   renameFree: function (freeSubstitution) {
@@ -391,7 +396,7 @@ Blockly.Blocks['local_declaration_statement'] = {
         }
         if (mutatorarg && mutatorargIndex == paramIndex) {
           // See Subtlety #3 in  procedureParameterChangeHandler in language/common/procedures.js
-          Blockly.Field.prototype.setText.call(mutatorarg.getField("NAME"), newParamName);
+          Blockly.Field.prototype.setValue.call(mutatorarg.getField("NAME"), newParamName);
         }
       }
     }

@@ -315,14 +315,19 @@ Blockly.FieldFlydown.prototype.onHtmlInputChange_ = function(e) {
       Blockly.utils.addClass(htmlInput, 'blocklyInvalidInput');
     } else {
       Blockly.utils.removeClass(htmlInput, 'blocklyInvalidInput');
-      this.doValueUpdate_(valid);
+      this.setValue(valid);
     }
   } else if (goog.userAgent.WEBKIT) {
     // Cursor key.  Render the source block to show the caret moving.
     // Chrome only (version 26, OS X).
     this.sourceBlock_.render();
   }
+
+  // We need all of the following to cause the field to resize!
+  this.textContent_.nodeValue = text;
+  this.forceRerender();
   this.resizeEditor_();
+
   Blockly.svgResize(this.sourceBlock_.workspace);
 };
 

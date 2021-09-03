@@ -444,10 +444,12 @@ Blockly.LexicalVariable = {};
 Blockly.LexicalVariable.renameGlobal = function (newName) {
 
   // this is bound to field_textinput object
-  var oldName = this.text_;
+  var oldName = this.value_;
 
   // [lyn, 10/27/13] now check legality of identifiers
   newName = Blockly.LexicalVariable.makeLegalIdentifier(newName);
+
+  this.sourceBlock_.getField('NAME').doValueUpdate_(newName);
 
   var globals = Blockly.FieldLexicalVariable.getGlobalNames(this.sourceBlock_);
     // this.sourceBlock excludes block being renamed from consideration
@@ -462,8 +464,8 @@ Blockly.LexicalVariable.renameGlobal = function (newName) {
         var renamingFunction = block.renameLexicalVar;
         if (renamingFunction) {
             renamingFunction.call(block,
-              Blockly.GLOBAL_KEYWORD + Shared.menuSeparator + oldName,
-              Blockly.GLOBAL_KEYWORD + Shared.menuSeparator + newName,
+              Shared.GLOBAL_KEYWORD + Shared.menuSeparator + oldName,
+              Shared.GLOBAL_KEYWORD + Shared.menuSeparator + newName,
               Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + Shared.menuSeparator + oldName,
               Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + Shared.menuSeparator + newName);
         }
