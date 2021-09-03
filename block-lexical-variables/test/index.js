@@ -16,6 +16,24 @@ import {registerCss} from '../src/css';
 // TODO: Edit list of blocks.
 const allBlocks = ['global_declaration', 'controls_forRange'];
 
+/**
+ * Extend Blockly's hideChaff method with AI2-specific behaviors.
+ */
+Blockly.hideChaff = (function(func) {
+  if (func.isWrapped) {
+    return func;
+  } else {
+    var f = function() {
+      var argCopy = Array.prototype.slice.call(arguments);
+      func.apply(this, argCopy);
+      // [lyn, 10/06/13] for handling parameter & procedure flydowns
+      Blockly.WorkspaceSvg.prototype.hideChaff.call(Blockly.getMainWorkspace(), argCopy);
+    };
+    f.isWrapped = true;
+    return f;
+  }
+})(Blockly.hideChaff);
+
 function init(workspace) {
   // TODO: Might need the next line
   // Blockly.DropDownDiv.createDom();
