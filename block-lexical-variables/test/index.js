@@ -14,7 +14,11 @@ import '../src/index';
 import {registerCss} from '../src/css';
 
 // TODO: Edit list of blocks.
-const allBlocks = ['global_declaration', 'controls_forRange'];
+const allBlocks = [
+  'global_declaration',
+  'controls_forRange',
+  'local_declaration_statement'
+];
 
 /**
  * Extend Blockly's hideChaff method with AI2-specific behaviors.
