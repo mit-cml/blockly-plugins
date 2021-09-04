@@ -206,7 +206,7 @@ Blockly.FieldFlydown.prototype.showFlydownMaker_ = function() {
   return function() {
     if (Blockly.FieldFlydown.showPid_ !== 0 &&
         !field.getSourceBlock().workspace.isDragging() &&
-        !Blockly.FieldTextInput.htmlInput_) {
+        !this.htmlInput_) {
       try {
         field.showFlydown_();
       } catch (e) {
