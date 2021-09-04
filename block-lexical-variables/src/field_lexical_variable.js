@@ -500,12 +500,12 @@ Blockly.LexicalVariable.renameGlobal = function (newName) {
 // [lyn, 11/15/13] Refactored monolithic renameParam into parts that are useful on their own
 Blockly.LexicalVariable.renameParam = function (newName) {
 
-  var htmlInput = Blockly.FieldTextInput.htmlInput_;
+  var htmlInput = this.htmlInput_;
   if(htmlInput && htmlInput.defaultValue == newName){
     return newName;
   }
   // this is bound to field_textinput object
-  var oldName = this.text_; // name being changed to newName
+  var oldName = this.getText(); // name being changed to newName
 
   // [lyn, 10/27/13] now check legality of identifiers
   newName = Blockly.LexicalVariable.makeLegalIdentifier(newName);
