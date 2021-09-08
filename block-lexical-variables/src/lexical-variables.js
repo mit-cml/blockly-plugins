@@ -480,7 +480,7 @@ Blockly.Blocks['local_declaration_statement'] = {
   getVars: function() {
     var varList = [];
     for (var i = 0, input; input = this.getField('VAR' + i); i++) {
-      varList.push(input.getText());
+      varList.push(input.getValue());
     }
     return varList;
   },

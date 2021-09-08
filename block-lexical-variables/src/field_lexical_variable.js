@@ -111,6 +111,10 @@ Blockly.FieldLexicalVariable.prototype.setValue = function(text) {
   Blockly.FieldLexicalVariable.superClass_.setValue.call(this, text);
 };
 
+Blockly.FieldLexicalVariable.prototype.doClassValidation_ = function(opt_newValue) {
+  return /** @type {string} */ (opt_newValue);
+};
+
 // /**
 //  * Set the variable name.
 //  * @param {string} text New text.
@@ -334,6 +338,75 @@ Blockly.FieldLexicalVariable.dropdownCreate = function() {
   return variableList.length == 0 ? [[" ", " "]] : variableList;
 };
 
+/*
+TODO: I'm leaving the following in for now (but commented) because at one point
+  it seemed necessary.  It doesn't seem so anymore but I just want to remember
+  in case it really was needed.
+*/
+// Blockly.FieldLexicalVariable.dropdownCreate = function() {
+//   var variableList = this.getNamesInScope(); // [lyn, 11/10/12] Get all global, parameter, and local names
+//   variableList = variableList.length == 0 ? [[' ', ' ']] : variableList;
+//   const extraNames = [];
+//   const block = this.getBlock();
+//   if (block) {
+//     const flydown = block.workspace.getTopWorkspace().getFlydown();
+//     const flydownWorkspace = flydown.getWorkspace();
+//     if (flydownWorkspace === block.workspace) {
+//       const currentVariableName = flydown.field_.getValue();
+//       extraNames.push([currentVariableName, currentVariableName]);
+//     }
+//   }
+//   return variableList.concat(extraNames);
+// };
+
+/**
+ * Update the value of this dropdown field.
+ * @param {*} newValue The value to be saved.
+ * @protected
+ */
+Blockly.FieldLexicalVariable.prototype.doValueUpdate_ = function(newValue) {
+  Blockly.FieldDropdown.superClass_.doValueUpdate_.call(this, newValue);
+  // Note that we are asking getOptions to add newValue to the list of available
+  // options.  We do that essentially to force callers up the chain to accept
+  // newValue as an option.  This could potentially cause trouble, but it seems
+  // to be ok for our use case.  It is ugly, though, since it bypasses an aspect
+  // of the normal dropdown validation.
+  var options =
+    this.getOptions(true, [[newValue, newValue]]);
+  for (var i = 0, option; (option = options[i]); i++) {
+    if (option[1] == this.value_) {
+      this.selectedOption_ = option;
+    }
+  }
+  this.forceRerender();
+};
+
+/**
+ * Return a list of the options for this dropdown.
+ * @param {boolean=} opt_useCache For dynamic options, whether or not to use the
+ *     cached options or to re-generate them.
+ * @param {boolean=} opt_extraOption A possible extra option to add.
+ * @return {!Array<!Array>} A non-empty array of option tuples:
+ *     (human-readable text or image, language-neutral name).
+ * @throws {TypeError} If generated options are incorrectly structured.
+ */
+Blockly.FieldLexicalVariable.prototype.getOptions = function(opt_useCache,
+    opt_extraOption) {
+  if (Array.isArray(opt_useCache)) {
+    opt_extraOption = opt_useCache;
+  }
+  const extraOption = opt_extraOption || [];
+  if (this.isOptionListDynamic()) {
+    if (!this.generatedOptions_ || !opt_useCache) {
+      this.generatedOptions_ =
+          this.menuGenerator_.call(this).concat(extraOption);
+      Blockly.FieldDropdown.validateOptions_(this.generatedOptions_);
+    }
+    return this.generatedOptions_.concat(extraOption);
+  }
+  return /** @type {!Array<!Array<string>>} */ (this.menuGenerator_);
+};
+
 /**
  * Event handler for a change in variable name.
  * // [lyn, 11/10/12] *** Not clear this needs to do anything for lexically scoped variables.
@@ -501,11 +574,10 @@ Blockly.LexicalVariable.renameGlobal = function (newName) {
 Blockly.LexicalVariable.renameParam = function (newName) {
 
   var htmlInput = this.htmlInput_;
-  if(htmlInput && htmlInput.defaultValue == newName){
-    return newName;
-  }
   // this is bound to field_textinput object
-  var oldName = this.getText(); // name being changed to newName
+  var oldName = this.getValue() ||
+    (htmlInput && htmlInput.defaultValue) ||
+    this.getText(); // name being changed to newName
 
   // [lyn, 10/27/13] now check legality of identifiers
   newName = Blockly.LexicalVariable.makeLegalIdentifier(newName);

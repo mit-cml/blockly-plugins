@@ -183,7 +183,7 @@ Blockly.FieldFlydown.prototype.init = function(block) {
 };
 
 Blockly.FieldFlydown.prototype.onMouseOver_ = function(e) {
-  if (!this.sourceBlock_.isInFlyout) { // [lyn, 10/22/13] No flydowns in a flyout!
+  if (!this.sourceBlock_.isInFlyout && Blockly.FieldFlydown.showPid_ == 0) { // [lyn, 10/22/13] No flydowns in a flyout!
     Blockly.FieldFlydown.showPid_ =
         window.setTimeout(this.showFlydownMaker_(), Blockly.FieldFlydown.timeout);
   }
@@ -194,6 +194,7 @@ Blockly.FieldFlydown.prototype.onMouseOver_ = function(e) {
 Blockly.FieldFlydown.prototype.onMouseOut_ = function(e) {
   // Clear any pending timer event to show flydown
   window.clearTimeout(Blockly.FieldFlydown.showPid_);
+  Blockly.FieldFlydown.showPid_ =0;
   e.stopPropagation();
 };
 
@@ -251,6 +252,11 @@ Blockly.FieldFlydown.prototype.showFlydown_ = function() {
     xy.x += borderBBox.width * scale;
   }
 
+  // Set the flydown's current field.  Note that this is subtly differnt than
+  // Blockly.FieldFlydown.openFieldFlydown_ because the latter might get reset
+  // by an iterim hiding of the field and not get set again by an interim call
+  // to show().
+  flydown.field_ = this;
   flydown.showAt(blocksXMLList, xy.x, xy.y);
   Blockly.FieldFlydown.openFieldFlydown_ = this;
 };
@@ -315,7 +321,7 @@ Blockly.FieldFlydown.prototype.onHtmlInputChange_ = function(e) {
       Blockly.utils.addClass(htmlInput, 'blocklyInvalidInput');
     } else {
       Blockly.utils.removeClass(htmlInput, 'blocklyInvalidInput');
-      this.setValue(valid);
+      this.doValueUpdate_(valid);
     }
   } else if (goog.userAgent.WEBKIT) {
     // Cursor key.  Render the source block to show the caret moving.

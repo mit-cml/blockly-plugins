@@ -89,17 +89,6 @@ Blockly.FieldParameterFlydown.withChangeHanderDisabled= function (thunk) {
   }
 };
 
-// [lyn, 06/30/2014] Prevent infinite loops from change handlers on these fields!
-// Path of infinite loop: setText -> renameParam change handler -> renameBound
-// (if renaming capturables) -> setText
-Blockly.FieldParameterFlydown.prototype.setText = function(text) {
-  if (! this.alreadySettingText) {
-    this.alreadySettingText = true;
-    Blockly.FieldTextInput.prototype.setText.call(this,text);
-    this.alreadySettingText = false;
-  }
-};
-
  /**
   * Returns the stringified xml representation of the blocks we want to have in
   * the flydown. In this case a variable getter and a variable setter.
