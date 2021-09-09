@@ -17,7 +17,9 @@ import {registerCss} from '../src/css';
 const allBlocks = [
   'global_declaration',
   'controls_forRange',
-  'local_declaration_statement'
+  'local_declaration_statement',
+  'procedures_defnoreturn',
+  'procedures_callnoreturn',
 ];
 
 /**
