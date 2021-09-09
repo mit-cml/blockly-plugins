@@ -12,6 +12,17 @@ Blockly.WorkspaceSvg.prototype.getFlydown = function() {
 };
 
 /**
+ * Obtain the {@link Blockly.ProcedureDatabase} associated with the workspace.
+ * @returns {!Blockly.ProcedureDatabase}
+ */
+Blockly.WorkspaceSvg.prototype.getProcedureDatabase = function() {
+  if (!this.procedureDb_) {
+    this.procedureDb_ = new Blockly.ProcedureDatabase(this);
+  }
+  return this.procedureDb_;
+};
+
+/**
  * Get the topmost workspace in the workspace hierarchy.
  * @returns {Blockly.WorkspaceSvg}
  */

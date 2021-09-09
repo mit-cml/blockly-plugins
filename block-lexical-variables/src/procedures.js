@@ -61,6 +61,7 @@
 
 import * as Blockly from 'blockly/core';
 import './msg';
+import {AI} from './field_procedurename';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -86,7 +87,9 @@ Blockly.Blocks['procedures_defnoreturn'] = {
   helpUrl: Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_HELPURL,
   bodyInputName: 'STACK',
   init: function() {
-    this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
+    // Let the theme determine the color.
+    // this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
+    this.setStyle('procedure_blocks');
     var name = Blockly.Procedures.findLegalName(
         Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_PROCEDURE, this);
     this.appendDummyInput('HEADER')
@@ -285,7 +288,9 @@ Blockly.Blocks['procedures_defnoreturn'] = {
           // superclass directly. I.e., can't do this:
           //   mutatorarg.getTitle_("NAME").setValue(newParamName);
           // so instead do this:
-            Blockly.Field.prototype.setText.call(mutatorarg.getField("NAME"), newParamName);
+          mutatorarg.getField("NAME").setValue(newParamName);
+          // mutatorarg.getField("NAME").doValueUpdate_(newParamName);
+          //   Blockly.Field.prototype.setText.call(mutatorarg.getField("NAME"), newParamName);
         }
       }
       // console.log("exit procedureParameterChangeHandler");
@@ -490,7 +495,9 @@ Blockly.Blocks['procedures_defreturn'] = {
   helpUrl: Blockly.Msg.LANG_PROCEDURES_DEFRETURN_HELPURL,
   bodyInputName: 'RETURN',
   init: function() {
-    this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
+    // Let the theme determine the color.
+    // this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
+    this.setStyle('procedure_blocks');
     var name = Blockly.Procedures.findLegalName(
         Blockly.Msg.LANG_PROCEDURES_DEFRETURN_PROCEDURE, this);
     this.appendDummyInput('HEADER')
@@ -533,7 +540,9 @@ Blockly.Blocks['procedures_defreturn'] = {
 Blockly.Blocks['procedures_mutatorcontainer'] = {
   // Procedure container (for mutator dialog).
   init: function() {
-    this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
+    // Let the theme determine the color.
+    // this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
+    this.setStyle('procedure_blocks');
     this.appendDummyInput()
         .appendField(Blockly.Msg.LANG_PROCEDURES_MUTATORCONTAINER_TITLE);
     this.appendStatementInput('STACK');
@@ -574,7 +583,9 @@ Blockly.Blocks['procedures_mutatorarg'] = {
 //                  + " and proc argumnets = [" + procArguments.join(',') + "]");
 //      return Blockly.LexicalVariable.renameParam.call(this,newName);
 //    }
-    this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
+    // Let the theme determine the color.
+    // this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
+    this.setStyle('procedure_blocks');
     var editor = new Blockly.FieldTextInput('x',Blockly.LexicalVariable.renameParam);
     // 2017 Blockly's text input change breaks our renaming behavior.
     // The following is a version we've defined.
@@ -673,8 +684,10 @@ Blockly.Blocks['procedures_callnoreturn'] = {
   category: 'Procedures',  // Procedures are handled specially.
   helpUrl: Blockly.Msg.LANG_PROCEDURES_CALLNORETURN_HELPURL,
   init: function() {
-    this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
-    var procDb = this.getTopWorkspace().getProcedureDatabase();
+    // Let the theme determine the color.
+    // this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
+    this.setStyle('procedure_blocks');
+    var procDb = this.workspace.getTopWorkspace().getProcedureDatabase();
     this.procNamesFxn = function() {
       var items = procDb.getMenuItems(false);
       return items.length > 0 ? items : ['',''];
@@ -699,7 +712,8 @@ Blockly.Blocks['procedures_callnoreturn'] = {
     return this.getFieldValue('PROCNAME');
   },
   renameProcedure: function(oldName, newName) {
-    if (Blockly.Names.equals(oldName, this.getFieldValue('PROCNAME'))) {
+    if (!oldName ||
+        Blockly.Names.equals(oldName, this.getFieldValue('PROCNAME'))) {
       this.setFieldValue(newName, 'PROCNAME');
     }
   },
@@ -842,7 +856,7 @@ Blockly.Blocks['procedures_callnoreturn'] = {
     for (var x = 0; x < this.arguments_.length; x++) {
       if (Blockly.Names.equals(oldName, this.arguments_[x])) {
         this.arguments_[x] = newName;
-        this.getInput('ARG' + x).fieldRow[0].setText(newName);
+        this.getInput('ARG' + x).fieldRow[0].setValue(newName);
       }
     }
   },
@@ -881,8 +895,10 @@ Blockly.Blocks['procedures_callreturn'] = {
   category: 'Procedures',  // Procedures are handled specially.
   helpUrl: Blockly.Msg.LANG_PROCEDURES_CALLRETURN_HELPURL,
   init: function() {
-    this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
-    var procDb = this.getTopWorkspace().getProcedureDatabase();
+    // Let the theme determine the color.
+    // this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
+    this.setStyle('procedure_blocks');
+    var procDb = this.workspace.getTopWorkspace().getProcedureDatabase();
     this.procNamesFxn = function() {
       var items = procDb.getMenuItems(true);
       return items.length > 0 ? items : ['',''];

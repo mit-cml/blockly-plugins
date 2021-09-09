@@ -9,9 +9,26 @@
  */
 'use strict';
 
+import * as Blockly from 'blockly/core';
+import './msg';
+
+// TODO: Maybe make a single importable goog compatibility object
+const goog = {
+  provide: (_) => {},
+  require: (_) => {},
+  inherits: Blockly.utils.object.inherits,
+  dom: Blockly.utils.dom,
+  userAgent: Blockly.utils.userAgent,
+  asserts: {
+    assertObject: (_) => {},
+  },
+};
+
 goog.provide('AI.Blockly.FieldProcedureName');
 
 goog.require('Blockly.FieldTextInput');
+
+export const AI = {Blockly: {}};
 
 /**
  * FieldProcedureName is a specialization of {@link Blockly.FieldTextInput} that handles renaming

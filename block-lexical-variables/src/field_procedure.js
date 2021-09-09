@@ -12,15 +12,31 @@
 
 'use strict';
 
+import * as Blockly from 'blockly/core';
+import './msg';
+
+// TODO: Maybe make a single importable goog compatibility object
+const goog = {
+  provide: (_) => {},
+  require: (_) => {},
+  inherits: Blockly.utils.object.inherits,
+  dom: Blockly.utils.dom,
+  userAgent: Blockly.utils.userAgent,
+  asserts: {
+    assertObject: (_) => {},
+  },
+};
+
 goog.provide('Blockly.FieldProcedure');
 goog.provide('Blockly.AIProcedure');
 
+Blockly.FieldProcedure = {};
 
 Blockly.FieldProcedure.defaultValue = ["",""];
 
 Blockly.FieldProcedure.onChange = function(procedureId) {
-  var workspace = this.block.getTopWorkspace();
-  if(!this.block.editable_){ // [lyn, 10/14/13] .editable is undefined on blocks. Changed to .editable_
+  var workspace = this.block.workspace.getTopWorkspace();
+  if(!this.block.isEditable()){ // [lyn, 10/14/13] .editable is undefined on blocks. Changed to .editable_
     workspace = Blockly.Drawer.flyout_.workspace_;
     return;
   }
@@ -34,7 +50,7 @@ Blockly.FieldProcedure.onChange = function(procedureId) {
     }
     //return;
   }
-  this.setValue(text);
+  this.doValueUpdate_(text);
   if(def) {
     // [lyn, 10/27/13] Lyn sez: this causes complications (e.g., might open up mutator on collapsed procedure
     //   declaration block) and is no longer necessary with changes to setProedureParameters.
@@ -45,6 +61,8 @@ Blockly.FieldProcedure.onChange = function(procedureId) {
     this.block.setProcedureParameters(def.arguments_, def.paramIds_, true); // It's OK if def.paramIds is null
   }
 };
+
+Blockly.AIProcedure = {};
 
 Blockly.AIProcedure.getProcedureNames = function(returnValue, opt_workspace) {
   var workspace = opt_workspace || Blockly.mainWorkspace;
