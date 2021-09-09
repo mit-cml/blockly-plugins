@@ -16,8 +16,11 @@ import './field_flydown';
 import './field_global_flydown';
 import './field_lexical_variable';
 import './field_parameter_flydown';
+import './field_procedure';
+import './field_procedurename';
 import './lexical-variables';
 import './controls';
+import './procedure_database';
 import './procedures';
 
 // TODO: Remove JSON block definition or convert from JavaScript definitions.
