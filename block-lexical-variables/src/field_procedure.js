@@ -142,7 +142,8 @@ Blockly.AIProcedure.removeProcedureValues = function(name, workspace) {
  */
 Blockly.AIProcedure.renameProcedure = function (newName) {
   // this is bound to field_textinput object
-  var oldName = this.oldName_ || this.text_;
+  var oldName = this.oldName_ || this.getValue();
+  const originalNewName = newName;
 
   // [lyn, 10/27/13] now check legality of identifiers
   newName = Blockly.LexicalVariable.makeLegalIdentifier(newName);
@@ -151,6 +152,9 @@ Blockly.AIProcedure.renameProcedure = function (newName) {
   var procBlocks = Blockly.AIProcedure.getAllProcedureDeclarationBlocksExcept(this.sourceBlock_);
   var procNames = procBlocks.map(function (decl) { return decl.getFieldValue('NAME'); });
   newName = Blockly.FieldLexicalVariable.nameNotIn(newName, procNames);
+  if (newName !== originalNewName) {
+    this.doValueUpdate_(newName);
+  }
   // Rename any callers.
   var blocks = this.sourceBlock_.workspace.getAllBlocks();
   for (var x = 0; x < blocks.length; x++) {

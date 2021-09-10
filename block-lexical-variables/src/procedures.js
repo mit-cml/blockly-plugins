@@ -714,6 +714,11 @@ Blockly.Blocks['procedures_callnoreturn'] = {
   renameProcedure: function(oldName, newName) {
     if (!oldName ||
         Blockly.Names.equals(oldName, this.getFieldValue('PROCNAME'))) {
+      const nameField = this.getField('PROCNAME');
+      // Force the options menu to get regenerated since we might be getting
+      // called because our defining procedure got renamed and
+      // this.setFieldValue() will fail if it's value isn't in the options set
+      nameField.getOptions();
       this.setFieldValue(newName, 'PROCNAME');
     }
   },

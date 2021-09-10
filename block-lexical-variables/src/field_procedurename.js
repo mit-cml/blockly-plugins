@@ -51,6 +51,8 @@ goog.inherits(AI.Blockly.FieldProcedureName, Blockly.FieldTextInput);
  */
 AI.Blockly.FieldProcedureName.prototype.setValue = function(newValue) {
   var oldValue = this.getValue();
+  this.oldName_ = oldValue;
+  this.doValueUpdate_(newValue);
   AI.Blockly.FieldProcedureName.superClass_.setValue.call(this, newValue);
   newValue = this.getValue();
   if (typeof newValue === 'string' && this.sourceBlock_) {
