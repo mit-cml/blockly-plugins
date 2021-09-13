@@ -16,6 +16,7 @@ import {init} from '../src/index';
 const allBlocks = [
   'global_declaration',
   'controls_forRange',
+  'controls_forEach',
   'local_declaration_statement',
   'procedures_defnoreturn',
   'procedures_callnoreturn',
