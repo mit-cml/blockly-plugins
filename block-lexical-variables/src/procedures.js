@@ -477,8 +477,6 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     var body = this.getInputTargetBlock(this.bodyInputName);
     return (body && [body]) || [];
   },
-  typeblock: [{ translatedName: Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_PROCEDURE +
-      ' ' + Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_DO }],
   customContextMenu: function (options) {
     Blockly.FieldParameterFlydown.addHorizontalVerticalOption(this, options);
     Blockly.BlocklyEditor.addPngExportOption(this, options);
@@ -531,8 +529,6 @@ Blockly.Blocks['procedures_defreturn'] = {
   renameFree: Blockly.Blocks.procedures_defnoreturn.renameFree,
   freeVariables: Blockly.Blocks.procedures_defnoreturn.freeVariables,
   blocksInScope: Blockly.Blocks.procedures_defnoreturn.blocksInScope,
-  typeblock: [{ translatedName: Blockly.Msg.LANG_PROCEDURES_DEFRETURN_PROCEDURE +
-      ' ' + Blockly.Msg.LANG_PROCEDURES_DEFRETURN_RETURN }],
   customContextMenu: Blockly.Blocks.procedures_defnoreturn.customContextMenu,
   getParameters: Blockly.Blocks.procedures_defnoreturn.getParameters
 };
@@ -888,10 +884,6 @@ Blockly.Blocks['procedures_callnoreturn'] = {
     }
     this.setFieldValue("none", 'PROCNAME');
   },
-  // This generates a single generic call to 'call no return' defaulting its value
-  // to the first procedure in the list. Calls for each procedure cannot be done here because the
-  // blocks have not been loaded yet (they are loaded in typeblock.js)
-  typeblock: [{ translatedName: Blockly.Msg.LANG_PROCEDURES_CALLNORETURN_TRANSLATED_NAME}]
 };
 
 
@@ -932,9 +924,5 @@ Blockly.Blocks['procedures_callreturn'] = {
   renameVar: Blockly.Blocks.procedures_callnoreturn.renameVar,
   procCustomContextMenu: Blockly.Blocks.procedures_callnoreturn.procCustomContextMenu,
   removeProcedureValue: Blockly.Blocks.procedures_callnoreturn.removeProcedureValue,
-  // This generates a single generic call to 'call return' defaulting its value
-  // to the first procedure in the list. Calls for each procedure cannot be done here because the
-  // blocks have not been loaded yet (they are loaded in typeblock.js)
-  typeblock: [{ translatedName: Blockly.Msg.LANG_PROCEDURES_CALLRETURN_TRANSLATED_NAME}]
 };
 

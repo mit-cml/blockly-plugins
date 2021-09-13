@@ -121,7 +121,6 @@ Blockly.Blocks['global_declaration'] = {
       this.setFieldValue(newName, 'NAME');
     }
   },
-  typeblock: [{ translatedName: Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TITLE_INIT }]
 };
 
 /**
@@ -191,7 +190,6 @@ Blockly.Blocks['lexical_variable_get'] = {
       return new Blockly.NameSet();
     }
   },
-  typeblock: [{ translatedName: Blockly.Msg.LANG_VARIABLES_GET_TITLE_GET + Blockly.Msg.LANG_VARIABLES_VARIABLE }]
 };
 
 /**
@@ -248,7 +246,6 @@ Blockly.Blocks['lexical_variable_set'] = {
     }
     return result;
   },
-  typeblock: [{ translatedName: Blockly.Msg.LANG_VARIABLES_SET_TITLE_SET + Blockly.Msg.LANG_VARIABLES_VARIABLE }]
 };
 
 /**
@@ -584,7 +581,6 @@ Blockly.Blocks['local_declaration_statement'] = {
     }
     return result;
   },
-  typeblock: [{ translatedName: Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_TRANSLATED_NAME }]
 };
 
 
@@ -623,7 +619,6 @@ Blockly.Blocks['local_declaration_expression'] = {
   renameBound: Blockly.Blocks.local_declaration_statement.renameBound,
   renameFree: Blockly.Blocks.local_declaration_statement.renameFree,
   freeVariables: Blockly.Blocks.local_declaration_statement.freeVariables,
-  typeblock: [{ translatedName: Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_EXPRESSION_TRANSLATED_NAME }]
 };
 
 Blockly.Blocks['local_mutatorcontainer'] = {
