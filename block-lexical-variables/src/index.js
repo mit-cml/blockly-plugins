@@ -9,6 +9,8 @@
  * @fileoverview Block overview.
  */
 
+import {registerCss} from '../src/css';
+registerCss();
 import './utilities';
 import './workspace_svg';
 import './flydown';
@@ -22,6 +24,37 @@ import './lexical-variables';
 import './controls';
 import './procedure_database';
 import './procedures';
+import * as Blockly from 'blockly';
+
+/**
+ * Extend Blockly's hideChaff method with AI2-specific behaviors.
+ */
+Blockly.hideChaff = (function(func) {
+  if (func.isWrapped) {
+    return func;
+  } else {
+    var f = function() {
+      var argCopy = Array.prototype.slice.call(arguments);
+      func.apply(this, argCopy);
+      // [lyn, 10/06/13] for handling parameter & procedure flydowns
+      Blockly.WorkspaceSvg.prototype.hideChaff.call(Blockly.getMainWorkspace(), argCopy);
+    };
+    f.isWrapped = true;
+    return f;
+  }
+})(Blockly.hideChaff);
+
+export function init(workspace) {
+  // TODO: Might need the next line
+  // Blockly.DropDownDiv.createDom();
+  registerCss();  const flydown = new Blockly.Flydown(new Blockly.Options({scrollbars: false}));
+  // ***** [lyn, 10/05/2013] NEED TO WORRY ABOUT MULTIPLE BLOCKLIES! *****
+  workspace.flydown_ = flydown;
+  Blockly.utils.dom.insertAfter(flydown.createDom('g'),
+    workspace.svgBubbleCanvas_);
+  flydown.init(workspace);
+  flydown.autoClose = true; // Flydown closes after selecting a block
+}
 
 // TODO: Remove JSON block definition or convert from JavaScript definitions.
 // Blockly.defineBlocksWithJsonArray([
