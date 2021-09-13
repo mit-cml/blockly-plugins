@@ -47,7 +47,7 @@ Blockly.hideChaff = (function(func) {
 export function init(workspace) {
   // TODO: Might need the next line
   // Blockly.DropDownDiv.createDom();
-  registerCss();  const flydown = new Blockly.Flydown(new Blockly.Options({scrollbars: false}));
+  const flydown = new Blockly.Flydown(new Blockly.Options({scrollbars: false}));
   // ***** [lyn, 10/05/2013] NEED TO WORRY ABOUT MULTIPLE BLOCKLIES! *****
   workspace.flydown_ = flydown;
   Blockly.utils.dom.insertAfter(flydown.createDom('g'),
