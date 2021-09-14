@@ -160,8 +160,8 @@ Blockly.Flydown.prototype.reflow = function() {
   const rendererConstants = this.workspace_.getRenderer().getConstants();
   const startHatHeight = rendererConstants.ADD_START_HATS ?
     rendererConstants.START_HAT_HEIGHT : 0;
-  flydownHeight += 2 * margin +
-    margin * this.VERTICAL_SEPARATION_FACTOR * (blocks.length - 1) +
+  flydownHeight += 3 * margin +
+    margin * this.VERTICAL_SEPARATION_FACTOR * (blocks.length) +
     startHatHeight * scale /2.0;
   if (this.width_ != flydownWidth) {
     for (var j = 0, block; block = blocks[j]; j++) {
