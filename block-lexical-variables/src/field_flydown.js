@@ -26,35 +26,6 @@ const goog = {
   },
 };
 
-// The following is taken from the Google Closure Library source, see:
-// https://github.com/google/closure-library/blob/master/closure/goog/dom/dom.js#L1364
-// /**
-//  * Constants for the nodeType attribute in the Node interface.
-//  *
-//  * These constants match those specified in the Node interface. These are
-//  * usually present on the Node object in recent browsers, but not in older
-//  * browsers (specifically, early IEs) and thus are given here.
-//  *
-//  * In some browsers (early IEs), these are not defined on the Node object,
-//  * so they are provided here.
-//  *
-//  * See http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-1950641247
-//  * @enum {number}
-//  */
-// goog.dom.NodeType = {
-//   ELEMENT: 1,
-//   ATTRIBUTE: 2,
-//   TEXT: 3,
-//   CDATA_SECTION: 4,
-//   ENTITY_REFERENCE: 5,
-//   ENTITY: 6,
-//   PROCESSING_INSTRUCTION: 7,
-//   COMMENT: 8,
-//   DOCUMENT: 9,
-//   DOCUMENT_TYPE: 10,
-//   DOCUMENT_FRAGMENT: 11,
-//   NOTATION: 12
-// };
 /**
  * Returns an array containing just the element children of the given element.
  * @param {Element} element The element whose element children we want.
@@ -70,7 +41,7 @@ goog.dom.getChildren = function(element) {
   }
   // Fall back to manually filtering the element's child nodes.
   return Array.prototype.filter.call(element.childNodes, function(node) {
-    return node.nodeType == goog.dom.NodeType.ELEMENT;
+    return node.nodeType == goog.dom.NodeType.ELEMENT_NODE;
   });
 };
 
