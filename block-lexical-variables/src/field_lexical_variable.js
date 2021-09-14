@@ -145,29 +145,11 @@ Blockly.FieldLexicalVariable.prototype.getBlock = function() {
 };
 
 /**
- * Set the block holding this drop-down variable chooser. Also initializes the cachedParent.
+ * Set the block holding this drop-down variable chooser.
  * @param {?Blockly.Block} block Block holding this drop-down variable chooser
  */
 Blockly.FieldLexicalVariable.prototype.setBlock = function(block) {
   this.block_ = block;
-  this.setCachedParent(block.getParent());
-};
-
-/**
- * Get the cached parent of the block holding this drop-down variable chooser
- * @return {string} Cached parent of the block holding this drop-down variable chooser.
- */
-Blockly.FieldLexicalVariable.prototype.getCachedParent = function() {
-  return this.cachedParent_;
-};
-
-/**
- * Set the cached parent of the block holding this drop-down variable chooser.
- * This is used for detecting when the parent has changed in the onchange event handler.
- * @param {string} Parent of the block holding this drop-down variable chooser
- */
-Blockly.FieldLexicalVariable.prototype.setCachedParent = function(parent) {
-  this.cachedParent_ = parent;
 };
 
 // [lyn, 11/10/12] Returns the names of all global definitions as a list of strings
