@@ -62,6 +62,7 @@
 import * as Blockly from 'blockly/core';
 import './msg';
 import {AI} from './field_procedurename';
+import * as WarningHandler from './warningHandler';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -700,7 +701,16 @@ Blockly.Blocks['procedures_callnoreturn'] = {
     this.arguments_ = [];
     this.quarkConnections_ = null;
     this.quarkArguments_ = null;
-    this.errors = [{name:"checkIsInDefinition"},{name:"checkDropDownContainsValidValue",dropDowns:["PROCNAME"]}];
+    this.errors = [
+      {func: WarningHandler.checkIsInDefinition},
+      {
+        func: WarningHandler.checkDropDownContainsValidValue,
+        dropDowns:['PROCNAME']
+      },
+    ];
+    this.setOnChange(function(changeEvent) {
+      WarningHandler.checkErrors(this);
+    });
     //Blockly.FieldProcedure.onChange.call(this.getField("PROCNAME"),this.procNamesFxn(false)[0][0]);
     Blockly.FieldProcedure.onChange.call(this.getField("PROCNAME"),this.getField("PROCNAME").getValue());
   },
@@ -911,7 +921,16 @@ Blockly.Blocks['procedures_callreturn'] = {
     this.arguments_ = [];
     this.quarkConnections_ = null;
     this.quarkArguments_ = null;
-    this.errors = [{name:"checkIsInDefinition"},{name:"checkDropDownContainsValidValue",dropDowns:["PROCNAME"]}];
+    this.errors = [
+      {func: WarningHandler.checkIsInDefinition},
+      {
+        func: WarningHandler.checkDropDownContainsValidValue,
+        dropDowns:['PROCNAME']
+      },
+    ];
+    this.setOnChange(function(changeEvent) {
+      WarningHandler.checkErrors(this);
+    });
     //Blockly.FieldProcedure.onChange.call(this.getField("PROCNAME"),this.procNamesFxn()[0][0]);
     Blockly.FieldProcedure.onChange.call(this.getField("PROCNAME"),this.getField("PROCNAME").getValue());
   },

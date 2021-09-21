@@ -1,4 +1,5 @@
 import * as Blockly from 'blockly/core';
+import * as WarningHandler from './warningHandler';
 
 /**
  * Shared flydown for parameters and variables.
@@ -36,4 +37,8 @@ Blockly.WorkspaceSvg.prototype.getTopWorkspace = function() {
 
 Blockly.WorkspaceSvg.prototype.hideChaff = function() {
   this.flydown_ && this.flydown_.hide();
+};
+
+Blockly.WorkspaceSvg.prototype.getWarningHandler = function() {
+  return WarningHandler;
 };

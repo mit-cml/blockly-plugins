@@ -77,6 +77,7 @@ function myStringify (obj) {
 
 import * as Blockly from 'blockly/core';
 import './msg';
+import * as WarningHandler from './warningHandler';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -141,9 +142,13 @@ Blockly.Blocks['lexical_variable_get'] = {
         .appendField(this.fieldVar_, 'VAR');
     this.setOutput(true, null);
     this.setTooltip(Blockly.Msg.LANG_VARIABLES_GET_TOOLTIP);
-    // Note that the following will only be referenced if there is a
-    // warning/error handler like App Inventor's
-    this.errors = [{name:"checkIsInDefinition"},{name:"checkDropDownContainsValidValue",dropDowns:["VAR"]}];
+    this.errors = [
+      {func: WarningHandler.checkIsInDefinition},
+      {func: WarningHandler.checkDropDownContainsValidValue, dropDowns:['VAR']}
+    ];
+    this.setOnChange(function(changeEvent) {
+      WarningHandler.checkErrors(this);
+    });
   },
   getVars: function() {
     return [this.getFieldValue('VAR')];
@@ -212,7 +217,13 @@ Blockly.Blocks['lexical_variable_set'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setTooltip(Blockly.Msg.LANG_VARIABLES_SET_TOOLTIP);
-    this.errors = [{name:"checkIsInDefinition"},{name:"checkDropDownContainsValidValue",dropDowns:["VAR"]}];
+    this.errors = [
+      {func: WarningHandler.checkIsInDefinition},
+      {func: WarningHandler.checkDropDownContainsValidValue, dropDowns:['VAR']}
+    ];
+    this.setOnChange(function(changeEvent) {
+      WarningHandler.checkErrors(this);
+    });
   },
   getVars: function() {
     return [this.getFieldValue('VAR')];

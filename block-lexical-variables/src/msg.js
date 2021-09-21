@@ -100,3 +100,5 @@ Blockly.Msg['LANG_CONTROLS_FOREACH_DICT_INPUT_KEY'] = 'key';
 Blockly.Msg['LANG_CONTROLS_FOREACH_DICT_INPUT_VALUE'] = 'value';
 Blockly.Msg['LANG_CONTROLS_FOREACH_DICT_TITLE'] = 'for each in dictionary';
 Blockly.Msg['LANG_CONTROLS_FOREACH_DICT_TOOLTIP'] = 'Runs the blocks in the \'do\' section for each key-value entry in the dictionary. Use the given variable names to refer to the key/value of the current dictionary item.';
+Blockly.Msg['ERROR_SELECT_VALID_ITEM_FROM_DROPDOWN'] = 'Select a valid item in the drop down.';
+Blockly.Msg['ERROR_BLOCK_CANNOT_BE_IN_DEFINITION'] = 'This block cannot be in a definition';

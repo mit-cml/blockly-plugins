@@ -401,7 +401,6 @@ Blockly.FieldLexicalVariable.dropdownChange = function(text) {
   if (text) {
     this.doValueUpdate_(text);
     const topWorkspace = this.sourceBlock_.workspace.getTopWorkspace();
-    // TODO: Maybe switch to injectable warning/error handling
     if (topWorkspace.getWarningHandler) {
       topWorkspace.getWarningHandler().checkErrors(this.sourceBlock_);
     }
