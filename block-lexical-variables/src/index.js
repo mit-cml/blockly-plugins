@@ -24,7 +24,7 @@ import './lexical-variables';
 import './controls';
 import './procedure_database';
 import './procedures';
-import * as Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 
 /**
  * Extend Blockly's hideChaff method with AI2-specific behaviors.
