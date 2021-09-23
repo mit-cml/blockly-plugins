@@ -165,6 +165,19 @@ Blockly.FieldParameterFlydown.addHorizontalVerticalOption = function (block, opt
   }
 };
 
+/**
+ * Constructs a FieldParameterFlydown from a JSON arg object.
+ * @param {!Object} options A JSON object with options.
+ * @return {Blockly.FieldParameterFlydown} The new field instance.
+ * @package
+ * @nocollapse
+ */
+Blockly.FieldParameterFlydown.fromJson = function(options) {
+  const name = Blockly.utils.replaceMessageReferences(options['name']);
+  return new Blockly.FieldParameterFlydown(name, options['is_editable']);
+};
 
+Blockly.fieldRegistry.register('field_parameter_flydown',
+    Blockly.FieldParameterFlydown);
 
 

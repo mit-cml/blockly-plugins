@@ -487,6 +487,21 @@ Blockly.FieldLexicalVariable.prefixSuffix = function(name) {
     return [name, ""];
 }
 
+/**
+ * Constructs a FieldLexicalVariable from a JSON arg object.
+ * @param {!Object} options A JSON object with options.
+ * @return {Blockly.FieldLexicalVariable} The new field instance.
+ * @package
+ * @nocollapse
+ */
+Blockly.FieldLexicalVariable.fromJson = function(options) {
+  const name = Blockly.utils.replaceMessageReferences(options['name']);
+  return new Blockly.FieldLexicalVariable(name);
+};
+
+Blockly.fieldRegistry.register('field_lexical_variable',
+    Blockly.FieldLexicalVariable);
+
 Blockly.LexicalVariable = {};
 
 // [lyn, 11/19/12] Rename global to a new name.

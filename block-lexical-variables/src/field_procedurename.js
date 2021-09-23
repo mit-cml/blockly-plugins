@@ -77,3 +77,19 @@ AI.Blockly.FieldProcedureName.prototype.onHtmlInputChange_ = function(e) {
   AI.Blockly.FieldProcedureName.superClass_.onHtmlInputChange_.call(this, e);
 };
 */
+
+/**
+ * Constructs a FieldProcedureName from a JSON arg object.
+ * @param {!Object} options A JSON object with options.
+ * @return {AI.Blockly.FieldProcedureName} The new field instance.
+ * @package
+ * @nocollapse
+ */
+AI.Blockly.FieldProcedureName.fromJson = function(options) {
+  const name = Blockly.utils.replaceMessageReferences(options['name']);
+  return new AI.Blockly.FieldProcedureName(name);
+};
+
+Blockly.fieldRegistry.register('field_procedurename',
+    AI.Blockly.FieldProcedureName);
+

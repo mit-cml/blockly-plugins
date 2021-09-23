@@ -55,7 +55,7 @@ goog.require('Blockly.Options');
 
 /**
  * Class for a clickable parameter field.
- * @param {string} text The initial parameter name in the field.
+ * @param {string} name The initial parameter name in the field.
  * @param {boolean} isEditable Whether the user is allowed to change the name
  *     of this parameter or not.
  * @param {string=} opt_displayLocation The location to display the flydown at
@@ -318,3 +318,17 @@ Blockly.FieldFlydown.prototype.dispose = function() {
   // Call parent's destructor.
   Blockly.FieldTextInput.prototype.dispose.call(this);
 };
+
+/**
+ * Constructs a FieldFlydown from a JSON arg object.
+ * @param {!Object} options A JSON object with options.
+ * @return {Blockly.FieldFlydown} The new field instance.
+ * @package
+ * @nocollapse
+ */
+Blockly.FieldFlydown.fromJson = function(options) {
+  const name = Blockly.utils.replaceMessageReferences(options['name']);
+  return new Blockly.FieldFlydown(name, options['is_editable']);
+};
+
+Blockly.fieldRegistry.register('field_flydown', Blockly.FieldFlydown);

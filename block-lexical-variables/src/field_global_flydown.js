@@ -67,6 +67,19 @@ Blockly.FieldGlobalFlydown.prototype.flydownBlocksXML_ = function() {
         '</block>' +
       '</xml>';
   return getterSetterXML;
-}
+};
 
+/**
+ * Constructs a FieldGlobalFlydown from a JSON arg object.
+ * @param {!Object} options A JSON object with options.
+ * @return {Blockly.FieldGlobalFlydown} The new field instance.
+ * @package
+ * @nocollapse
+ */
+Blockly.FieldGlobalFlydown.fromJson = function(options) {
+  const name = Blockly.utils.replaceMessageReferences(options['name']);
+  return new Blockly.FieldGlobalFlydown(name);
+};
 
+Blockly.fieldRegistry.register('field_global_flydown',
+    Blockly.FieldGlobalFlydown);
