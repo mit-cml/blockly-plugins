@@ -20,6 +20,8 @@
     "blockly",
     "blockly-plugin",
     "blockly-block",
+    "lexical-variables",
+    "local-variables"
   ],
   "homepage": "https://github.com/mark-friedman/blockly-plugins/tree/master/block-lexical-variables#readme",
   "bugs": {
