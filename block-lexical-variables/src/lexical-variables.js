@@ -95,6 +95,7 @@ goog.provide('Blockly.Blocks.lexicalvariables');
 goog.require('Blockly.Blocks.Utilities');
 goog.require('goog.dom');
 
+delete Blockly.Blocks['global_declaration'];
 /**
  * Prototype bindings for a global variable declaration block
  */
