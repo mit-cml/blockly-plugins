@@ -4,7 +4,8 @@
 // http://www.apache.org/licenses/LICENSE-2.0
 /**
  * @license
- * @fileoverview Specialization of Blockly's FieldTextInput to handle logic of procedure renaming.
+ * @fileoverview Specialization of Blockly's FieldTextInput to handle logic of
+ *     procedure renaming.
  * @author ewpatton@mit.edu (Evan W. Patton)
  */
 'use strict';
@@ -31,14 +32,15 @@ goog.require('Blockly.FieldTextInput');
 export const AI = {Blockly: {}};
 
 /**
- * FieldProcedureName is a specialization of {@link Blockly.FieldTextInput} that handles renaming
- * procedures in the {@link AI.Blockly.ProcedureDatabase} when the procedure's name is changed.
+ * FieldProcedureName is a specialization of {@link Blockly.FieldTextInput}
+ * that handles renaming procedures in the {@link AI.Blockly.ProcedureDatabase}
+ * when the procedure's name is changed.
  * @param {?string} text
  * @constructor
  */
 AI.Blockly.FieldProcedureName = function(text) {
   AI.Blockly.FieldProcedureName.superClass_.constructor.call(this, text,
-    Blockly.AIProcedure.renameProcedure);
+      Blockly.AIProcedure.renameProcedure);
 };
 goog.inherits(AI.Blockly.FieldProcedureName, Blockly.FieldTextInput);
 
@@ -50,13 +52,13 @@ goog.inherits(AI.Blockly.FieldProcedureName, Blockly.FieldTextInput);
  * @override
  */
 AI.Blockly.FieldProcedureName.prototype.setValue = function(newValue) {
-  var oldValue = this.getValue();
+  const oldValue = this.getValue();
   this.oldName_ = oldValue;
   this.doValueUpdate_(newValue);
   AI.Blockly.FieldProcedureName.superClass_.setValue.call(this, newValue);
   newValue = this.getValue();
   if (typeof newValue === 'string' && this.sourceBlock_) {
-    var procDb = this.sourceBlock_.workspace.getProcedureDatabase();
+    const procDb = this.sourceBlock_.workspace.getProcedureDatabase();
     if (procDb) {
       if (procDb.getProcedure(this.sourceBlock_.id)) {
         procDb.renameProcedure(this.sourceBlock_.id, oldValue, newValue);

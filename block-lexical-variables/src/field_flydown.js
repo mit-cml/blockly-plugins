@@ -6,8 +6,8 @@
  * @license
  * @fileoverview Field in which mouseover displays flyout-like menu of blocks
  * and mouse click edits the field name.
- * Flydowns are used in App Inventor for displaying get/set blocks for parameter names
- * and callers for procedure declarations.
+ * Flydowns are used in App Inventor for displaying get/set blocks for
+ *     parameter names and callers for procedure declarations.
  * @author fturbak@wellesley.edu (Lyn Turbak)
  */
 
@@ -16,13 +16,16 @@
 import * as Blockly from 'blockly';
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
-  provide: (_) => {},
-  require: (_) => {},
+  provide: (_) => {
+  },
+  require: (_) => {
+  },
   inherits: Blockly.utils.object.inherits,
   dom: Blockly.utils.dom,
   userAgent: Blockly.utils.userAgent,
   asserts: {
-    assertObject: (_) => {},
+    assertObject: (_) => {
+    },
   },
 };
 
@@ -70,64 +73,68 @@ goog.require('Blockly.Options');
  * @extends {Blockly.FieldTextInput}
  * @constructor
  */
-Blockly.FieldFlydown = function(name, isEditable, opt_displayLocation, opt_changeHandler) {
-  // This by itself does not control editability
-  this.EDITABLE = isEditable;
-  // [lyn, 10/27/13] Make flydown direction an instance variable
-  this.displayLocation = opt_displayLocation ||
-      Blockly.FieldFlydown.DISPLAY_RIGHT;
+Blockly.FieldFlydown =
+    function(name, isEditable, opt_displayLocation, opt_changeHandler) {
+      // This by itself does not control editability
+      this.EDITABLE = isEditable;
+      // [lyn, 10/27/13] Make flydown direction an instance variable
+      this.displayLocation = opt_displayLocation ||
+          Blockly.FieldFlydown.DISPLAY_RIGHT;
 
-  Blockly.FieldFlydown.superClass_.constructor.call(
-      this, name, opt_changeHandler);
-};
+      Blockly.FieldFlydown.superClass_.constructor.call(
+          this, name, opt_changeHandler);
+    };
 goog.inherits(Blockly.FieldFlydown, Blockly.FieldTextInput);
 
 /**
- * Milliseconds to wait before showing flydown after mouseover event on flydown field.
+ * Milliseconds to wait before showing flydown after mouseover event on flydown
+ * field.
  * @type {number}
  * @const
  */
 Blockly.FieldFlydown.timeout = 500;
 
 /**
- * Process ID for timer event to show flydown (scheduled by mouseover event)
+ * Process ID for timer event to show flydown (scheduled by mouseover event).
  * @type {number}
  * @const
  */
 Blockly.FieldFlydown.showPid_ = 0;
 
 /**
- * Which instance of FieldFlydown (or a subclass) is an open flydown attached to?
+ * Which instance of FieldFlydown (or a subclass) is an open flydown attached
+ * to?
  * @type {Blockly.FieldFlydown}
  * @private
  */
 Blockly.FieldFlydown.openFieldFlydown_ = null;
 
 // These control the positions of the flydown.
-Blockly.FieldFlydown.DISPLAY_BELOW = "BELOW";
-Blockly.FieldFlydown.DISPLAY_RIGHT = "RIGHT";
+Blockly.FieldFlydown.DISPLAY_BELOW = 'BELOW';
+Blockly.FieldFlydown.DISPLAY_RIGHT = 'RIGHT';
 Blockly.FieldFlydown.DISPLAY_LOCATION = Blockly.FieldFlydown.DISPLAY_BELOW;
 
 /**
- * Default CSS class name for the field itself
+ * Default CSS class name for the field itself.
  * @type {string}
  * @const
  */
 Blockly.FieldFlydown.prototype.fieldCSSClassName = 'blocklyFieldFlydownField';
 
 /**
- * Default CSS class name for the flydown that flies down from the field
+ * Default CSS class name for the flydown that flies down from the field.
  * @type {string}
  * @const
  */
-Blockly.FieldFlydown.prototype.flyoutCSSClassName = 'blocklyFieldFlydownFlydown';
+Blockly.FieldFlydown.prototype.flyoutCSSClassName =
+    'blocklyFieldFlydownFlydown';
 
 // Override FieldTextInput's showEditor_ so it's only called for EDITABLE field.
 Blockly.FieldFlydown.prototype.showEditor_ = function() {
   if (!this.EDITABLE) {
     return;
   }
-  if (Blockly.FieldFlydown.showPid_) {  // cancel a pending flydown for editing
+  if (Blockly.FieldFlydown.showPid_) { // cancel a pending flydown for editing
     clearTimeout(Blockly.FieldFlydown.showPid_);
     Blockly.FieldFlydown.showPid_ = 0;
     Blockly.hideChaff();
@@ -143,20 +150,24 @@ Blockly.FieldFlydown.prototype.init = function(block) {
       'blocklyEditableText');
   Blockly.utils.removeClass(/** @type {!Element} */ (this.fieldGroup_),
       'blocklyNoNEditableText');
-  // ... and add new ones, so that look and feel of flyout fields can be customized
+  // ... and add new ones, so that look and feel of flyout fields can be
+  // customized
   Blockly.utils.addClass(/** @type {!Element} */ (this.fieldGroup_),
       this.fieldCSSClassName);
 
   this.mouseOverWrapper_ =
-      Blockly.bindEvent_(this.fieldGroup_, 'mouseover', this, this.onMouseOver_);
+      Blockly.bindEvent_(this.fieldGroup_, 'mouseover', this,
+          this.onMouseOver_);
   this.mouseOutWrapper_ =
       Blockly.bindEvent_(this.fieldGroup_, 'mouseout', this, this.onMouseOut_);
 };
 
 Blockly.FieldFlydown.prototype.onMouseOver_ = function(e) {
-  if (!this.sourceBlock_.isInFlyout && Blockly.FieldFlydown.showPid_ == 0) { // [lyn, 10/22/13] No flydowns in a flyout!
+  // [lyn, 10/22/13] No flydowns in a flyout!
+  if (!this.sourceBlock_.isInFlyout && Blockly.FieldFlydown.showPid_ == 0) {
     Blockly.FieldFlydown.showPid_ =
-        window.setTimeout(this.showFlydownMaker_(), Blockly.FieldFlydown.timeout);
+        window.setTimeout(this.showFlydownMaker_(),
+            Blockly.FieldFlydown.timeout);
   }
   // This event has been handled.  No need to bubble up to the document.
   e.stopPropagation();
@@ -165,16 +176,18 @@ Blockly.FieldFlydown.prototype.onMouseOver_ = function(e) {
 Blockly.FieldFlydown.prototype.onMouseOut_ = function(e) {
   // Clear any pending timer event to show flydown
   window.clearTimeout(Blockly.FieldFlydown.showPid_);
-  Blockly.FieldFlydown.showPid_ =0;
+  Blockly.FieldFlydown.showPid_ = 0;
   e.stopPropagation();
 };
 
 /**
- * Returns a thunk that creates a Flydown block of the getter and setter blocks for receiver field.
+ * Returns a thunk that creates a Flydown block of the getter and setter blocks
+ * for receiver field.
  *  @return A thunk (zero-parameter function).
  */
 Blockly.FieldFlydown.prototype.showFlydownMaker_ = function() {
-  var field = this; // Name receiver in variable so can close over this variable in returned thunk
+  // Name receiver in variable so can close over this variable in returned thunk
+  const field = this;
   return function() {
     if (Blockly.FieldFlydown.showPid_ !== 0 &&
         !field.getSourceBlock().workspace.isDragging() &&
@@ -195,7 +208,7 @@ Blockly.FieldFlydown.prototype.showFlydownMaker_ = function() {
  */
 Blockly.FieldFlydown.prototype.showFlydown_ = function() {
   Blockly.hideChaff();
-  var flydown = Blockly.getMainWorkspace().getFlydown();
+  const flydown = Blockly.getMainWorkspace().getFlydown();
 
   // Add flydown to top-level svg, *not* to main workspace svg
   // This is essential for correct positioning of flydown via translation
@@ -204,20 +217,20 @@ Blockly.FieldFlydown.prototype.showFlydown_ = function() {
   Blockly.getMainWorkspace().getParentSvg().appendChild(flydown.svgGroup_);
 
   // Adjust scale for current zoom level
-  var scale = flydown.targetWorkspace.scale;
+  const scale = flydown.targetWorkspace.scale;
   flydown.workspace_.setScale(scale);
 
   flydown.setCSSClass(this.flyoutCSSClassName);
 
-  var blocksXMLText = this.flydownBlocksXML_();
-  var blocksDom = Blockly.Xml.textToDom(blocksXMLText);
+  const blocksXMLText = this.flydownBlocksXML_();
+  const blocksDom = Blockly.Xml.textToDom(blocksXMLText);
   // [lyn, 11/10/13] Use goog.dom.getChildren rather than .children or
   //    .childNodes to make this code work across browsers.
-  var blocksXMLList = goog.dom.getChildren(blocksDom);
+  const blocksXMLList = goog.dom.getChildren(blocksDom);
 
-  var xy = Blockly.getMainWorkspace().getSvgXY(this.borderRect_);
-  var borderBBox = this.borderRect_.getBBox();
-  if (this.displayLocation == Blockly.FieldFlydown.DISPLAY_BELOW) {
+  const xy = Blockly.getMainWorkspace().getSvgXY(this.borderRect_);
+  const borderBBox = this.borderRect_.getBBox();
+  if (this.displayLocation === Blockly.FieldFlydown.DISPLAY_BELOW) {
     xy.y += borderBBox.height * scale;
   } else { // Display right.
     xy.x += borderBBox.width * scale;
@@ -233,13 +246,13 @@ Blockly.FieldFlydown.prototype.showFlydown_ = function() {
 };
 
 /**
- * Hide the flydown menu and squash any timer-scheduled flyout creation
+ * Hide the flydown menu and squash any timer-scheduled flyout creation.
  */
 Blockly.FieldFlydown.hide = function() {
   // Clear any pending timer event to show flydown.
   window.clearTimeout(Blockly.FieldFlydown.showPid_);
   // Hide any displayed flydown.
-  var flydown = Blockly.getMainWorkspace().getFlydown();
+  const flydown = Blockly.getMainWorkspace().getFlydown();
   if (flydown) {
     flydown.hide();
   }
@@ -280,11 +293,11 @@ function callAllValidators(field, text) {
 // before the change since in order to find the old references to be renamed).
 Blockly.FieldFlydown.prototype.onHtmlInputChange_ = function(e) {
   goog.asserts.assertObject(this.htmlInput_);
-  var htmlInput = this.htmlInput_;
-  var text = htmlInput.value;
+  const htmlInput = this.htmlInput_;
+  const text = htmlInput.value;
   if (text !== htmlInput.oldValue_) {
     htmlInput.oldValue_ = text;
-    var valid = true;
+    let valid = true;
     if (this.sourceBlock_) {
       valid = callAllValidators(this, htmlInput.value);
     }

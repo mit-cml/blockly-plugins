@@ -14,13 +14,16 @@ import './msg';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
-  provide:  (_) => {},
-  require: (_) => {},
+  provide: (_) => {
+  },
+  require: (_) => {
+  },
   inherits: Blockly.utils.object.inherits,
   dom: Blockly.utils.dom,
   userAgent: Blockly.utils.userAgent,
   asserts: {
-    assertObject: (_) => {},
+    assertObject: (_) => {
+    },
   },
 };
 
@@ -37,10 +40,12 @@ if (!Blockly.Blocks.Utilities) {
  * yet rendered) this always returns true for backwards compatibility.
  * @param {!Blockly.Connection} myConn The parent connection.
  * @param {!Blockly.Connection} otherConn The child connection.
+ *
+ * @return {boolean}
  */
 Blockly.Blocks.Utilities.InstantInTime = function(myConn, otherConn) {
   if (!myConn.sourceBlock_.rendered ||
-    !otherConn.sourceBlock_.rendered) {
+      !otherConn.sourceBlock_.rendered) {
     if (otherConn.check_ && !otherConn.check_.includes('InstantInTime')) {
       otherConn.sourceBlock_.badBlock();
     }
@@ -107,8 +112,10 @@ Blockly.Blocks.Utilities.INPUT = 'input';
  * @param {string} yail The Yail type.
  * @param {!string} inputOrOutput Either Utilities.OUTPUT or Utilities.INPUT.
  * @param {Array<string>=} opt_currentType A type array to append, or null.
+ *
+ * @return {string}
  */
-Blockly.Blocks.Utilities.YailTypeToBlocklyType = function(yail, inputOrOutput) {
+Blockly.Blocks.Utilities.yailTypeToBlocklyType = function(yail, inputOrOutput) {
   const type = Blockly.Blocks.Utilities
       .YailTypeToBlocklyTypeMap[yail][inputOrOutput];
   if (type === undefined) {
@@ -118,8 +125,8 @@ Blockly.Blocks.Utilities.YailTypeToBlocklyType = function(yail, inputOrOutput) {
 };
 
 
-// Blockly doesn't wrap tooltips, so these can get too wide.  We'll create our own tooltip setter
-// that wraps to length 60.
+// Blockly doesn't wrap tooltips, so these can get too wide.  We'll create our
+// own tooltip setter that wraps to length 60.
 
 Blockly.Blocks.Utilities.setTooltip = function(block, tooltip) {
   block.setTooltip(Blockly.Blocks.Utilities.wrapSentence(tooltip, 60));
@@ -133,9 +140,10 @@ Blockly.Blocks.Utilities.wrapSentence = function(str, len) {
   if (str.length < len) return str;
   const place = (str.lastIndexOf(' ', len));
   if (place == -1) {
-    return str.substring(0, len).trim() + Blockly.Blocks.Utilities.wrapSentence(str.substring(len), len);
+    return str.substring(0, len).trim() +
+        Blockly.Blocks.Utilities.wrapSentence(str.substring(len), len);
   } else {
     return str.substring(0, place).trim() + '\n' +
-      Blockly.Blocks.Utilities.wrapSentence(str.substring(place), len);
+        Blockly.Blocks.Utilities.wrapSentence(str.substring(place), len);
   }
 };

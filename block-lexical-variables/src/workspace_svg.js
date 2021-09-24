@@ -14,7 +14,7 @@ Blockly.WorkspaceSvg.prototype.getFlydown = function() {
 
 /**
  * Obtain the {@link Blockly.ProcedureDatabase} associated with the workspace.
- * @returns {!Blockly.ProcedureDatabase}
+ * @return {!Blockly.ProcedureDatabase}
  */
 Blockly.WorkspaceSvg.prototype.getProcedureDatabase = function() {
   if (!this.procedureDb_) {
@@ -25,10 +25,10 @@ Blockly.WorkspaceSvg.prototype.getProcedureDatabase = function() {
 
 /**
  * Get the topmost workspace in the workspace hierarchy.
- * @returns {Blockly.WorkspaceSvg}
+ * @return {Blockly.WorkspaceSvg}
  */
 Blockly.WorkspaceSvg.prototype.getTopWorkspace = function() {
-  var parent = this;
+  let parent = this;
   while (parent.targetWorkspace) {
     parent = parent.targetWorkspace;
   }

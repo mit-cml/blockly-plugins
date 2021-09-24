@@ -4,7 +4,8 @@
 // http://www.apache.org/licenses/LICENSE-2.0
 /**
  * @license
- * @fileoverview Clickable field with flydown menu of global getter and setter blocks.
+ * @fileoverview Clickable field with flydown menu of global getter and setter
+ *     blocks.
  * @author fturbak@wellesley.edu (Lyn Turbak)
  */
 
@@ -31,29 +32,36 @@ goog.require('AI.Blockly.FieldFlydown');
 
 /**
  * Class for a clickable global variable declaration field.
+ * @param name
+ * @param displayLocation
  * @param {string} text The initial parameter name in the field.
  * @extends {Blockly.Field}
  * @constructor
  */
 Blockly.FieldGlobalFlydown = function(name, displayLocation) {
-  Blockly.FieldGlobalFlydown.superClass_.constructor.call(this, name, true, displayLocation,
+  Blockly.FieldGlobalFlydown.superClass_.constructor.call(this, name, true,
+      displayLocation,
       // rename all references to this global variable
-      Blockly.LexicalVariable.renameGlobal)
+      Blockly.LexicalVariable.renameGlobal);
 };
 goog.inherits(Blockly.FieldGlobalFlydown, Blockly.FieldFlydown);
 
-Blockly.FieldGlobalFlydown.prototype.fieldCSSClassName = 'blocklyFieldParameter'
+Blockly.FieldGlobalFlydown.prototype.fieldCSSClassName =
+    'blocklyFieldParameter';
 
-Blockly.FieldGlobalFlydown.prototype.flyoutCSSClassName = 'blocklyFieldParameterFlydown'
+Blockly.FieldGlobalFlydown.prototype.flyoutCSSClassName =
+    'blocklyFieldParameterFlydown';
 
 /**
  * Block creation menu for global variables
- * Returns a list of two XML elements: a getter block for name and a setter block for this parameter field.
+ * Returns a list of two XML elements: a getter block for name and a setter
+ * block for this parameter field.
  *  @return {!Array.<string>} List of two XML elements.
  **/
 Blockly.FieldGlobalFlydown.prototype.flydownBlocksXML_ = function() {
-  var name = Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + " " + this.getText(); // global name for this parameter field.
-  var getterSetterXML =
+  // global name for this parameter field.
+  const name = Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + ' ' + this.getText();
+  const getterSetterXML =
       '<xml>' +
         '<block type="lexical_variable_get">' +
           '<title name="VAR">' +

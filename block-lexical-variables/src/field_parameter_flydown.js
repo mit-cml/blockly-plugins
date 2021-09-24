@@ -5,7 +5,8 @@
 
 /**
  * @license
- * @fileoverview Editable parameter field with flydown menu of a getter and setter block.
+ * @fileoverview Editable parameter field with flydown menu of a getter and
+ *   setter block.
  * @author fturbak@wellesley.edu (Lyn Turbak)
  */
 
@@ -16,13 +17,16 @@ import './msg';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
-  provide: (_) => {},
-  require: (_) => {},
+  provide: (_) => {
+  },
+  require: (_) => {
+  },
   inherits: Blockly.utils.object.inherits,
   dom: Blockly.utils.dom,
   userAgent: Blockly.utils.userAgent,
   asserts: {
-    assertObject: (_) => {},
+    assertObject: (_) => {
+    },
   },
 };
 
@@ -32,7 +36,7 @@ goog.require('AI.Blockly.FieldFlydown');
 
 /**
  * Class for a parameter declaration field with flyout menu of getter/setter
- * blocks on mouse over
+ * blocks on mouse over.
  * @param {string} name The initial parameter name in the field.
  * @param {boolean} isEditable Indicates whether the the name in the flydown is
  *     editable.
@@ -48,29 +52,33 @@ goog.require('AI.Blockly.FieldFlydown');
  */
 // [lyn, 10/26/13] Added opt_additionalChangeHandler to handle propagation of
 //    renaming of proc decl params
-Blockly.FieldParameterFlydown =
-  function(name, isEditable, opt_displayLocation, opt_additionalChangeHandler) {
-    var changeHandler = function (text) {
-      if (!Blockly.FieldParameterFlydown.changeHandlerEnabled) {
-        return text;
-      }
+Blockly.FieldParameterFlydown = function(name, isEditable,
+    opt_displayLocation, opt_additionalChangeHandler) {
+  const changeHandler = function(text) {
+    if (!Blockly.FieldParameterFlydown.changeHandlerEnabled) {
+      return text;
+    }
 
-      // Both of these should be called in the context of the field (ie 'this').
-      var possiblyRenamedText = Blockly.LexicalVariable.renameParam.call(this, text);
-      if (opt_additionalChangeHandler) {
-        opt_additionalChangeHandler.call(this, possiblyRenamedText);
-      }
-      return possiblyRenamedText;
-    };
-
-    Blockly.FieldParameterFlydown.superClass_.constructor.call(
-        this, name, isEditable, opt_displayLocation, changeHandler);
+    // Both of these should be called in the context of the field (ie
+    // 'this').
+    const possiblyRenamedText =
+        Blockly.LexicalVariable.renameParam.call(this, text);
+    if (opt_additionalChangeHandler) {
+      opt_additionalChangeHandler.call(this, possiblyRenamedText);
+    }
+    return possiblyRenamedText;
   };
+
+  Blockly.FieldParameterFlydown.superClass_.constructor.call(
+      this, name, isEditable, opt_displayLocation, changeHandler);
+};
 goog.inherits(Blockly.FieldParameterFlydown, Blockly.FieldFlydown);
 
-Blockly.FieldParameterFlydown.prototype.fieldCSSClassName = 'blocklyFieldParameter'
+Blockly.FieldParameterFlydown.prototype.fieldCSSClassName =
+    'blocklyFieldParameter';
 
-Blockly.FieldParameterFlydown.prototype.flyoutCSSClassName = 'blocklyFieldParameterFlydown'
+Blockly.FieldParameterFlydown.prototype.flyoutCSSClassName =
+    'blocklyFieldParameterFlydown';
 
 // [lyn, 07/02/14] Added this flag to control changeHandler
 //   There are several spots where we want to disable the changeHandler to avoid
@@ -79,8 +87,8 @@ Blockly.FieldParameterFlydown.prototype.flyoutCSSClassName = 'blocklyFieldParame
 Blockly.FieldParameterFlydown.changeHandlerEnabled = true;
 
 // [lyn, 07/02/14] Execute thunk with changeHandler disabled
-Blockly.FieldParameterFlydown.withChangeHanderDisabled= function (thunk) {
-  var oldFlag = Blockly.FieldParameterFlydown.changeHandlerEnabled;
+Blockly.FieldParameterFlydown.withChangeHanderDisabled = function(thunk) {
+  const oldFlag = Blockly.FieldParameterFlydown.changeHandlerEnabled;
   Blockly.FieldParameterFlydown.changeHandlerEnabled = false;
   try {
     thunk();
@@ -89,42 +97,46 @@ Blockly.FieldParameterFlydown.withChangeHanderDisabled= function (thunk) {
   }
 };
 
- /**
-  * Returns the stringified xml representation of the blocks we want to have in
-  * the flydown. In this case a variable getter and a variable setter.
-  * @return {string} The stringified XML.
-  */
+/**
+ * Returns the stringified xml representation of the blocks we want to have in
+ * the flydown. In this case a variable getter and a variable setter.
+ * @return {string} The stringified XML.
+ */
 Blockly.FieldParameterFlydown.prototype.flydownBlocksXML_ = function() {
   // TODO: Refactor this to use getValue() instead of getText(). getText()
   //   refers to the view, while getValue refers to the model (in MVC terms).
 
   // Name in this parameter field.
-  var name = this.getText();
-  var getterSetterXML =
+  const name = this.getText();
+  const getterSetterXML =
       '<xml>' +
-        '<block type="lexical_variable_get">' +
-          '<field name="VAR">' +
-            name +
-          '</field>' +
-        '</block>' +
-        '<block type="lexical_variable_set">' +
-          '<field name="VAR">' +
-            name +
-          '</field>' +
-        '</block>' +
+      '<block type="lexical_variable_get">' +
+      '<field name="VAR">' +
+      name +
+      '</field>' +
+      '</block>' +
+      '<block type="lexical_variable_set">' +
+      '<field name="VAR">' +
+      name +
+      '</field>' +
+      '</block>' +
       '</xml>';
   return getterSetterXML;
-}
+};
 
 /**
  * [lyn, 10/24/13]
- * Add an option for toggling horizontal vs. vertical placement of parameter lists
- * on the given block. Put before "Collapse Block in uncollapsed block"
- * [lyn, 10/27/13] Also remove any "Inline Inputs" option, since vertical params
+ * Add an option for toggling horizontal vs. Vertical placement of parameter
+ * lists on the given block. Put before "Collapse Block in uncollapsed block"
+ * [lyn, 10/27/13] Also remove any "Inline Inputs" option, since vertical
+ * params
  * doesn't interact well with it (in procedures_defreturn).
+ * @param block
+ * @param options
  */
-Blockly.FieldParameterFlydown.addHorizontalVerticalOption = function (block, options) {
-  var numParams = 0;
+Blockly.FieldParameterFlydown.addHorizontalVerticalOption = function(
+    block, options) {
+  let numParams = 0;
   if (block.getParameters) {
     numParams = block.getParameters().length;
   }
@@ -133,22 +145,22 @@ Blockly.FieldParameterFlydown.addHorizontalVerticalOption = function (block, opt
     return;
   }
 
-  var horizVertOption = {
+  const horizVertOption = {
     enabled: true,
     text: block.horizontalParameters ?
         Blockly.Msg.VERTICAL_PARAMETERS :
         Blockly.Msg.HORIZONTAL_PARAMETERS,
-    callback: function () {
+    callback: function() {
       // TODO: We should force the inputs to be external when we do this.
       //   If someone sets the inputs inline and then sets the parameters to
       //   vertical we get the same visual bug as 10/27/13.
       block.setParameterOrientation(!block.horizontalParameters);
-    }
+    },
   };
 
   // Find the index of "Collapse Block" and insert this option before it.
-  var insertionIndex = 0;
-  for (var option; option = options[insertionIndex]; insertionIndex++) {
+  let insertionIndex = 0;
+  for (let option; option = options[insertionIndex]; insertionIndex++) {
     if (option.text == Blockly.Msg.COLLAPSE_BLOCK) {
       break;
     }
@@ -157,7 +169,7 @@ Blockly.FieldParameterFlydown.addHorizontalVerticalOption = function (block, opt
   options.splice(insertionIndex, 0, horizVertOption);
 
   // Remove an "Inline Inputs" option (if there is one).
-  for (var i = 0, option; option = options[i]; i++) {
+  for (let i = 0, option; option = options[i]; i++) {
     if (option.text == Blockly.Msg.INLINE_INPUTS) {
       options.splice(i, 1);
       break;

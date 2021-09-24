@@ -33,7 +33,7 @@ export const usePrefixInYail = false;
  Prefix labels for parameters, locals, and index variables,
  Might want to experiment with different combintations of these. E.g.,
  maybe all non global parameters have prefix "local" or all have prefix "param".
- maybe index variables have prefix "index", or maybe instead they are treated as
+ Maybe index variables have prefix "index", or maybe instead they are treated as
  "param".
  */
 
