@@ -1,4 +1,4 @@
-import * as Blockly from 'blockly/core';
+import * as Blockly from 'blockly';
 import './msg';
 
 // TODO: Replace references to YAIL with generic language

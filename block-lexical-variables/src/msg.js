@@ -10,7 +10,7 @@
  * Based on code from MIT App Inventor
  */
 
-import * as Blockly from 'blockly/core';
+import * as Blockly from 'blockly';
 
 Blockly.Msg['LANG_VARIABLES_GLOBAL_DECLARATION_TITLE_INIT'] = 'initialize global';
 Blockly.Msg['LANG_VARIABLES_GLOBAL_DECLARATION_NAME'] = 'name';

@@ -75,7 +75,7 @@ function myStringify (obj) {
 
 'use strict';
 
-import * as Blockly from 'blockly/core';
+import * as Blockly from 'blockly';
 import './msg';
 import * as WarningHandler from './warningHandler';
 
