@@ -135,3 +135,5 @@ Blockly.Msg['ERROR_SELECT_VALID_ITEM_FROM_DROPDOWN'] =
     'Select a valid item in the drop down.';
 Blockly.Msg['ERROR_BLOCK_CANNOT_BE_IN_DEFINITION'] =
     'This block cannot be in a definition';
+Blockly.Msg['HORIZONTAL_PARAMETERS'] = 'Arrange Parameters Horizontally';
+Blockly.Msg['VERTICAL_PARAMETERS'] = 'Arrange Parameters Vertically';

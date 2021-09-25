@@ -140,8 +140,7 @@ Blockly.FieldParameterFlydown.addHorizontalVerticalOption = function(
   if (block.getParameters) {
     numParams = block.getParameters().length;
   }
-  if (!block.workspace.getTopWorkspace().options.collapse ||
-      this.collapsed || numParams <= 0) {
+  if (block.isCollapsed() || numParams <= 0) {
     return;
   }
 
