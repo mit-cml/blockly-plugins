@@ -18,8 +18,12 @@ const allBlocks = [
   'controls_forRange',
   'controls_forEach',
   'local_declaration_statement',
-  'procedures_defnoreturn',
-  'procedures_callnoreturn',
+  'local_declaration_expression',
+  'controls_do_then_return',
+  // 'procedures_defnoreturn',
+  // 'procedures_callnoreturn',
+  // 'procedures_defreturn',
+  // 'procedures_callreturn',
 ];
 
 /**
@@ -37,8 +41,18 @@ function createWorkspace(blocklyDiv, options) {
 document.addEventListener('DOMContentLoaded', function() {
   const defaultOptions = {
     toolbox: `<xml xmlns="https://developers.google.com/blockly/xml">
-      ${allBlocks.map((b) => `<block type="${b}"></block>`)}
+      <category  colour="370" name="Misc. Blocks">
+        ${allBlocks.map((b) => `<block type="${b}"></block>`)}
+      </category>
+      <sep></sep>
+      <category
+        id="catVariables" colour="330" custom="VARIABLE" name="Variables"
+      ></category>
+      <category
+        id="catFunctions" colour="290" custom="PROCEDURE" name="Functions"
+      ></category>
     </xml>`,
+    collapse: true,
   };
   createPlayground(document.getElementById('root'), createWorkspace,
       defaultOptions);
