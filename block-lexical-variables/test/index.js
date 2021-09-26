@@ -45,9 +45,13 @@ document.addEventListener('DOMContentLoaded', function() {
         ${allBlocks.map((b) => `<block type="${b}"></block>`)}
       </category>
       <sep></sep>
-      <category
-        id="catVariables" colour="330" custom="VARIABLE" name="Variables"
-      ></category>
+      <category id="catVariables" colour="330" name="Variables">
+        <block type="global_declaration"></block>
+        <block type="local_declaration_statement"></block>
+        <block type="local_declaration_expression"></block>
+        <block type="lexical_variable_get"></block>
+        <block type="lexical_variable_set"></block>
+      </category>
       <category
         id="catFunctions" colour="290" custom="PROCEDURE" name="Functions"
       ></category>
