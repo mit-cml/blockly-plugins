@@ -276,3 +276,21 @@ Blockly.Blocks['controls_forEach'] = {
     return result;
   },
 };
+
+Blockly.Blocks['controls_do_then_return'] = {
+  // String length.
+  category: 'Control',
+  helpUrl: Blockly.Msg.LANG_CONTROLS_DO_THEN_RETURN_HELPURL,
+  init: function() {
+    // this.setColour(Blockly.CONTROL_CATEGORY_HUE);
+    this.setStyle('loop_blocks');
+    this.appendStatementInput('STM')
+        .appendField(Blockly.Msg.LANG_CONTROLS_DO_THEN_RETURN_INPUT_DO);
+    this.appendValueInput('VALUE')
+        .appendField(Blockly.Msg.LANG_CONTROLS_DO_THEN_RETURN_INPUT_RETURN)
+        .setAlign(Blockly.ALIGN_RIGHT);
+    this.setOutput(true, null);
+    this.setTooltip(Blockly.Msg.LANG_CONTROLS_DO_THEN_RETURN_TOOLTIP);
+  },
+};
+

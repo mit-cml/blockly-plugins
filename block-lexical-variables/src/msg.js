@@ -137,3 +137,10 @@ Blockly.Msg['ERROR_BLOCK_CANNOT_BE_IN_DEFINITION'] =
     'This block cannot be in a definition';
 Blockly.Msg['HORIZONTAL_PARAMETERS'] = 'Arrange Parameters Horizontally';
 Blockly.Msg['VERTICAL_PARAMETERS'] = 'Arrange Parameters Vertically';
+Blockly.Msg['LANG_CONTROLS_DO_THEN_RETURN_INPUT_DO'] = 'do';
+Blockly.Msg['LANG_CONTROLS_DO_THEN_RETURN_INPUT_RETURN'] = 'result';
+Blockly.Msg['LANG_CONTROLS_DO_THEN_RETURN_TOOLTIP'] =
+    'Runs the blocks in \'do\' and returns a statement. Useful if you need to' +
+    ' run a procedure before returning a value to a variable.';
+Blockly.Msg['LANG_CONTROLS_DO_THEN_RETURN_COLLAPSED_TEXT'] = 'do/result';
+Blockly.Msg['LANG_CONTROLS_DO_THEN_RETURN_TITLE'] = 'do result';

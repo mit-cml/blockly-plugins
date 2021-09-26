@@ -545,7 +545,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
   },
   customContextMenu: function(options) {
     Blockly.FieldParameterFlydown.addHorizontalVerticalOption(this, options);
-    Blockly.BlocklyEditor.addPngExportOption(this, options);
+    // Blockly.BlocklyEditor.addPngExportOption(this, options);
   },
   getParameters: function() {
     return this.arguments_;
@@ -557,7 +557,8 @@ Blockly.Blocks['procedures_defnoreturn'] = {
 Blockly.Blocks['procedures_defreturn'] = {
   // Define a procedure with a return value.
   category: 'Procedures', // Procedures are handled specially.
-  helpUrl: Blockly.Msg.LANG_PROCEDURES_DEFRETURN_HELPURL,
+  // helpUrl: Blockly.Msg.LANG_PROCEDURES_DEFRETURN_HELPURL,
+  helpUrl: Blockly.Msg.PROCEDURES_DEFRETURN_HELPURL,
   bodyInputName: 'RETURN',
   init: function() {
     // Let the theme determine the color.
@@ -569,7 +570,10 @@ Blockly.Blocks['procedures_defreturn'] = {
         .appendField(Blockly.Msg.LANG_PROCEDURES_DEFRETURN_DEFINE)
         .appendField(new AI.Blockly.FieldProcedureName(name), 'NAME');
     this.horizontalParameters = true; // horizontal by default
-    this.appendIndentedValueInput('RETURN')
+    // this.appendIndentedValueInput('RETURN')
+    //     .appendField(Blockly.Msg.LANG_PROCEDURES_DEFRETURN_RETURN);
+    this.appendValueInput('RETURN')
+        .setAlign(Blockly.ALIGN_RIGHT)
         .appendField(Blockly.Msg.LANG_PROCEDURES_DEFRETURN_RETURN);
     this.setMutator(new Blockly.Mutator(['procedures_mutatorarg']));
     this.setTooltip(Blockly.Msg.LANG_PROCEDURES_DEFRETURN_TOOLTIP);
