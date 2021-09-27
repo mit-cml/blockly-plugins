@@ -15,8 +15,10 @@ import {init} from '../src/index';
 // TODO: Edit list of blocks.
 const allBlocks = [
   'global_declaration',
+  'controls_for',
   'controls_forRange',
   'controls_forEach',
+  'controls_flow_statements',
   'local_declaration_statement',
   'local_declaration_expression',
   'controls_do_then_return',

@@ -177,6 +177,12 @@ Blockly.Blocks['controls_forRange'] = {
   },
 };
 
+// Alias controls_for to controls_forRange We need this because
+// we can't use controls_flow_statements within controls_forRange
+// due to Blockly checking
+delete Blockly.Blocks['controls_for'];
+Blockly.Blocks['controls_for'] = Blockly.Blocks['controls_forRange'];
+
 Blockly.Blocks['controls_forEach'] = {
   // For each loop.
   category: 'Control',

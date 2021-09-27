@@ -301,7 +301,8 @@ Blockly.FieldLexicalVariable.getLexicalNamesInScope = function(block) {
           // Only DO is in scope, not other inputs!
           const loopName = parent.getFieldValue('VAR');
           rememberName(loopName, loopNames, Shared.loopParameterPrefix);
-        } else if ((parent.type === 'controls_forRange') &&
+        } else if ((parent.type === 'controls_forRange' ||
+                    parent.type === 'controls_for') &&
             (parent.getInputTargetBlock('DO') == child)) {
           // Only DO is in scope, not other inputs!
           const rangeName = parent.getFieldValue('VAR');
@@ -815,17 +816,18 @@ Blockly.LexicalVariable.renameParamWithoutRenamingCapturables =
       let sourcePrefix = '';
       if (Shared.showPrefixToUser) {
         const type = sourceBlock.type;
-        if (type == 'procedures_mutatorarg' ||
-            type == 'procedures_defnoreturn' ||
-            type == 'procedures_defreturn') {
+        if (type === 'procedures_mutatorarg' ||
+            type === 'procedures_defnoreturn' ||
+            type === 'procedures_defreturn') {
           sourcePrefix = Shared.procedureParameterPrefix;
-        } else if (type == 'controls_forEach') {
+        } else if (type === 'controls_forEach') {
           sourcePrefix = Shared.loopParameterPrefix;
-        } else if (type == 'controls_forRange') {
+        } else if (type === 'controls_forRange' ||
+                   type === 'controls_for') {
           sourcePrefix = Shared.loopRangeParameterPrefix;
-        } else if (type == 'local_declaration_statement' ||
-            type == 'local_declaration_expression' ||
-            type == 'local_mutatorarg') {
+        } else if (type === 'local_declaration_statement' ||
+            type === 'local_declaration_expression' ||
+            type === 'local_mutatorarg') {
           sourcePrefix = Shared.localNamePrefix;
         }
       }
@@ -907,11 +909,12 @@ Blockly.LexicalVariable.renameParamWithoutRenamingCapturablesInfo =
     function(sourceBlock, oldName, sourcePrefix) {
       // var sourceBlock = this; // The block containing the declaration of
       // oldName sourceBlock is block in which name is being changed. Can be
-      // one of: * For procedure param: procedures_mutatorarg,
-      // procedures_defnoreturn, procedures_defreturn (last two added by lyn on
-      // 10/11/13). * For local name: local_mutatorarg,
-      // local_declaration_statement, local_declaration_expression * For loop
-      // name: controls_forEach, controls_forRange
+      // one of:
+      //   * For procedure param: procedures_mutatorarg, procedures_defnoreturn,
+      //     procedures_defreturn (last two added by lyn on 10/11/13).
+      //   * For local name: local_mutatorarg, local_declaration_statement,
+      //     local_declaration_expression
+      //   * For loop name: controls_forEach, controls_forRange, controls_for
       let inScopeBlocks = []; // list of root blocks in scope of oldName and in
       // which
       // renaming must take place.
@@ -1041,7 +1044,8 @@ Blockly.LexicalVariable.referenceResult = function(block, name, prefix, env) {
     const nextResults = Blockly.LexicalVariable.referenceResult(
         Blockly.LexicalVariable.getNextTargetBlock(block), name, prefix, env);
     referenceResults = [listResults, doResults, nextResults];
-  } else if (block.type === 'controls_forRange') {
+  } else if (block.type === 'controls_forRange' ||
+             block.type === 'controls_for') {
     let loopVar = block.getFieldValue('VAR');
     // Invariant: Shared.showPrefixToUser must also be true!
     if (Shared.usePrefixInYail) {
