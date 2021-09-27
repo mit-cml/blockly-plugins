@@ -1,20 +1,25 @@
 # blockly-block-lexical-variables [![Built on Blockly](https://tinyurl.com/built-on-blockly)](https://github.com/google/blockly)
 
-<!--
-  - TODO: Add block description.
-  -->
-A [Blockly](https://www.npmjs.com/package/blockly) block that ...
+This plugin adds a set of [Blockly](https://www.npmjs.com/package/blockly) 
+blocks that support lexical (aka local) variables, as well as a dynamic UI
+for obtaining variable getters and setters and for renaming variables.  It
+also updates the UI for existing blocks that are implicitly lexically scoped,
+i.e.:
+* Function/Procedure definitions
+* For loops
+
+_More explanation and pretty pictures to come!_
 
 ## Installation
 
 ### Yarn
 ```
-yarn add blockly-block-lexical-variables
+yarn add @mit-app-inventor/blockly-block-lexical-variables
 ```
 
 ### npm
 ```
-npm install blockly-block-lexical-variables --save
+npm install @mit-app-inventor/blockly-block-lexical-variables --save
 ```
 
 ## Usage
@@ -22,8 +27,12 @@ npm install blockly-block-lexical-variables --save
 ### Import
 ```js
 import * as Blockly from 'blockly';
-import 'blockly-block-lexical-variables';
-
+import * as LexicalVariables from '@mit-app-inventor/blockly-block-lexical-variables';
+...
+const workspace = Blockly.inject(...);
+...
+// Load lexical variable plugin
+LexicalVariables.init(workspace);
 ```
 
 ## License
