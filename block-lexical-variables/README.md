@@ -8,6 +8,10 @@ i.e.:
 * Function/Procedure definitions
 * For loops
 
+You can see a demo version of a Blockly app that has integrated this plugin
+[here](https://mit-cml.github.io/lexical-variable-demo/).  The code for that
+demo is [here](https://github.com/mit-cml/lexical-variable-demo).
+
 _More explanation and pretty pictures to come!_
 
 ## Installation
