@@ -3,6 +3,7 @@
  * Copyright 2021 Google LLC
  * SPDX-License-Identifier: Apache-2.0
  */
+'use strict';
 
 // TODO: Edit block overview.
 /**
@@ -24,6 +25,8 @@ import './blocks/lexical-variables';
 import './blocks/controls';
 import './procedure_database';
 import './blocks/procedures';
+import './generators/controls';
+import './generators/procedures';
 import * as Blockly from 'blockly';
 
 /**
