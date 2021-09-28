@@ -13,17 +13,17 @@ import {registerCss} from '../src/css';
 registerCss();
 import './utilities';
 import './workspace_svg';
-import './flydown';
-import './field_flydown';
-import './field_global_flydown';
-import './field_lexical_variable';
-import './field_parameter_flydown';
-import './field_procedure';
-import './field_procedurename';
-import './lexical-variables';
-import './controls';
+import './fields/flydown';
+import './fields/field_flydown';
+import './fields/field_global_flydown';
+import './fields/field_lexical_variable';
+import './fields/field_parameter_flydown';
+import './fields/field_procedure';
+import './fields/field_procedurename';
+import './blocks/lexical-variables';
+import './blocks/controls';
 import './procedure_database';
-import './procedures';
+import './blocks/procedures';
 import * as Blockly from 'blockly';
 
 /**

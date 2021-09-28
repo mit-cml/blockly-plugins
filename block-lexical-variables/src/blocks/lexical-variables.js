@@ -89,8 +89,8 @@ function myStringify (obj) {
 'use strict';
 
 import * as Blockly from 'blockly';
-import './msg';
-import * as WarningHandler from './warningHandler';
+import '../msg';
+import * as WarningHandler from '../warningHandler';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {

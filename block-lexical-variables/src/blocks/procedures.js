@@ -78,9 +78,9 @@
 'use strict';
 
 import * as Blockly from 'blockly';
-import './msg';
-import {AI} from './field_procedurename';
-import * as WarningHandler from './warningHandler';
+import '../msg';
+import {AI} from '../fields/field_procedurename';
+import * as WarningHandler from '../warningHandler';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {

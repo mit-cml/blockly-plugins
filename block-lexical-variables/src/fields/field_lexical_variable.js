@@ -12,9 +12,9 @@
 'use strict';
 
 import * as Blockly from 'blockly';
-import './msg';
-import './instrument';
-import * as Shared from './shared';
+import '../msg';
+import '../instrument';
+import * as Shared from '../shared';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
