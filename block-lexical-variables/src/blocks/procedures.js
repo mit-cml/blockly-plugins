@@ -772,7 +772,7 @@ Blockly.Blocks['procedures_callnoreturn'] = {
       return items.length > 0 ? items : ['', ''];
     };
 
-    this.procDropDown = new Blockly.FieldDropdown(this.procNamesFxn,
+    this.procDropDown = new Blockly.FieldNoCheckDropdown(this.procNamesFxn,
         Blockly.FieldProcedure.onChange);
     this.procDropDown.block = this;
     this.appendDummyInput()
@@ -1004,7 +1004,7 @@ Blockly.Blocks['procedures_callreturn'] = {
       return items.length > 0 ? items : ['', ''];
     };
 
-    this.procDropDown = new Blockly.FieldDropdown(this.procNamesFxn,
+    this.procDropDown = new Blockly.FieldNoCheckDropdown(this.procNamesFxn,
         Blockly.FieldProcedure.onChange);
     this.procDropDown.block = this;
     this.appendDummyInput()

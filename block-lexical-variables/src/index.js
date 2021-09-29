@@ -17,6 +17,7 @@ import './workspace_svg';
 import './fields/flydown';
 import './fields/field_flydown';
 import './fields/field_global_flydown';
+import './fields/field_nocheck_dropdown';
 import './fields/field_lexical_variable';
 import './fields/field_parameter_flydown';
 import './fields/field_procedure';
