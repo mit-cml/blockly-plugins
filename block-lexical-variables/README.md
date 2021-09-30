@@ -60,13 +60,45 @@ and while hovering over the variable name:
 
 <div id="do-with-result" />
 
+## Variable/Parameter setters and getters
+### Setter
+**Block type: 'lexical-variable-setter'** - Note that despite the block type name, the 
+same block is used for global variables, local variables, loop variables and 
+function/procedure parameters.  The names that appear in the dropdown will change
+according to the placement of the block.  I.e., it will show the variables that are
+in scope for that getter according to which blocks it is within.
+
+![A picture of a setter block](readme-media/set.png "Setter")
+![A picture of a setter block with a dropdown](readme-media/set-with-dropdown.png "Setter with dropdown")
+![A picture of a setter block within another block](readme-media/set-within-scope.png "Setter with dropdown")
+
+###Getter
+**Block type: 'lexical-variable-getter'** - Exactly analoous to the setter block.
+
+![A picture of a getter block](readme-media/get.png "Getter")
+![A picture of a getter block with a dropdown](readme-media/get-with-dropdown.png "Getter with dropdown")
+![A picture of a getter block within another block](readme-media/get-within-scope.png "Getter with dropdown")
+
 ### Do with result
 **Block type: 'controls_do_then_return'** - A block which enable a sequence of statements and a return value.
 This block particularly useful with the [Local declaration expression](#local-declration-expr) block
 
 ![A picture of a do with result block](readme-media/do-with-result.png "Do with result")
 
+## Loops
+### For
+**Block type: 'controls_for'** - A block which enables a `for` loop
+
+![A picture of a for block](readme-media/for.png "For")
+![A picture of a for block](readme-media/for-with-flydown.png "For")
+
+## Functions/procedures
+
 _More explanation and pretty pictures to come!_
+
+## Notes
+We do not yet support the text, math and list blocks which contain implicit variables.
+That is still to come!
 
 ## Installation
 
