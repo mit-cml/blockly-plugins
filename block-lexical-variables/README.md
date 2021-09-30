@@ -17,6 +17,8 @@ The plugin also adds a dropdown for procedure call blocks, allowing the user to
 change the call to be any other procedure of the same basic shape (i.e. statement
 shape or expression shape).
 
+This plugin is based on code originally written for 
+[MIT App Inventor](https://appinventor.mit.edu).
 
 You can see a demo version of a Blockly app that has integrated this plugin
 [here](https://mit-cml.github.io/lexical-variable-demo/).  The code for that
@@ -91,5 +93,38 @@ const workspace = Blockly.inject(...);
 LexicalVariables.init(workspace);
 ```
 
+## Credits
+As mentioned earlier, this plugin is based on code written for
+[MIT App Inventor](https://github.com/mit-cml/appinventor-sources). The lexical 
+variable implementation (and supporting blocks and UI) in App Inventor was
+developed primarily by **Lyn Turbak** but has had many contributors over the years
+including (in roughly chronological order):
+* Sharon Perl
+* Andrew McKinney
+* Hal Abelson
+* PMW
+* Ralph Morelli
+* Jeffry Schiller
+* Jose Flores
+* Joanie Weaver
+* Shirley Lu
+* mphox
+* Leo Burd
+* Dave Wolber
+* Harry Davis
+* WeiHua Li
+* jbensal
+* Shruti Rijhwani
+* Liz Looney
+* Evan Patton
+* Susan Lane
+* Colin Yang
+* Beka Westberg
+* Siddharth
+* Mark Friedman
+
+If you contributed to this code at some point and I somehow neglected to 
+mention you, I apologise.  Let me know, file a bug or just submit a pull request
+on this file.
 ## License
 Apache 2.0
