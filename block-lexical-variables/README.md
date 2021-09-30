@@ -14,6 +14,11 @@ demo is [here](https://github.com/mit-cml/lexical-variable-demo).
 
 _More explanation and pretty pictures to come!_
 
+## Blocks
+### Lexical/local variable declaration
+
+![A picture of a lexical variable block with getter and setter blocks](readme-media/lexvar-with-flydown.png "Lexical variable with flydown")
+
 ## Installation
 
 ### Yarn
