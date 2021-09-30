@@ -9,7 +9,7 @@ i.e.:
 * For loops
 
 For variable getter and setter blocks this
-plugin also provides for dropdowns which allow ther user to change the variable
+plugin also provides for dropdowns which allow the user to change the variable
 name to any variable allowed by scope.  The plugin will also mark any variable blocks
 that are moved out of their allowable scope.
 
