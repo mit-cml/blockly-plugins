@@ -35,19 +35,6 @@ While hovering over the variable name:
 
 ![A picture of a lexical variable block with getter and setter blocks](readme-media/lexvar-with-flydown.png "Lexical variable with flydown")
 
-<div id="local-declration-expr" />
-
-**Block type: 'local-declaration-expression'** - A lexical variable declaration which can return a value.
-The variable name will be scoped to be valid within blocks attached to the "in" input. The
-[Do with result](#do-with-result) block is a particularly useful bloc to be attached to the "in"
-input.
-
-![A picture of a lexical variable block that returns a value](readme-media/lexvar-with-return.png "Lexical variable expression")
-
-While hovering over the variable name:
-
-![A picture of a lexical variable block with getter and setter blocks](readme-media/lexvar-with-flydown.png "Lexical variable with flydown")
-
 ### Global variable declaration
 **Block type: 'global-declaration-statement'** - An block which declares a global variable. The
 variable name is scoped to the entire program.
@@ -57,8 +44,6 @@ variable name is scoped to the entire program.
 and while hovering over the variable name:
 
 ![A picture of a global variable block with getter and setter blocks](readme-media/globalvar-with-flydown.png "Global variable with flydown")
-
-<div id="do-with-result" />
 
 ## Variable/Parameter setters and getters
 ### Setter
@@ -78,12 +63,6 @@ in scope for that getter according to which blocks it is within.
 ![A picture of a getter block](readme-media/get.png "Getter")
 ![A picture of a getter block with a dropdown](readme-media/get-with-dropdown.png "Getter with dropdown")
 ![A picture of a getter block within another block](readme-media/get-within-scope.png "Getter with dropdown")
-
-### Do with result
-**Block type: 'controls_do_then_return'** - A block which enable a sequence of statements and a return value.
-This block particularly useful with the [Local declaration expression](#local-declration-expr) block
-
-![A picture of a do with result block](readme-media/do-with-result.png "Do with result")
 
 ## Loops
 ### For
