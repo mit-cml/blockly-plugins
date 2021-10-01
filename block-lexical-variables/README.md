@@ -62,7 +62,7 @@ and while hovering over the variable name:
 
 ## Variable/Parameter setters and getters
 ### Setter
-**Block type: 'lexical-variable-setter'** - Note that despite the block type name, the 
+**Block type: 'lexical_variable_set'** - Note that despite the block type name, the 
 same block is used for global variables, local variables, loop variables and 
 function/procedure parameters.  The names that appear in the dropdown will change
 according to the placement of the block.  I.e., it will show the variables that are
@@ -73,7 +73,7 @@ in scope for that getter according to which blocks it is within.
 ![A picture of a setter block within another block](readme-media/set-within-scope.png "Setter with dropdown")
 
 ###Getter
-**Block type: 'lexical-variable-getter'** - Exactly analoous to the setter block.
+**Block type: 'lexical_variable_get'** - Exactly analoous to the setter block.
 
 ![A picture of a getter block](readme-media/get.png "Getter")
 ![A picture of a getter block with a dropdown](readme-media/get-with-dropdown.png "Getter with dropdown")
