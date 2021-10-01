@@ -14,6 +14,7 @@
 
 import * as Blockly from 'blockly';
 import '../msg';
+import {FieldFlydown} from './field_flydown';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -41,21 +42,21 @@ goog.require('AI.Blockly.FieldFlydown');
  * @param {boolean} isEditable Indicates whether the the name in the flydown is
  *     editable.
  * @param {?string=} opt_displayLocation The location to display the flydown at
- *     Either: Blockly.FieldFlydown.DISPLAY_BELOW,
- *             Blockly.FieldFlydown.DISPLAY_RIGHT
+ *     Either: FieldFlydown.DISPLAY_BELOW,
+ *             FieldFlydown.DISPLAY_RIGHT
  *     Defaults to DISPLAY_RIGHT.
  * @param {?function=} opt_additionalChangeHandler A one-arg function indicating
  *     what to do in addition to renaming lexical variables. May be
  *     null/undefined to indicate nothing extra to be done.
- * @extends {Blockly.FieldFlydown}
+ * @extends {FieldFlydown}
  * @constructor
  */
 // [lyn, 10/26/13] Added opt_additionalChangeHandler to handle propagation of
 //    renaming of proc decl params
-Blockly.FieldParameterFlydown = function(name, isEditable,
+export const FieldParameterFlydown = function(name, isEditable,
     opt_displayLocation, opt_additionalChangeHandler) {
   const changeHandler = function(text) {
-    if (!Blockly.FieldParameterFlydown.changeHandlerEnabled) {
+    if (!FieldParameterFlydown.changeHandlerEnabled) {
       return text;
     }
 
@@ -69,31 +70,31 @@ Blockly.FieldParameterFlydown = function(name, isEditable,
     return possiblyRenamedText;
   };
 
-  Blockly.FieldParameterFlydown.superClass_.constructor.call(
+  FieldParameterFlydown.superClass_.constructor.call(
       this, name, isEditable, opt_displayLocation, changeHandler);
 };
-goog.inherits(Blockly.FieldParameterFlydown, Blockly.FieldFlydown);
+goog.inherits(FieldParameterFlydown, FieldFlydown);
 
-Blockly.FieldParameterFlydown.prototype.fieldCSSClassName =
+FieldParameterFlydown.prototype.fieldCSSClassName =
     'blocklyFieldParameter';
 
-Blockly.FieldParameterFlydown.prototype.flyoutCSSClassName =
+FieldParameterFlydown.prototype.flyoutCSSClassName =
     'blocklyFieldParameterFlydown';
 
 // [lyn, 07/02/14] Added this flag to control changeHandler
 //   There are several spots where we want to disable the changeHandler to avoid
 //   unwanted calls to renameParam, such as when these fields are deleted and
 //   then readded in updates to procedures and local variable declarations.
-Blockly.FieldParameterFlydown.changeHandlerEnabled = true;
+FieldParameterFlydown.changeHandlerEnabled = true;
 
 // [lyn, 07/02/14] Execute thunk with changeHandler disabled
-Blockly.FieldParameterFlydown.withChangeHanderDisabled = function(thunk) {
-  const oldFlag = Blockly.FieldParameterFlydown.changeHandlerEnabled;
-  Blockly.FieldParameterFlydown.changeHandlerEnabled = false;
+FieldParameterFlydown.withChangeHanderDisabled = function(thunk) {
+  const oldFlag = FieldParameterFlydown.changeHandlerEnabled;
+  FieldParameterFlydown.changeHandlerEnabled = false;
   try {
     thunk();
   } finally {
-    Blockly.FieldParameterFlydown.changeHandlerEnabled = oldFlag;
+    FieldParameterFlydown.changeHandlerEnabled = oldFlag;
   }
 };
 
@@ -102,7 +103,7 @@ Blockly.FieldParameterFlydown.withChangeHanderDisabled = function(thunk) {
  * the flydown. In this case a variable getter and a variable setter.
  * @return {string} The stringified XML.
  */
-Blockly.FieldParameterFlydown.prototype.flydownBlocksXML_ = function() {
+FieldParameterFlydown.prototype.flydownBlocksXML_ = function() {
   // TODO: Refactor this to use getValue() instead of getText(). getText()
   //   refers to the view, while getValue refers to the model (in MVC terms).
 
@@ -134,7 +135,7 @@ Blockly.FieldParameterFlydown.prototype.flydownBlocksXML_ = function() {
  * @param block
  * @param options
  */
-Blockly.FieldParameterFlydown.addHorizontalVerticalOption = function(
+FieldParameterFlydown.addHorizontalVerticalOption = function(
     block, options) {
   let numParams = 0;
   if (block.getParameters) {
@@ -179,16 +180,16 @@ Blockly.FieldParameterFlydown.addHorizontalVerticalOption = function(
 /**
  * Constructs a FieldParameterFlydown from a JSON arg object.
  * @param {!Object} options A JSON object with options.
- * @return {Blockly.FieldParameterFlydown} The new field instance.
+ * @return {FieldParameterFlydown} The new field instance.
  * @package
  * @nocollapse
  */
-Blockly.FieldParameterFlydown.fromJson = function(options) {
+FieldParameterFlydown.fromJson = function(options) {
   const name = Blockly.utils.replaceMessageReferences(options['name']);
-  return new Blockly.FieldParameterFlydown(name, options['is_editable']);
+  return new FieldParameterFlydown(name, options['is_editable']);
 };
 
 Blockly.fieldRegistry.register('field_parameter_flydown',
-    Blockly.FieldParameterFlydown);
+    FieldParameterFlydown);
 
 

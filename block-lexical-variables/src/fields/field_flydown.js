@@ -62,8 +62,8 @@ goog.require('Blockly.Options');
  * @param {boolean} isEditable Whether the user is allowed to change the name
  *     of this parameter or not.
  * @param {string=} opt_displayLocation The location to display the flydown at
- *     Either: Blockly.FieldFlydown.DISPLAY_BELOW,
- *             Blockly.FieldFlydown.DISPLAY_RIGHT
+ *     Either: FieldFlydown.DISPLAY_BELOW,
+ *             FieldFlydown.DISPLAY_RIGHT
  *     Defaults to DISPLAY_RIGHT.
  * @param {Function} opt_changeHandler An optional function that is called
  *     to validate any constraints on what the user entered.  Takes the new
@@ -73,18 +73,18 @@ goog.require('Blockly.Options');
  * @extends {Blockly.FieldTextInput}
  * @constructor
  */
-Blockly.FieldFlydown =
+export const FieldFlydown =
     function(name, isEditable, opt_displayLocation, opt_changeHandler) {
       // This by itself does not control editability
       this.EDITABLE = isEditable;
       // [lyn, 10/27/13] Make flydown direction an instance variable
       this.displayLocation = opt_displayLocation ||
-          Blockly.FieldFlydown.DISPLAY_RIGHT;
+          FieldFlydown.DISPLAY_RIGHT;
 
-      Blockly.FieldFlydown.superClass_.constructor.call(
+      FieldFlydown.superClass_.constructor.call(
           this, name, opt_changeHandler);
     };
-goog.inherits(Blockly.FieldFlydown, Blockly.FieldTextInput);
+goog.inherits(FieldFlydown, Blockly.FieldTextInput);
 
 /**
  * Milliseconds to wait before showing flydown after mouseover event on flydown
@@ -92,58 +92,58 @@ goog.inherits(Blockly.FieldFlydown, Blockly.FieldTextInput);
  * @type {number}
  * @const
  */
-Blockly.FieldFlydown.timeout = 500;
+FieldFlydown.timeout = 500;
 
 /**
  * Process ID for timer event to show flydown (scheduled by mouseover event).
  * @type {number}
  * @const
  */
-Blockly.FieldFlydown.showPid_ = 0;
+FieldFlydown.showPid_ = 0;
 
 /**
  * Which instance of FieldFlydown (or a subclass) is an open flydown attached
  * to?
- * @type {Blockly.FieldFlydown}
+ * @type {FieldFlydown}
  * @private
  */
-Blockly.FieldFlydown.openFieldFlydown_ = null;
+FieldFlydown.openFieldFlydown_ = null;
 
 // These control the positions of the flydown.
-Blockly.FieldFlydown.DISPLAY_BELOW = 'BELOW';
-Blockly.FieldFlydown.DISPLAY_RIGHT = 'RIGHT';
-Blockly.FieldFlydown.DISPLAY_LOCATION = Blockly.FieldFlydown.DISPLAY_BELOW;
+FieldFlydown.DISPLAY_BELOW = 'BELOW';
+FieldFlydown.DISPLAY_RIGHT = 'RIGHT';
+FieldFlydown.DISPLAY_LOCATION = FieldFlydown.DISPLAY_BELOW;
 
 /**
  * Default CSS class name for the field itself.
  * @type {string}
  * @const
  */
-Blockly.FieldFlydown.prototype.fieldCSSClassName = 'blocklyFieldFlydownField';
+FieldFlydown.prototype.fieldCSSClassName = 'blocklyFieldFlydownField';
 
 /**
  * Default CSS class name for the flydown that flies down from the field.
  * @type {string}
  * @const
  */
-Blockly.FieldFlydown.prototype.flyoutCSSClassName =
+FieldFlydown.prototype.flyoutCSSClassName =
     'blocklyFieldFlydownFlydown';
 
 // Override FieldTextInput's showEditor_ so it's only called for EDITABLE field.
-Blockly.FieldFlydown.prototype.showEditor_ = function() {
+FieldFlydown.prototype.showEditor_ = function() {
   if (!this.EDITABLE) {
     return;
   }
-  if (Blockly.FieldFlydown.showPid_) { // cancel a pending flydown for editing
-    clearTimeout(Blockly.FieldFlydown.showPid_);
-    Blockly.FieldFlydown.showPid_ = 0;
+  if (FieldFlydown.showPid_) { // cancel a pending flydown for editing
+    clearTimeout(FieldFlydown.showPid_);
+    FieldFlydown.showPid_ = 0;
     Blockly.hideChaff();
   }
-  Blockly.FieldFlydown.superClass_.showEditor_.call(this);
+  FieldFlydown.superClass_.showEditor_.call(this);
 };
 
-Blockly.FieldFlydown.prototype.init = function(block) {
-  Blockly.FieldFlydown.superClass_.init.call(this, block);
+FieldFlydown.prototype.init = function(block) {
+  FieldFlydown.superClass_.init.call(this, block);
 
   // Remove inherited field css classes ...
   Blockly.utils.removeClass(/** @type {!Element} */ (this.fieldGroup_),
@@ -162,21 +162,21 @@ Blockly.FieldFlydown.prototype.init = function(block) {
       Blockly.bindEvent_(this.fieldGroup_, 'mouseout', this, this.onMouseOut_);
 };
 
-Blockly.FieldFlydown.prototype.onMouseOver_ = function(e) {
+FieldFlydown.prototype.onMouseOver_ = function(e) {
   // [lyn, 10/22/13] No flydowns in a flyout!
-  if (!this.sourceBlock_.isInFlyout && Blockly.FieldFlydown.showPid_ == 0) {
-    Blockly.FieldFlydown.showPid_ =
+  if (!this.sourceBlock_.isInFlyout && FieldFlydown.showPid_ == 0) {
+    FieldFlydown.showPid_ =
         window.setTimeout(this.showFlydownMaker_(),
-            Blockly.FieldFlydown.timeout);
+            FieldFlydown.timeout);
   }
   // This event has been handled.  No need to bubble up to the document.
   e.stopPropagation();
 };
 
-Blockly.FieldFlydown.prototype.onMouseOut_ = function(e) {
+FieldFlydown.prototype.onMouseOut_ = function(e) {
   // Clear any pending timer event to show flydown
-  window.clearTimeout(Blockly.FieldFlydown.showPid_);
-  Blockly.FieldFlydown.showPid_ = 0;
+  window.clearTimeout(FieldFlydown.showPid_);
+  FieldFlydown.showPid_ = 0;
   e.stopPropagation();
 };
 
@@ -185,11 +185,11 @@ Blockly.FieldFlydown.prototype.onMouseOut_ = function(e) {
  * for receiver field.
  *  @return A thunk (zero-parameter function).
  */
-Blockly.FieldFlydown.prototype.showFlydownMaker_ = function() {
+FieldFlydown.prototype.showFlydownMaker_ = function() {
   // Name receiver in variable so can close over this variable in returned thunk
   const field = this;
   return function() {
-    if (Blockly.FieldFlydown.showPid_ !== 0 &&
+    if (FieldFlydown.showPid_ !== 0 &&
         !field.getSourceBlock().workspace.isDragging() &&
         !this.htmlInput_) {
       try {
@@ -198,7 +198,7 @@ Blockly.FieldFlydown.prototype.showFlydownMaker_ = function() {
         console.error('Failed to show flydown', e);
       }
     }
-    Blockly.FieldFlydown.showPid_ = 0;
+    FieldFlydown.showPid_ = 0;
   };
 };
 
@@ -206,7 +206,7 @@ Blockly.FieldFlydown.prototype.showFlydownMaker_ = function() {
  * Shows the blocks generated by flydownBlocksXML_ in the flydown. Xml should be
  * wrapped in <xml> tags.
  */
-Blockly.FieldFlydown.prototype.showFlydown_ = function() {
+FieldFlydown.prototype.showFlydown_ = function() {
   Blockly.hideChaff();
   const flydown = Blockly.getMainWorkspace().getFlydown();
 
@@ -230,27 +230,27 @@ Blockly.FieldFlydown.prototype.showFlydown_ = function() {
 
   const xy = Blockly.getMainWorkspace().getSvgXY(this.borderRect_);
   const borderBBox = this.borderRect_.getBBox();
-  if (this.displayLocation === Blockly.FieldFlydown.DISPLAY_BELOW) {
+  if (this.displayLocation === FieldFlydown.DISPLAY_BELOW) {
     xy.y += borderBBox.height * scale;
   } else { // Display right.
     xy.x += borderBBox.width * scale;
   }
 
   // Set the flydown's current field.  Note that this is subtly differnt than
-  // Blockly.FieldFlydown.openFieldFlydown_ because the latter might get reset
+  // FieldFlydown.openFieldFlydown_ because the latter might get reset
   // by an iterim hiding of the field and not get set again by an interim call
   // to show().
   flydown.field_ = this;
   flydown.showAt(blocksXMLList, xy.x, xy.y);
-  Blockly.FieldFlydown.openFieldFlydown_ = this;
+  FieldFlydown.openFieldFlydown_ = this;
 };
 
 /**
  * Hide the flydown menu and squash any timer-scheduled flyout creation.
  */
-Blockly.FieldFlydown.hide = function() {
+FieldFlydown.hide = function() {
   // Clear any pending timer event to show flydown.
-  window.clearTimeout(Blockly.FieldFlydown.showPid_);
+  window.clearTimeout(FieldFlydown.showPid_);
   // Hide any displayed flydown.
   const flydown = Blockly.getMainWorkspace().getFlydown();
   if (flydown) {
@@ -291,7 +291,7 @@ function callAllValidators(field, text) {
 // Override Blockly's behavior; they call the validator after setting the text,
 // which is incompatible with how our validators work (we expect to be called
 // before the change since in order to find the old references to be renamed).
-Blockly.FieldFlydown.prototype.onHtmlInputChange_ = function(e) {
+FieldFlydown.prototype.onHtmlInputChange_ = function(e) {
   goog.asserts.assertObject(this.htmlInput_);
   const htmlInput = this.htmlInput_;
   const text = htmlInput.value;
@@ -324,9 +324,9 @@ Blockly.FieldFlydown.prototype.onHtmlInputChange_ = function(e) {
 /**
  * Close the flydown and dispose of all UI.
  */
-Blockly.FieldFlydown.prototype.dispose = function() {
-  if (Blockly.FieldFlydown.openFieldFlydown_ == this) {
-    Blockly.FieldFlydown.hide();
+FieldFlydown.prototype.dispose = function() {
+  if (FieldFlydown.openFieldFlydown_ == this) {
+    FieldFlydown.hide();
   }
   // Call parent's destructor.
   Blockly.FieldTextInput.prototype.dispose.call(this);
@@ -335,13 +335,13 @@ Blockly.FieldFlydown.prototype.dispose = function() {
 /**
  * Constructs a FieldFlydown from a JSON arg object.
  * @param {!Object} options A JSON object with options.
- * @return {Blockly.FieldFlydown} The new field instance.
+ * @return {FieldFlydown} The new field instance.
  * @package
  * @nocollapse
  */
-Blockly.FieldFlydown.fromJson = function(options) {
+FieldFlydown.fromJson = function(options) {
   const name = Blockly.utils.replaceMessageReferences(options['name']);
-  return new Blockly.FieldFlydown(name, options['is_editable']);
+  return new FieldFlydown(name, options['is_editable']);
 };
 
-Blockly.fieldRegistry.register('field_flydown', Blockly.FieldFlydown);
+Blockly.fieldRegistry.register('field_flydown', FieldFlydown);

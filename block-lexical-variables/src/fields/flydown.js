@@ -14,6 +14,7 @@
 'use strict';
 
 import * as Blockly from 'blockly';
+import {FieldFlydown} from './field_flydown';
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
   provide: (_) => {
@@ -265,7 +266,7 @@ Flydown.prototype.shouldHide = true;
 Flydown.prototype.hide = function() {
   if (this.shouldHide) {
     Blockly.Flyout.prototype.hide.call(this);
-    Blockly.FieldFlydown.openFieldFlydown_ = null;
+    FieldFlydown.openFieldFlydown_ = null;
   }
   this.shouldHide = true;
 };

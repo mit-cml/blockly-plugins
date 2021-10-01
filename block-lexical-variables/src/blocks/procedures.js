@@ -82,6 +82,8 @@ import '../msg';
 import {AI} from '../fields/field_procedurename';
 import * as WarningHandler from '../warningHandler';
 import * as ProcedureUtils from '../procedure_utils';
+import {FieldParameterFlydown} from '../fields/field_parameter_flydown';
+import {FieldFlydown} from '../fields/field_flydown';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -181,7 +183,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     // remove first input
     // console.log("updateParams_: remove input HEADER");
     const thisBlock = this; // Grab correct object for use in thunk below
-    Blockly.FieldParameterFlydown.withChangeHanderDisabled(
+    FieldParameterFlydown.withChangeHanderDisabled(
         // [lyn, 07/02/14] Need to disable change handler, else this will try
         // to rename params for horizontal arg fields!
         function() {
@@ -199,7 +201,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
       if (paramInput0) { // Yes, they were vertical
         for (let i = 0; i < oldArgCount; i++) {
           try {
-            Blockly.FieldParameterFlydown.withChangeHanderDisabled(
+            FieldParameterFlydown.withChangeHanderDisabled(
                 // [lyn, 07/02/14] Need to disable change handler, else this
                 // will try to rename params for vertical arg fields!
                 function() {
@@ -343,11 +345,11 @@ Blockly.Blocks['procedures_defnoreturn'] = {
       }
       // console.log("exit procedureParameterChangeHandler");
     };
-    return new Blockly.FieldParameterFlydown(initialParamName,
+    return new FieldParameterFlydown(initialParamName,
         true, // name is editable
         // [lyn, 10/27/13] flydown location depends on parameter orientation
-        this.horizontalParameters ? Blockly.FieldFlydown.DISPLAY_BELOW :
-            Blockly.FieldFlydown.DISPLAY_RIGHT,
+        this.horizontalParameters ? FieldFlydown.DISPLAY_BELOW :
+            FieldFlydown.DISPLAY_RIGHT,
         procedureParameterChangeHandler);
   },
   setParameterOrientation: function(isHorizontal) {
@@ -545,7 +547,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     return (body && [body]) || [];
   },
   customContextMenu: function(options) {
-    Blockly.FieldParameterFlydown.addHorizontalVerticalOption(this, options);
+    FieldParameterFlydown.addHorizontalVerticalOption(this, options);
     // Blockly.BlocklyEditor.addPngExportOption(this, options);
   },
   getParameters: function() {
@@ -661,7 +663,7 @@ Blockly.Blocks['procedures_mutatorarg'] = {
     // The following is a version we've defined.
     editor.onHtmlInputChange_ = function(e) {
       const oldValue = this.getValue();
-      Blockly.FieldFlydown.prototype.onHtmlInputChange_.call(this, e);
+      FieldFlydown.prototype.onHtmlInputChange_.call(this, e);
       const newValue = this.getValue();
       if (newValue && oldValue !== newValue && Blockly.Events.isEnabled()) {
         Blockly.Events.fire(

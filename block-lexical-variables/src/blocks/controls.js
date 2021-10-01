@@ -38,6 +38,8 @@
 
 import * as Blockly from 'blockly';
 import '../msg';
+import {FieldParameterFlydown} from '../fields/field_parameter_flydown';
+import {FieldFlydown} from '../fields/field_flydown';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -74,9 +76,9 @@ Blockly.Blocks['controls_forRange'] = {
         .setCheck(Blockly.Blocks.Utilities.yailTypeToBlocklyType('number',
             Blockly.Blocks.Utilities.INPUT))
         .appendField(Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_ITEM)
-        .appendField(new Blockly.FieldParameterFlydown(
+        .appendField(new FieldParameterFlydown(
             Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_VAR, true,
-            Blockly.FieldFlydown.DISPLAY_BELOW), 'VAR')
+            FieldFlydown.DISPLAY_BELOW), 'VAR')
         .appendField(Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_START)
         .setAlign(Blockly.ALIGN_RIGHT);
     this.appendValueInput('END')
@@ -199,9 +201,9 @@ Blockly.Blocks['controls_forEach'] = {
         .setCheck(Blockly.Blocks.Utilities.yailTypeToBlocklyType('list',
             Blockly.Blocks.Utilities.INPUT))
         .appendField(Blockly.Msg.LANG_CONTROLS_FOREACH_INPUT_ITEM)
-        .appendField(new Blockly.FieldParameterFlydown(
+        .appendField(new FieldParameterFlydown(
             Blockly.Msg.LANG_CONTROLS_FOREACH_INPUT_VAR,
-            true, Blockly.FieldFlydown.DISPLAY_BELOW), 'VAR')
+            true, FieldFlydown.DISPLAY_BELOW), 'VAR')
         .appendField(Blockly.Msg.LANG_CONTROLS_FOREACH_INPUT_INLIST)
         .setAlign(Blockly.ALIGN_RIGHT);
     this.appendStatementInput('DO')

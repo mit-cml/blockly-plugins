@@ -13,6 +13,7 @@
 
 import * as Blockly from 'blockly';
 import '../msg';
+import {FieldFlydown} from './field_flydown';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -44,7 +45,7 @@ Blockly.FieldGlobalFlydown = function(name, displayLocation) {
       // rename all references to this global variable
       Blockly.LexicalVariable.renameGlobal);
 };
-goog.inherits(Blockly.FieldGlobalFlydown, Blockly.FieldFlydown);
+goog.inherits(Blockly.FieldGlobalFlydown, FieldFlydown);
 
 Blockly.FieldGlobalFlydown.prototype.fieldCSSClassName =
     'blocklyFieldParameter';

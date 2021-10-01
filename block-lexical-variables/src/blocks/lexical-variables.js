@@ -91,6 +91,8 @@ function myStringify (obj) {
 import * as Blockly from 'blockly';
 import '../msg';
 import * as WarningHandler from '../warningHandler';
+import {FieldParameterFlydown} from '../fields/field_parameter_flydown';
+import {FieldFlydown} from '../fields/field_flydown';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -127,7 +129,7 @@ Blockly.Blocks['global_declaration'] = {
         .appendField(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TITLE_INIT)
         .appendField(new Blockly.FieldGlobalFlydown(
             Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_NAME,
-            Blockly.FieldFlydown.DISPLAY_BELOW), 'NAME')
+            FieldFlydown.DISPLAY_BELOW), 'NAME')
         .appendField(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TO);
     this.setTooltip(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TOOLTIP);
   },
@@ -380,7 +382,7 @@ Blockly.Blocks['local_declaration_statement'] = {
     // Modify this local-in-do block according to arrangement of name blocks in
     // mutator editor. Remove all the local declaration inputs ...
     const thisBlock = this; // Grab correct object for use in thunk below
-    Blockly.FieldParameterFlydown.withChangeHanderDisabled(
+    FieldParameterFlydown.withChangeHanderDisabled(
         // [lyn, 07/02/14] Need to disable change handler, else this will try
         // to rename params removed fields.
         function() {
@@ -463,9 +465,9 @@ Blockly.Blocks['local_declaration_statement'] = {
         }
       }
     };
-    return new Blockly.FieldParameterFlydown(initialParamName,
+    return new FieldParameterFlydown(initialParamName,
         true, // name is editable
-        Blockly.FieldFlydown.DISPLAY_RIGHT,
+        FieldFlydown.DISPLAY_RIGHT,
         localParameterChangeHandler);
   },
   decompose: function(workspace) {
