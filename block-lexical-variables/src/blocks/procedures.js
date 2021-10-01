@@ -81,6 +81,7 @@ import * as Blockly from 'blockly';
 import '../msg';
 import {AI} from '../fields/field_procedurename';
 import * as WarningHandler from '../warningHandler';
+import * as ProcedureUtils from '../procedure_utils';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -447,7 +448,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     if (editable) {
       // Dispose of any callers.
       // Blockly.Procedures.disposeCallers(name, workspace);
-      Blockly.AIProcedure.removeProcedureValues(name, workspace);
+      ProcedureUtils.removeProcedureValues(name, workspace);
     }
 
     // Call parent's destructor.
@@ -773,7 +774,7 @@ Blockly.Blocks['procedures_callnoreturn'] = {
     };
 
     this.procDropDown = new Blockly.FieldNoCheckDropdown(this.procNamesFxn,
-        Blockly.FieldProcedure.onChange);
+        ProcedureUtils.onChange);
     this.procDropDown.block = this;
     this.appendDummyInput()
         .appendField(Blockly.Msg.LANG_PROCEDURES_CALLNORETURN_CALL)
@@ -796,7 +797,7 @@ Blockly.Blocks['procedures_callnoreturn'] = {
     });
     // Blockly.FieldProcedure.onChange.call(this.getField("PROCNAME"),
     //     this.procNamesFxn(false)[0][0]);
-    Blockly.FieldProcedure.onChange.call(this.getField('PROCNAME'),
+    ProcedureUtils.onChange.call(this.getField('PROCNAME'),
         this.getField('PROCNAME').getValue());
   },
   getProcedureCall: function() {
@@ -1005,7 +1006,7 @@ Blockly.Blocks['procedures_callreturn'] = {
     };
 
     this.procDropDown = new Blockly.FieldNoCheckDropdown(this.procNamesFxn,
-        Blockly.FieldProcedure.onChange);
+        ProcedureUtils.onChange);
     this.procDropDown.block = this;
     this.appendDummyInput()
         .appendField(Blockly.Msg.LANG_PROCEDURES_CALLRETURN_CALL)
@@ -1027,7 +1028,7 @@ Blockly.Blocks['procedures_callreturn'] = {
     });
     // Blockly.FieldProcedure.onChange.call(this.getField("PROCNAME"),
     //     this.procNamesFxn()[0][0]);
-    Blockly.FieldProcedure.onChange.call(this.getField('PROCNAME'),
+    ProcedureUtils.onChange.call(this.getField('PROCNAME'),
         this.getField('PROCNAME').getValue());
   },
   getProcedureCall: Blockly.Blocks.procedures_callnoreturn.getProcedureCall,

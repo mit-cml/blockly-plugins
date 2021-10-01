@@ -68,5 +68,5 @@ Blockly.JavaScript['local_declaration_statement'] = function() {
 
 Blockly.JavaScript['local_declaration_expression'] = function() {
   // TODO
-  return 'NOT IMPLEMENTED YET'
+  return 'NOT IMPLEMENTED YET';
 };

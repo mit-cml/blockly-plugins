@@ -1,9 +1,10 @@
 import * as Blockly from 'blockly';
 import * as WarningHandler from './warningHandler';
+import {ProcedureDatabase} from './procedure_database';
 
 /**
  * Shared flydown for parameters and variables.
- * @type {Blockly.Flydown}
+ * @type {Flydown}
  * @private
  */
 Blockly.WorkspaceSvg.prototype.flydown_ = null;
@@ -18,7 +19,7 @@ Blockly.WorkspaceSvg.prototype.getFlydown = function() {
  */
 Blockly.WorkspaceSvg.prototype.getProcedureDatabase = function() {
   if (!this.procedureDb_) {
-    this.procedureDb_ = new Blockly.ProcedureDatabase(this);
+    this.procedureDb_ = new ProcedureDatabase(this);
   }
   return this.procedureDb_;
 };

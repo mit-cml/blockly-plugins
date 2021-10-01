@@ -30,11 +30,9 @@ const goog = {
 goog.provide('Blockly.FieldProcedure');
 goog.provide('Blockly.AIProcedure');
 
-Blockly.FieldProcedure = {};
+const procDefaultValue = ['', ''];
 
-Blockly.FieldProcedure.defaultValue = ['', ''];
-
-Blockly.FieldProcedure.onChange = function(procedureId) {
+export const onChange = function(procedureId) {
   let workspace = this.block.workspace.getTopWorkspace();
   // [lyn, 10/14/13] .editable is undefined on blocks. Changed to .editable_
   if (!this.block.isEditable()) {
@@ -66,12 +64,10 @@ Blockly.FieldProcedure.onChange = function(procedureId) {
   }
 };
 
-Blockly.AIProcedure = {};
-
-Blockly.AIProcedure.getProcedureNames = function(returnValue, opt_workspace) {
+export const getProcedureNames = function(returnValue, opt_workspace) {
   const workspace = opt_workspace || Blockly.mainWorkspace;
   const topBlocks = workspace.getTopBlocks();
-  const procNameArray = [Blockly.FieldProcedure.defaultValue];
+  const procNameArray = [procDefaultValue];
   for (let i=0; i<topBlocks.length; i++) {
     const procName = topBlocks[i].getFieldValue('NAME');
     if (topBlocks[i].type == 'procedures_defnoreturn' && !returnValue) {
@@ -90,7 +86,7 @@ Blockly.AIProcedure.getProcedureNames = function(returnValue, opt_workspace) {
 // If returnValue is false, lists all fruitless procedure declarations
 // (defnoreturn) If returnValue is true, lists all fruitful procedure
 // declaraations (defreturn)
-Blockly.AIProcedure.getProcedureDeclarationBlocks = function(returnValue,
+export const getProcedureDeclarationBlocks = function(returnValue,
     opt_workspace) {
   const workspace = opt_workspace || Blockly.mainWorkspace;
   const topBlocks = workspace.getTopBlocks(false);
@@ -105,7 +101,7 @@ Blockly.AIProcedure.getProcedureDeclarationBlocks = function(returnValue,
   return blockArray;
 };
 
-Blockly.AIProcedure.getAllProcedureDeclarationBlocksExcept = function(block) {
+export const getAllProcedureDeclarationBlocksExcept = function(block) {
   const topBlocks = block.workspace.getTopBlocks(false);
   const blockArray = [];
   for (let i=0; i<topBlocks.length; i++) {
@@ -119,14 +115,7 @@ Blockly.AIProcedure.getAllProcedureDeclarationBlocksExcept = function(block) {
   return blockArray;
 };
 
-Blockly.AIProcedure.getAllProcedureDeclarationNames = function() {
-  const procBlocks = Blockly.AIProcedure.getAllProcedureDeclarationBlocks();
-  return procBlocks.map(function(decl) {
-    return decl.getFieldValue('NAME');
-  });
-};
-
-Blockly.AIProcedure.removeProcedureValues = function(name, workspace) {
+export const removeProcedureValues = function(name, workspace) {
   if (workspace && // [lyn, 04/13/14] ensure workspace isn't undefined
       workspace === Blockly.mainWorkspace) {
     const blockArray = workspace.getAllBlocks();
@@ -151,7 +140,7 @@ Blockly.AIProcedure.removeProcedureValues = function(name, workspace) {
  *     field's source block.
  * @return {string} The new, validated name of the block.
  */
-Blockly.AIProcedure.renameProcedure = function(newName) {
+export const renameProcedure = function(newName) {
   // this is bound to field_textinput object
   const oldName = this.oldName_ || this.getValue();
   const originalNewName = newName;
@@ -160,7 +149,7 @@ Blockly.AIProcedure.renameProcedure = function(newName) {
   newName = Blockly.LexicalVariable.makeLegalIdentifier(newName);
 
   // [lyn, 10/28/13] Prevent two procedures from having the same name.
-  const procBlocks = Blockly.AIProcedure.getAllProcedureDeclarationBlocksExcept(
+  const procBlocks = getAllProcedureDeclarationBlocksExcept(
       this.sourceBlock_);
   const procNames = procBlocks.map(function(decl) {
     return decl.getFieldValue('NAME');

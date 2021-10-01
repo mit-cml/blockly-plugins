@@ -14,6 +14,7 @@
 
 import * as Blockly from 'blockly';
 import './msg';
+import * as ProcedureUtils from './procedure_utils';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -42,7 +43,7 @@ goog.require('goog.object');
  *     ProcedureDatabase.
  * @constructor
  */
-Blockly.ProcedureDatabase = function(workspace) {
+export const ProcedureDatabase = function(workspace) {
   /**
    * The source workspace for the ProcedureDatabase.
    * @type {!Blockly.WorkspaceSvg}
@@ -95,7 +96,7 @@ Blockly.ProcedureDatabase = function(workspace) {
   this.voidProcedures = 0;
 };
 
-Blockly.ProcedureDatabase.defaultValue = ['', 'none'];
+ProcedureDatabase.defaultValue = ['', 'none'];
 
 /**
  * Get a list of names for procedures in the database.
@@ -104,8 +105,8 @@ Blockly.ProcedureDatabase.defaultValue = ['', 'none'];
  *     values (true) or without return values (false).
  * @return {!string[]}
  */
-Blockly.ProcedureDatabase.prototype.getNames = function(returnValue) {
-  return Blockly.AIProcedure.getProcedureNames(returnValue, this.workspace_)
+ProcedureDatabase.prototype.getNames = function(returnValue) {
+  return ProcedureUtils.getProcedureNames(returnValue, this.workspace_)
       .map(function(v) {
         return v[0];
       });
@@ -117,8 +118,8 @@ Blockly.ProcedureDatabase.prototype.getNames = function(returnValue) {
  * @return {!Array.<Array.<string>>}
  * @param returnValue
  */
-Blockly.ProcedureDatabase.prototype.getMenuItems = function(returnValue) {
-  return Blockly.AIProcedure.getProcedureNames(returnValue, this.workspace_);
+ProcedureDatabase.prototype.getMenuItems = function(returnValue) {
+  return ProcedureUtils.getProcedureNames(returnValue, this.workspace_);
 };
 
 /**
@@ -128,13 +129,13 @@ Blockly.ProcedureDatabase.prototype.getMenuItems = function(returnValue) {
  *     return values (true) or without return values (false).
  * @return {!Blockly.Block[]}
  */
-Blockly.ProcedureDatabase.prototype.getDeclarationBlocks =
+ProcedureDatabase.prototype.getDeclarationBlocks =
     function(returnValue) {
       return goog.object.getValues(
           returnValue ? this.returnProcedures_ : this.voidProcedures_);
     };
 
-Blockly.ProcedureDatabase.prototype.getDeclarationsBlocksExcept =
+ProcedureDatabase.prototype.getDeclarationsBlocksExcept =
     function(block) {
       const blockArray = [];
       goog.object.forEach(this.procedures_, function(b) {
@@ -143,7 +144,7 @@ Blockly.ProcedureDatabase.prototype.getDeclarationsBlocksExcept =
       return blockArray;
     };
 
-Blockly.ProcedureDatabase.prototype.getAllDeclarationNames = function() {
+ProcedureDatabase.prototype.getAllDeclarationNames = function() {
   return goog.object.getValues(this.procedures_)
       .map(function(block) {
         return block.getFieldValue('NAME');
@@ -157,7 +158,7 @@ Blockly.ProcedureDatabase.prototype.getAllDeclarationNames = function() {
  * @param {!Blockly.Block} block
  * @return {boolean} True if the definition was added, otherwise false.
  */
-Blockly.ProcedureDatabase.prototype.addProcedure = function(name, block) {
+ProcedureDatabase.prototype.addProcedure = function(name, block) {
   if (block.type != 'procedures_defnoreturn' &&
       block.type != 'procedures_defreturn') {
     // not a procedure block!
@@ -186,7 +187,7 @@ Blockly.ProcedureDatabase.prototype.addProcedure = function(name, block) {
  * @param {!string} id
  * @return {boolean}
  */
-Blockly.ProcedureDatabase.prototype.removeProcedure = function(id) {
+ProcedureDatabase.prototype.removeProcedure = function(id) {
   if (id in this.procedures_) {
     const block = this.procedures_[id];
     if (block.type == 'procedures_defnoreturn') {
@@ -211,7 +212,7 @@ Blockly.ProcedureDatabase.prototype.removeProcedure = function(id) {
  * @returns {boolean} True if the procedure was renamed in the database,
  *     otherwise false.
  */
-Blockly.ProcedureDatabase.prototype.renameProcedure =
+ProcedureDatabase.prototype.renameProcedure =
     function(procId, oldName, newName) {
       /*
       if (newName in this.procedures_) {
@@ -245,12 +246,12 @@ Blockly.ProcedureDatabase.prototype.renameProcedure =
  * @return {?Blockly.BlockSvg} The procedure block defining the procedure
  *     identified by {@link #id}.
  */
-Blockly.ProcedureDatabase.prototype.getProcedure = function(id) {
+ProcedureDatabase.prototype.getProcedure = function(id) {
   const proc = this.procedures_[id];
   return proc ? proc : this.getProcedureByName(id);
 };
 
-Blockly.ProcedureDatabase.prototype.getProcedureByName = function(name) {
+ProcedureDatabase.prototype.getProcedureByName = function(name) {
   for (const id in this.procedures_) {
     if (this.procedures_[id].getFieldValue('NAME') === name) {
       return this.procedures_[id];
@@ -259,7 +260,7 @@ Blockly.ProcedureDatabase.prototype.getProcedureByName = function(name) {
   return undefined;
 };
 
-Blockly.ProcedureDatabase.prototype.clear = function() {
+ProcedureDatabase.prototype.clear = function() {
   this.procedures_ = {};
   this.returnProcedures_ = {};
   this.voidProcedures_ = {};

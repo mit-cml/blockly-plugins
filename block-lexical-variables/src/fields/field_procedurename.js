@@ -12,6 +12,7 @@
 
 import * as Blockly from 'blockly';
 import '../msg';
+import * as ProcedureUtils from '../procedure_utils';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -40,7 +41,7 @@ export const AI = {Blockly: {}};
  */
 AI.Blockly.FieldProcedureName = function(text) {
   AI.Blockly.FieldProcedureName.superClass_.constructor.call(this, text,
-      Blockly.AIProcedure.renameProcedure);
+      ProcedureUtils.renameProcedure);
 };
 goog.inherits(AI.Blockly.FieldProcedureName, Blockly.FieldTextInput);
 

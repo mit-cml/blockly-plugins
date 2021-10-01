@@ -15,6 +15,7 @@ import * as Blockly from 'blockly';
 import '../msg';
 import '../instrument';
 import * as Shared from '../shared';
+import * as Instrument from '../instrument';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -156,7 +157,7 @@ Blockly.FieldLexicalVariable.prototype.setBlock = function(block) {
 // Neil's code to avoid global declaration being created
 Blockly.FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
   // TODO: Maybe switch to injectable warning/error handling
-  if (Blockly.Instrument.useLynCacheGlobalNames && Blockly.getMainWorkspace() &&
+  if (Instrument.useLynCacheGlobalNames && Blockly.getMainWorkspace() &&
       Blockly.getMainWorkspace().getWarningHandler &&
       Blockly.getMainWorkspace().getWarningHandler().cacheGlobalNames) {
     return Blockly.getMainWorkspace().getWarningHandler().cachedGlobalNames;
@@ -164,7 +165,7 @@ Blockly.FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
   const globals = [];
   if (Blockly.mainWorkspace) {
     let blocks = [];
-    if (Blockly.Instrument.useLynGetGlobalNamesFix) {
+    if (Instrument.useLynGetGlobalNamesFix) {
       blocks = Blockly.mainWorkspace.getTopBlocks(); // [lyn, 04/13/14] Only
       // need top blocks, not
       // all blocks!

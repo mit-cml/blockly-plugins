@@ -30,6 +30,7 @@ import './generators/controls';
 import './generators/procedures';
 import './generators/lexical-variables';
 import * as Blockly from 'blockly';
+import {Flydown} from './fields/flydown';
 
 /**
  * Extend Blockly's hideChaff method with AI2-specific behaviors.
@@ -56,7 +57,7 @@ Blockly.hideChaff = (function(func) {
 export function init(workspace) {
   // TODO: Might need the next line
   // Blockly.DropDownDiv.createDom();
-  const flydown = new Blockly.Flydown(
+  const flydown = new Flydown(
       new Blockly.Options({scrollbars: false}));
   // ***** [lyn, 10/05/2013] NEED TO WORRY ABOUT MULTIPLE BLOCKLIES! *****
   workspace.flydown_ = flydown;

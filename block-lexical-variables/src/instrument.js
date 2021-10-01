@@ -34,18 +34,16 @@ const goog = {
 
 goog.provide('AI.Blockly.Instrument');
 
-if (Blockly.Instrument === undefined) Blockly.Instrument = {};
-
 /** Is instrumentation turned on? */
-// Blockly.Instrument.isOn = true;
-Blockly.Instrument.isOn = false; // [lyn, 04/08/14] Turn off for production
+// isOn = true;
+export let isOn = false; // [lyn, 04/08/14] Turn off for production
 
 /**
  * Turn instrumentation on/off.
  * @param bool
  */
-Blockly.Instrument.setOn = function(bool) {
-  Blockly.Instrument.isOn = bool;
+export const setOn = function(bool) {
+  isOn = bool;
 };
 
 /** The following are global flags to control rendering.
@@ -57,52 +55,52 @@ Blockly.Instrument.setOn = function(bool) {
  * [lyn, 04/01/14] Should we use the Blockly.Block.isRenderingOn flag?
  * Default value = true.
  */
-Blockly.Instrument.useIsRenderingOn = true;
+export const useIsRenderingOn = true;
 
 /**
  * [lyn, 04/01/14] Should we avoid workspace render in Blockly.Block.onMouseUp_?
  * Default value = true.
  */
-Blockly.Instrument.avoidRenderWorkspaceInMouseUp = true;
+export const avoidRenderWorkspaceInMouseUp = true;
 
 /** [lyn, 04/01/14] Global flag to control rendering algorithm,
  * Used to show that renderDown() is better than render() in many situations.
  * Default value = true.
  */
-Blockly.Instrument.useRenderDown = true;
+export const useRenderDown = true;
 
 /** [lyn, 04/01/14] Should we avoid renderDown on subblocks of collapsed blocks
  * Default value = true.
  */
-Blockly.Instrument.avoidRenderDownOnCollapsedSubblocks = true;
+export const avoidRenderDownOnCollapsedSubblocks = true;
 
 /** [lyn, 04/01/14] Use Neil's fix to Blockly.Block.getHeightWidth, which
  * sidesteps the inexplicable quadratic problem with getHeightWidth.
  * Default value = true.
  */
-Blockly.Instrument.useNeilGetHeightWidthFix = true;
+export const useNeilGetHeightWidthFix = true;
 
 /** [lyn, 04/01/14] Use my fix to Blockly.Workspace.prototype.getAllBlocks,
  *  which avoids quadratic behavior in Neil's original version.
  */
-Blockly.Instrument.useLynGetAllBlocksFix = true;
+export const useLynGetAllBlocksFix = true;
 
 /** [lyn, 04/01/14] Use my fix to Blockly.FieldLexicalVariable.getGlobalNames,
  *  which just looks at top blocks in workspace, and not all blocks.
  */
-Blockly.Instrument.useLynGetGlobalNamesFix = true;
+export const useLynGetGlobalNamesFix = true;
 
 /** [lyn, 04/01/14] In
  * Blockly.WarningHandler.checkAllBlocksForWarningsAndErrors,
  * compute Blockly.FieldLexicalVariable.getGlobalNames only once and cache it
  * so that it needn't be computed again.
  */
-Blockly.Instrument.useLynCacheGlobalNames = true;
+export const useLynCacheGlobalNames = true;
 
 /** [lyn, 04/05/14] Stats to track improvements in slow removal */
-Blockly.Instrument.stats = {};
+export const stats = {};
 
-Blockly.Instrument.statNames = [
+export const statNames = [
   'totalTime',
   'topBlockCount',
   'blockCount',
@@ -139,46 +137,46 @@ Blockly.Instrument.statNames = [
   'expandCollapsedTime',
 ];
 
-Blockly.Instrument.initializeStats = function(name) {
-  if (Blockly.Instrument.isOn) {
+export const initializeStats = function(name) {
+  if (isOn) {
     console.log('Initializing stats for ' + name);
-    const names = Blockly.Instrument.statNames;
-    const stats = Blockly.Instrument.stats;
+    const names = statNames;
+    const stats = stats;
     for (let i = 0, name; name = names[i]; i++) {
       stats[name] = 0;
     }
   }
 };
 
-Blockly.Instrument.displayStats = function(name) {
-  if (Blockly.Instrument.isOn) {
-    const names = Blockly.Instrument.statNames;
-    const stats = Blockly.Instrument.stats;
+export const displayStats = function(name) {
+  if (isOn) {
+    const names = statNames;
+    const stats = stats;
     console.log('Displaying stats for ' + name + ':');
-    console.log('  Blockly.Instrument.useRenderDown=' +
-        Blockly.Instrument.useRenderDown);
-    console.log('  Blockly.Instrument.useIsRenderingOn=' +
-        Blockly.Instrument.useIsRenderingOn);
-    console.log('  Blockly.Instrument.avoidRenderWorkspaceInMouseUp=' +
-        Blockly.Instrument.avoidRenderWorkspaceInMouseUp);
-    console.log('  Blockly.Instrument.avoidRenderDownOnCollapsedSubblocks=' +
-        Blockly.Instrument.avoidRenderDownOnCollapsedSubblocks);
-    console.log('  Blockly.Instrument.useNeilGetHeightWidthFix=' +
-        Blockly.Instrument.useNeilGetHeightWidthFix);
-    console.log('  Blockly.Instrument.useLynGetAllBlocksFix=' +
-        Blockly.Instrument.useLynGetAllBlocksFix);
-    console.log('  Blockly.Instrument.useLynGetGlobalNamesFix=' +
-        Blockly.Instrument.useLynGetGlobalNamesFix);
-    console.log('  Blockly.Instrument.useLynCacheGlobalNames=' +
-        Blockly.Instrument.useLynCacheGlobalNames);
+    console.log('  Instrument.useRenderDown=' +
+        useRenderDown);
+    console.log('  Instrument.useIsRenderingOn=' +
+        useIsRenderingOn);
+    console.log('  Instrument.avoidRenderWorkspaceInMouseUp=' +
+        avoidRenderWorkspaceInMouseUp);
+    console.log('  Instrument.avoidRenderDownOnCollapsedSubblocks=' +
+        avoidRenderDownOnCollapsedSubblocks);
+    console.log('  Instrument.useNeilGetHeightWidthFix=' +
+        useNeilGetHeightWidthFix);
+    console.log('  Instrument.useLynGetAllBlocksFix=' +
+        useLynGetAllBlocksFix);
+    console.log('  Instrument.useLynGetGlobalNamesFix=' +
+        useLynGetGlobalNamesFix);
+    console.log('  Instrument.useLynCacheGlobalNames=' +
+        useLynCacheGlobalNames);
     for (let i = 0, name; name = names[i]; i++) {
       console.log('  ' + name + '=' + stats[name]);
     }
   }
 };
 
-Blockly.Instrument.timer = function(thunk, callback) {
-  if (Blockly.Instrument.isOn) {
+export const timer = function(thunk, callback) {
+  if (isOn) {
     const start = new Date().getTime();
     const result = thunk();
     const stop = new Date().getTime();

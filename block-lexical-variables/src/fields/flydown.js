@@ -41,24 +41,24 @@ goog.require('Blockly.Comment');
  * @constructor
  * @param workspaceOptions
  */
-Blockly.Flydown = function(workspaceOptions) {
-  Blockly.Flydown.superClass_.constructor.call(this, workspaceOptions);
+export const Flydown = function(workspaceOptions) {
+  Flydown.superClass_.constructor.call(this, workspaceOptions);
   this.dragAngleRange_ = 360;
 };
-goog.inherits(Blockly.Flydown, Blockly.VerticalFlyout);
+goog.inherits(Flydown, Blockly.VerticalFlyout);
 
 /**
  * Previous CSS class for this flydown.
  * @type {string}
  */
-Blockly.Flydown.prototype.previousCSSClassName_ = '';
+Flydown.prototype.previousCSSClassName_ = '';
 
 /**
  * Override flyout factor to be smaller for flydowns.
  * @type {number}
  * @const
  */
-Blockly.Flydown.prototype.VERTICAL_SEPARATION_FACTOR = 1;
+Flydown.prototype.VERTICAL_SEPARATION_FACTOR = 1;
 
 /**
  * Creates the flydown's DOM.  Only needs to be called once.  Overrides the
@@ -66,7 +66,7 @@ Blockly.Flydown.prototype.VERTICAL_SEPARATION_FACTOR = 1;
  * @param {!String} cssClassName The name of the CSS class for this flydown.
  * @return {!Element} The flydown's SVG group.
  */
-Blockly.Flydown.prototype.createDom = function(cssClassName) {
+Flydown.prototype.createDom = function(cssClassName) {
   /*
   <g>
     <path class={cssClassName}/>
@@ -88,7 +88,7 @@ Blockly.Flydown.prototype.createDom = function(cssClassName) {
  * @param {!String} newCSSClassName The name of the new CSS class replacing the
  *     old one.
  */
-Blockly.Flydown.prototype.setCSSClass = function(newCSSClassName) {
+Flydown.prototype.setCSSClass = function(newCSSClassName) {
   if (newCSSClassName !== this.previousCSSClassName_) {
     Blockly.utils.dom.removeClass(this.svgGroup_, this.previousCSSClassName_);
     Blockly.utils.dom.addClass(this.svgGroup_, newCSSClassName);
@@ -101,7 +101,7 @@ Blockly.Flydown.prototype.setCSSClass = function(newCSSClassName) {
  * @param {!Blockly.Workspace} workspace The workspace in which to create new
  *     blocks.
  */
-Blockly.Flydown.prototype.init = function(workspace) {
+Flydown.prototype.init = function(workspace) {
   // Flydowns have no scrollbar
   Blockly.Flyout.prototype.init.call(this, workspace, false);
 };
@@ -110,7 +110,7 @@ Blockly.Flydown.prototype.init = function(workspace) {
  * Override the flyout position method to do nothing instead.
  * @private
  */
-Blockly.Flydown.prototype.position = function() {
+Flydown.prototype.position = function() {
   return;
 };
 
@@ -120,7 +120,7 @@ Blockly.Flydown.prototype.position = function() {
  * @param {!num} x X-position of upper-left corner of flydown.
  * @param {!num} y Y-position of upper-left corner of flydown.
  */
-Blockly.Flydown.prototype.showAt = function(xmlList, x, y) {
+Flydown.prototype.showAt = function(xmlList, x, y) {
   Blockly.Events.disable();
   try {
     // invoke flyout method, which adds blocks to flydown
@@ -158,7 +158,7 @@ Blockly.Flydown.prototype.showAt = function(xmlList, x, y) {
  * Overrides the reflow method of flyout
  * For RTL: Lay out the blocks right-aligned.
  */
-Blockly.Flydown.prototype.reflow = function() {
+Flydown.prototype.reflow = function() {
   this.workspace_.scale = this.targetWorkspace.scale;
   const scale = this.workspace_.scale;
   let flydownWidth = 0;
@@ -202,7 +202,7 @@ Blockly.Flydown.prototype.reflow = function() {
   }
 };
 
-Blockly.Flydown.prototype.onMouseMove_ = function(e) {
+Flydown.prototype.onMouseMove_ = function(e) {
   // override Blockly's flyout behavior for moving the flyout.
   return;
 };
@@ -213,7 +213,7 @@ Blockly.Flydown.prototype.onMouseMove_ = function(e) {
  * @return {!Blockly.Block} The new block in the main workspace.
  * @private
  */
-Blockly.Flydown.prototype.placeNewBlock_ = function(originBlock) {
+Flydown.prototype.placeNewBlock_ = function(originBlock) {
   const targetWorkspace = this.targetWorkspace;
   const svgRootOld = originBlock.getSvgRoot();
   if (!svgRootOld) {
@@ -260,9 +260,9 @@ Blockly.Flydown.prototype.placeNewBlock_ = function(originBlock) {
   return block;
 };
 
-Blockly.Flydown.prototype.shouldHide = true;
+Flydown.prototype.shouldHide = true;
 
-Blockly.Flydown.prototype.hide = function() {
+Flydown.prototype.hide = function() {
   if (this.shouldHide) {
     Blockly.Flyout.prototype.hide.call(this);
     Blockly.FieldFlydown.openFieldFlydown_ = null;
