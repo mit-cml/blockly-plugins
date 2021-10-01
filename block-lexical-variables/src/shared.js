@@ -26,7 +26,7 @@ import './msg';
 */
 
 export const showPrefixToUser = false;
-export const usePrefixInYail = false;
+export const usePrefixInCode = false;
 
 /** ****************************************************************************
  [lyn, 12/23-27/2012, patch 16]
@@ -57,6 +57,8 @@ export const loopParameterPrefix = 'item';
 export const loopRangeParameterPrefix = 'counter';
 // Separate prefix from name with this. E.g., space in "param x"
 export const menuSeparator = ' ';
+// Separate prefix from name with this. E.g., underscore "param_ x"
+export const prefixSeparator = '_';
 
 // Curried for convenient use in field_lexical_variable.js
 // e.g., "param x" vs "x"
@@ -107,4 +109,11 @@ export const unprefixName = function(name) {
   }
 };
 
+// Curried for convenient use in generators/lexical-variables.js
+export const possiblyPrefixYailNameWith = function(prefix) {
+  return function(name) {
+    // e.g., "param_x" vs "x"
+    return (usePrefixInCode ? (prefix + prefixSeparator) : '') + name;
+  };
+};
 

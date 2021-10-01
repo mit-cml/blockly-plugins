@@ -307,7 +307,7 @@ Blockly.FieldLexicalVariable.getLexicalNamesInScope = function(block) {
     }
   }
 
-  if (!Shared.usePrefixInYail) { // Only a single namespace
+  if (!Shared.usePrefixInCode) { // Only a single namespace
     allLexicalNames = procedureParamNames.concat(loopNames)
         .concat(rangeNames)
         .concat(localNames);
@@ -1015,7 +1015,7 @@ Blockly.LexicalVariable.referenceResult = function(block, name, prefix, env) {
   if (block.type === 'controls_forEach') {
     let loopVar = block.getFieldValue('VAR');
     // Invariant: Shared.showPrefixToUser must also be true!
-    if (Shared.usePrefixInYail) {
+    if (Shared.usePrefixInCode) {
       loopVar = (Shared.possiblyPrefixMenuNameWith(Shared.loopParameterPrefix))(
           loopVar);
     }
@@ -1031,7 +1031,7 @@ Blockly.LexicalVariable.referenceResult = function(block, name, prefix, env) {
              block.type === 'controls_for') {
     let loopVar = block.getFieldValue('VAR');
     // Invariant: Shared.showPrefixToUser must also be true!
-    if (Shared.usePrefixInYail) {
+    if (Shared.usePrefixInCode) {
       loopVar =
           (Shared.possiblyPrefixMenuNameWith(Shared.loopRangeParameterPrefix))(
               loopVar);
@@ -1056,7 +1056,7 @@ Blockly.LexicalVariable.referenceResult = function(block, name, prefix, env) {
     for (let i = 0; block.getInput('DECL' + i); i++) {
       let localName = block.getFieldValue('VAR' + i);
       // Invariant: Shared.showPrefixToUser must also be true!
-      if (Shared.usePrefixInYail) {
+      if (Shared.usePrefixInCode) {
         localName = (Shared.possiblyPrefixMenuNameWith(Shared.localNamePrefix))(
             localName);
       }
@@ -1103,9 +1103,9 @@ Blockly.LexicalVariable.referenceResult = function(block, name, prefix, env) {
     const unprefixedPair = Shared.unprefixName(possiblyPrefixedReferenceName);
     const referencePrefix = unprefixedPair[0];
     const referenceName = unprefixedPair[1];
-    const referenceNotInEnv = ((Shared.usePrefixInYail &&
+    const referenceNotInEnv = ((Shared.usePrefixInCode &&
             (env.indexOf(possiblyPrefixedReferenceName) == -1)) ||
-        ((!Shared.usePrefixInYail) && (env.indexOf(referenceName) == -1)));
+        ((!Shared.usePrefixInCode) && (env.indexOf(referenceName) == -1)));
     if (!(referencePrefix === Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX)) {
       if ((referenceName === name) && referenceNotInEnv) {
         // if referenceName refers to name and not some intervening
@@ -1113,7 +1113,7 @@ Blockly.LexicalVariable.referenceResult = function(block, name, prefix, env) {
         blocksToRename.push(block);
         // Any intervening declared name with the same prefix as the searched
         // for name can be captured:
-        if (Shared.usePrefixInYail) {
+        if (Shared.usePrefixInCode) {
           for (let i = 0; i < env.length; i++) {
             // env is a list of prefixed names.
             const unprefixedEntry = Shared.unprefixName(env[i]);
@@ -1125,7 +1125,7 @@ Blockly.LexicalVariable.referenceResult = function(block, name, prefix, env) {
           capturables = capturables.concat(env);
         }
       } else if (referenceNotInEnv &&
-          (!Shared.usePrefixInYail || prefix === referencePrefix)) {
+          (!Shared.usePrefixInCode || prefix === referencePrefix)) {
         // If reference is not in environment, it's externally declared and
         // capturable When Shared.usePrefixInYail is true, only consider names
         // with same prefix to be capturable

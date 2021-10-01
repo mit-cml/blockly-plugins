@@ -28,6 +28,7 @@ import './procedure_database';
 import './blocks/procedures';
 import './generators/controls';
 import './generators/procedures';
+import './generators/lexical-variables';
 import * as Blockly from 'blockly';
 
 /**
