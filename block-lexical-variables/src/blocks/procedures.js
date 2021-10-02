@@ -84,6 +84,11 @@ import * as WarningHandler from '../warningHandler';
 import * as ProcedureUtils from '../procedure_utils';
 import {FieldParameterFlydown} from '../fields/field_parameter_flydown';
 import {FieldFlydown} from '../fields/field_flydown';
+import {
+  FieldLexicalVariable,
+  LexicalVariable,
+} from '../fields/field_lexical_variable';
+import {FieldNoCheckDropdown} from '../fields/field_nocheck_dropdown';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -433,7 +438,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     // );
     // [lyn, 11/24/12] Note: update params updates param list in proc
     // declaration, but renameParam updates procedure body appropriately.
-    if (!Blockly.LexicalVariable.stringListsEqual(params, this.arguments_)) {
+    if (!LexicalVariable.stringListsEqual(params, this.arguments_)) {
       // Only need updates if param list has changed
       this.updateParams_(params);
       Blockly.Procedures.mutateCallers(this);
@@ -493,7 +498,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     // renaming is a dict (i.e., object) mapping old names to new ones
     const oldParams = this.getParameters();
     const newParams = substitution.map(oldParams);
-    if (!Blockly.LexicalVariable.stringListsEqual(oldParams, newParams)) {
+    if (!LexicalVariable.stringListsEqual(oldParams, newParams)) {
       this.updateParams_(newParams);
       // Update the mutator's variables if the mutator is open.
       if (this.mutator.isVisible()) {
@@ -515,7 +520,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
         this.declaredNames());
     this.renameVars(paramSubstitution);
     const newFreeSubstitution = freeSubstitution.extend(paramSubstitution);
-    Blockly.LexicalVariable.renameFree(
+    LexicalVariable.renameFree(
         this.getInputTargetBlock(this.bodyInputName), newFreeSubstitution);
   },
   renameFree: function(freeSubstitution) {
@@ -529,7 +534,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
   },
   freeVariables: function() { // return the free lexical variables of this block
     // Should return the empty set: something is wrong if it doesn't!
-    const result = Blockly.LexicalVariable.freeVariables(
+    const result = LexicalVariable.freeVariables(
         this.getInputTargetBlock(this.bodyInputName));
     result.subtract(new Blockly.NameSet(this.declaredNames()));
     if (result.isEmpty()) {
@@ -658,7 +663,7 @@ Blockly.Blocks['procedures_mutatorarg'] = {
     // this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
     this.setStyle('procedure_blocks');
     const editor = new Blockly.FieldTextInput('x',
-        Blockly.LexicalVariable.renameParam);
+        LexicalVariable.renameParam);
     // 2017 Blockly's text input change breaks our renaming behavior.
     // The following is a version we've defined.
     editor.onHtmlInputChange_ = function(e) {
@@ -744,7 +749,7 @@ Blockly.Blocks['procedures_mutatorarg'] = {
           if (secondIndex != -1) {
             // If we get here, there is a duplicate on insertion that must be
             // resolved
-            const newName = Blockly.FieldLexicalVariable.nameNotIn(paramName,
+            const newName = FieldLexicalVariable.nameNotIn(paramName,
                 declaredNames);
             this.setFieldValue(newName, 'NAME');
           }
@@ -775,7 +780,7 @@ Blockly.Blocks['procedures_callnoreturn'] = {
       return items.length > 0 ? items : ['', ''];
     };
 
-    this.procDropDown = new Blockly.FieldNoCheckDropdown(this.procNamesFxn,
+    this.procDropDown = new FieldNoCheckDropdown(this.procNamesFxn,
         ProcedureUtils.onChange);
     this.procDropDown.block = this;
     this.appendDummyInput()
@@ -865,7 +870,7 @@ Blockly.Blocks['procedures_callnoreturn'] = {
     if (!this.quarkArguments_ || startTracking) {
       // Initialize tracking for this block.
       this.quarkConnections_ = {};
-      if (Blockly.LexicalVariable.stringListsEqual(paramNames,
+      if (LexicalVariable.stringListsEqual(paramNames,
           this.arguments_) || startTracking) {
         // No change to the parameters, allow quarkConnections_ to be
         // populated with the existing connections.
@@ -1007,7 +1012,7 @@ Blockly.Blocks['procedures_callreturn'] = {
       return items.length > 0 ? items : ['', ''];
     };
 
-    this.procDropDown = new Blockly.FieldNoCheckDropdown(this.procNamesFxn,
+    this.procDropDown = new FieldNoCheckDropdown(this.procNamesFxn,
         ProcedureUtils.onChange);
     this.procDropDown.block = this;
     this.appendDummyInput()

@@ -15,6 +15,7 @@
 import * as Blockly from 'blockly';
 import '../msg';
 import {FieldFlydown} from './field_flydown';
+import {LexicalVariable} from './field_lexical_variable';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -63,7 +64,7 @@ export const FieldParameterFlydown = function(name, isEditable,
     // Both of these should be called in the context of the field (ie
     // 'this').
     const possiblyRenamedText =
-        Blockly.LexicalVariable.renameParam.call(this, text);
+        LexicalVariable.renameParam.call(this, text);
     if (opt_additionalChangeHandler) {
       opt_additionalChangeHandler.call(this, possiblyRenamedText);
     }

@@ -53,7 +53,7 @@ const goog = {
  * declarations
  *    + Created Blockly.Lexical.renameFree for renaming of freeVariables in
  * declarations
- *    + Created Blockly.LexicalVariable.stringListsEqual for testing equality
+ *    + Created LexicalVariable.stringListsEqual for testing equality
  * of string lists.
  *  [lyn, 06/11/14] Modify checkIdentifier to work for i8n.
  *  [lyn, 04/13/14] Modify calculation of global variable names:
@@ -94,10 +94,10 @@ const goog = {
  * @extends Blockly.FieldDropdown
  * @constructor
  */
-Blockly.FieldLexicalVariable = function(varname) {
+export const FieldLexicalVariable = function(varname) {
   // Call parent's constructor.
-  Blockly.FieldDropdown.call(this, Blockly.FieldLexicalVariable.dropdownCreate,
-      Blockly.FieldLexicalVariable.dropdownChange);
+  Blockly.FieldDropdown.call(this, FieldLexicalVariable.dropdownCreate,
+      FieldLexicalVariable.dropdownChange);
   if (varname) {
     this.doValueUpdate_(varname);
   } else {
@@ -106,13 +106,13 @@ Blockly.FieldLexicalVariable = function(varname) {
 };
 
 // FieldLexicalVariable is a subclass of FieldDropdown.
-goog.inherits(Blockly.FieldLexicalVariable, Blockly.FieldDropdown);
+goog.inherits(FieldLexicalVariable, Blockly.FieldDropdown);
 
 /**
  * Set the variable name.
  * @param {string} text New text.
  */
-Blockly.FieldLexicalVariable.prototype.setValue = function(text) {
+FieldLexicalVariable.prototype.setValue = function(text) {
   // Fix for issue #1901. If the variable name contains a space separating two
   // words, and the first isn't "global", then replace the first word with
   // global. This fixes an issue where the translated "global" keyword was
@@ -127,10 +127,10 @@ Blockly.FieldLexicalVariable.prototype.setValue = function(text) {
       text = 'global ' + parts[1];
     }
   }
-  Blockly.FieldLexicalVariable.superClass_.setValue.call(this, text);
+  FieldLexicalVariable.superClass_.setValue.call(this, text);
 };
 
-Blockly.FieldLexicalVariable.prototype.doClassValidation_ = function(
+FieldLexicalVariable.prototype.doClassValidation_ = function(
     opt_newValue) {
   return /** @type {string} */ (opt_newValue);
 };
@@ -139,7 +139,7 @@ Blockly.FieldLexicalVariable.prototype.doClassValidation_ = function(
  * Get the block holding this drop-down variable chooser.
  * @return {string} Block holding this drop-down variable chooser.
  */
-Blockly.FieldLexicalVariable.prototype.getBlock = function() {
+FieldLexicalVariable.prototype.getBlock = function() {
   return this.block_;
 };
 
@@ -147,7 +147,7 @@ Blockly.FieldLexicalVariable.prototype.getBlock = function() {
  * Set the block holding this drop-down variable chooser.
  * @param {?Blockly.Block} block Block holding this drop-down variable chooser.
  */
-Blockly.FieldLexicalVariable.prototype.setBlock = function(block) {
+FieldLexicalVariable.prototype.setBlock = function(block) {
   this.block_ = block;
 };
 
@@ -155,7 +155,7 @@ Blockly.FieldLexicalVariable.prototype.setBlock = function(block) {
 // strings [lyn, 11/18/12] * Removed from prototype and stripped off "global"
 // prefix (add it elsewhere) * Add optional excluded block argument as in
 // Neil's code to avoid global declaration being created
-Blockly.FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
+FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
   // TODO: Maybe switch to injectable warning/error handling
   if (Instrument.useLynCacheGlobalNames && Blockly.getMainWorkspace() &&
       Blockly.getMainWorkspace().getWarningHandler &&
@@ -203,8 +203,8 @@ Blockly.FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
 // Shared.showPrefixToUser is false, non-global names are not prefixed. * If
 // Shared.showPrefixToUser is true, non-global names are prefixed with labels
 // specified in blocklyeditor.js
-Blockly.FieldLexicalVariable.prototype.getNamesInScope = function() {
-  return Blockly.FieldLexicalVariable.getNamesInScope(this.block_);
+FieldLexicalVariable.prototype.getNamesInScope = function() {
+  return FieldLexicalVariable.getNamesInScope(this.block_);
 };
 
 /**
@@ -213,17 +213,17 @@ Blockly.FieldLexicalVariable.prototype.getNamesInScope = function() {
  * and untranslated name of every variable in the scope of the current block.
  */
 // [lyn, 11/15/13] Refactored to work on any block
-Blockly.FieldLexicalVariable.getNamesInScope = function(block) {
-  let globalNames = Blockly.FieldLexicalVariable.getGlobalNames(); // from
+FieldLexicalVariable.getNamesInScope = function(block) {
+  let globalNames = FieldLexicalVariable.getGlobalNames(); // from
   // global
   // variable
   // declarations
   // [lyn, 11/24/12] Sort and remove duplicates from namespaces
-  globalNames = Blockly.LexicalVariable.sortAndRemoveDuplicates(globalNames);
+  globalNames = LexicalVariable.sortAndRemoveDuplicates(globalNames);
   globalNames = globalNames.map(function(name) {
     return [Shared.prefixGlobalMenuName(name), 'global ' + name];
   });
-  const allLexicalNames = Blockly.FieldLexicalVariable.getLexicalNamesInScope(
+  const allLexicalNames = FieldLexicalVariable.getLexicalNamesInScope(
       block);
   // Return a list of all names in scope: global names followed by lexical ones.
   return globalNames.concat(allLexicalNames);
@@ -237,7 +237,7 @@ Blockly.FieldLexicalVariable.getNamesInScope = function(block) {
  *     "param", "local", "index"; otherwise returns unprefixed names.
  */
 // [lyn, 11/15/13] Factored this out from getNamesInScope to work on any block
-Blockly.FieldLexicalVariable.getLexicalNamesInScope = function(block) {
+FieldLexicalVariable.getLexicalNamesInScope = function(block) {
   const procedureParamNames = []; // from procedure/function declarations
   const loopNames = []; // from for loops
   const rangeNames = []; // from range loops
@@ -313,7 +313,7 @@ Blockly.FieldLexicalVariable.getLexicalNamesInScope = function(block) {
         .concat(rangeNames)
         .concat(localNames);
     allLexicalNames =
-        Blockly.LexicalVariable.sortAndRemoveDuplicates(allLexicalNames);
+        LexicalVariable.sortAndRemoveDuplicates(allLexicalNames);
     // Add prefix as annotation only when Shared.showPrefixToUser is true
     allLexicalNames = allLexicalNames.map(
         function(name) {
@@ -335,7 +335,7 @@ Blockly.FieldLexicalVariable.getLexicalNamesInScope = function(block) {
             .concat(localNames.map(
                 Shared.possiblyPrefixMenuNameWith(Shared.localNamePrefix)));
     allLexicalNames =
-        Blockly.LexicalVariable.sortAndRemoveDuplicates(allLexicalNames);
+        LexicalVariable.sortAndRemoveDuplicates(allLexicalNames);
   }
   return allLexicalNames.map(function(name) {
     return [name, name];
@@ -345,9 +345,9 @@ Blockly.FieldLexicalVariable.getLexicalNamesInScope = function(block) {
 /**
  * Return a sorted list of variable names for variable dropdown menus.
  * @return {!Array.<string>} Array of variable names.
- * @this {!Blockly.FieldLexicalVariable}
+ * @this {!FieldLexicalVariable}
  */
-Blockly.FieldLexicalVariable.dropdownCreate = function() {
+FieldLexicalVariable.dropdownCreate = function() {
   const variableList = this.getNamesInScope(); // [lyn, 11/10/12] Get all
   // global, parameter, and local
   // names
@@ -375,7 +375,7 @@ TODO: I'm leaving the following in for now (but commented) because at one point
  * @param {*} newValue The value to be saved.
  * @protected
  */
-Blockly.FieldLexicalVariable.prototype.doValueUpdate_ = function(newValue) {
+FieldLexicalVariable.prototype.doValueUpdate_ = function(newValue) {
   Blockly.FieldDropdown.superClass_.doValueUpdate_.call(this, newValue);
   // Note that we are asking getOptions to add newValue to the list of available
   // options.  We do that essentially to force callers up the chain to accept
@@ -401,7 +401,7 @@ Blockly.FieldLexicalVariable.prototype.doValueUpdate_ = function(newValue) {
  *     (human-readable text or image, language-neutral name).
  * @throws {TypeError} If generated options are incorrectly structured.
  */
-Blockly.FieldLexicalVariable.prototype.getOptions = function(opt_useCache,
+FieldLexicalVariable.prototype.getOptions = function(opt_useCache,
     opt_extraOption) {
   if (Array.isArray(opt_useCache)) {
     opt_extraOption = opt_useCache;
@@ -425,9 +425,9 @@ Blockly.FieldLexicalVariable.prototype.getOptions = function(opt_useCache,
  * variable...' options. In both of these special cases, prompt the user for a
  * new name.
  * @param {string} text The selected dropdown menu option.
- * @this {!Blockly.FieldLexicalVariable}
+ * @this {!FieldLexicalVariable}
  */
-Blockly.FieldLexicalVariable.dropdownChange = function(text) {
+FieldLexicalVariable.dropdownChange = function(text) {
   if (text) {
     this.doValueUpdate_(text);
     const topWorkspace = this.sourceBlock_.workspace.getTopWorkspace();
@@ -448,18 +448,18 @@ Blockly.FieldLexicalVariable.dropdownChange = function(text) {
  * @param {string list} nameList List of names with which name can't conflict.
  * @return {string} Non-colliding name.
  */
-Blockly.FieldLexicalVariable.nameNotIn = function(name, nameList) {
+FieldLexicalVariable.nameNotIn = function(name, nameList) {
   // First find the nonempty digit suffixes of all names in nameList that have
   // the same prefix as name e.g. for name "foo3" and nameList = ["foo",
   // "bar4", "foo17", "bar" "foo5"] suffixes is ["17", "5"]
-  const namePrefixSuffix = Blockly.FieldLexicalVariable.prefixSuffix(name);
+  const namePrefixSuffix = FieldLexicalVariable.prefixSuffix(name);
   const namePrefix = namePrefixSuffix[0];
   const nameSuffix = namePrefixSuffix[1];
   let emptySuffixUsed = false; // Tracks whether "" is a suffix.
   let isConflict = false; // Tracks whether nameSuffix is used
   const suffixes = [];
   for (let i = 0; i < nameList.length; i++) {
-    const prefixSuffix = Blockly.FieldLexicalVariable.prefixSuffix(nameList[i]);
+    const prefixSuffix = FieldLexicalVariable.prefixSuffix(nameList[i]);
     const prefix = prefixSuffix[0];
     const suffix = prefixSuffix[1];
     if (prefix === namePrefix) {
@@ -513,7 +513,7 @@ Blockly.FieldLexicalVariable.nameNotIn = function(name, nameList) {
  * @param {string} name Input string.
  * @return {string[]} Two-element list of prefix and suffix.
  */
-Blockly.FieldLexicalVariable.prefixSuffix = function(name) {
+FieldLexicalVariable.prefixSuffix = function(name) {
   const matchResult = name.match(/^(.*?)(\d+)$/);
   if (matchResult) {
     // List of prefix and suffix
@@ -526,40 +526,38 @@ Blockly.FieldLexicalVariable.prefixSuffix = function(name) {
 /**
  * Constructs a FieldLexicalVariable from a JSON arg object.
  * @param {!Object} options A JSON object with options.
- * @return {Blockly.FieldLexicalVariable} The new field instance.
+ * @return {FieldLexicalVariable} The new field instance.
  * @package
  * @nocollapse
  */
-Blockly.FieldLexicalVariable.fromJson = function(options) {
+FieldLexicalVariable.fromJson = function(options) {
   const name = Blockly.utils.replaceMessageReferences(options['name']);
-  return new Blockly.FieldLexicalVariable(name);
+  return new FieldLexicalVariable(name);
 };
 
 Blockly.fieldRegistry.register('field_lexical_variable',
-    Blockly.FieldLexicalVariable);
+    FieldLexicalVariable);
 
-Blockly.LexicalVariable = {};
-
+export const LexicalVariable = {};
 // [lyn, 11/19/12] Rename global to a new name.
 //
 // [lyn, 10/26/13] Modified to replace sequences of internal spaces by
 // underscores (none were allowed before), and to replace empty string by '_'.
 // Without special handling of empty string, the connection between a
 // declaration field and its references is lots.
-Blockly.LexicalVariable.renameGlobal = function(newName) {
+LexicalVariable.renameGlobal = function(newName) {
   // this is bound to field_textinput object
   const oldName = this.value_;
 
   // [lyn, 10/27/13] now check legality of identifiers
-  newName = Blockly.LexicalVariable.makeLegalIdentifier(newName);
+  newName = LexicalVariable.makeLegalIdentifier(newName);
 
   this.sourceBlock_.getField('NAME').doValueUpdate_(newName);
 
-  const globals = Blockly.FieldLexicalVariable.getGlobalNames(
-      this.sourceBlock_);
+  const globals = FieldLexicalVariable.getGlobalNames(this.sourceBlock_);
   // this.sourceBlock excludes block being renamed from consideration
   // Potentially rename declaration against other occurrences
-  newName = Blockly.FieldLexicalVariable.nameNotIn(newName, globals);
+  newName = FieldLexicalVariable.nameNotIn(newName, globals);
   if (this.sourceBlock_.rendered) {
     // Rename getters and setters
     if (Blockly.mainWorkspace) {
@@ -606,7 +604,7 @@ Blockly.LexicalVariable.renameGlobal = function(newName) {
 // Without special handling of empty string, the connection between a
 // declaration field and its references is lost.  [lyn, 11/15/13] Refactored
 // monolithic renameParam into parts that are useful on their own
-Blockly.LexicalVariable.renameParam = function(newName) {
+LexicalVariable.renameParam = function(newName) {
   const htmlInput = this.htmlInput_;
   // this is bound to field_textinput object
   const oldName = this.getValue() ||
@@ -614,15 +612,15 @@ Blockly.LexicalVariable.renameParam = function(newName) {
       this.getText(); // name being changed to newName
 
   // [lyn, 10/27/13] now check legality of identifiers
-  newName = Blockly.LexicalVariable.makeLegalIdentifier(newName);
+  newName = LexicalVariable.makeLegalIdentifier(newName);
 
   // Default behavior consistent with previous behavior is to use "false" for
   // last argument -- I.e., will not rename inner declarations, but may rename
   // newName
-  return Blockly.LexicalVariable.renameParamFromTo(this.sourceBlock_, oldName,
+  return LexicalVariable.renameParamFromTo(this.sourceBlock_, oldName,
       newName, false);
   // Default should be false (as above), but can also play with true:
-  // return Blockly.LexicalVariable.renameParamFromTo(this.sourceBlock_,
+  // return LexicalVariable.renameParamFromTo(this.sourceBlock_,
   // oldName, newName, true);
 };
 
@@ -655,18 +653,18 @@ Blockly.LexicalVariable.renameParam = function(newName) {
  *     external declarations (declared above the declaration of this name) or
  *     internal declarations (declared inside the scope of this name).
  */
-Blockly.LexicalVariable.renameParamFromTo =
+LexicalVariable.renameParamFromTo =
     function(block, oldName, newName, renameCapturables) {
       // Handle mutator blocks specially
       if (block.type && block.type.indexOf('mutator') != -1) {
-        return Blockly.LexicalVariable.renameParamWithoutRenamingCapturables(
+        return LexicalVariable.renameParamWithoutRenamingCapturables(
             block, oldName, newName, []);
       } else if (renameCapturables) {
-        Blockly.LexicalVariable.renameParamRenamingCapturables(block, oldName,
+        LexicalVariable.renameParamRenamingCapturables(block, oldName,
             newName);
         return newName;
       } else {
-        return Blockly.LexicalVariable.renameParamWithoutRenamingCapturables(
+        return LexicalVariable.renameParamWithoutRenamingCapturables(
             block, oldName, newName, []);
       }
     };
@@ -683,18 +681,18 @@ Blockly.LexicalVariable.renameParamFromTo =
  * @param oldName
  * @param newName
  */
-Blockly.LexicalVariable.renameParamRenamingCapturables =
+LexicalVariable.renameParamRenamingCapturables =
     function(sourceBlock, oldName, newName) {
       if (newName !== oldName) { // Do nothing if names are the same
         const namesDeclaredHere = sourceBlock.declaredNames ?
             sourceBlock.declaredNames() : [];
         if (namesDeclaredHere.indexOf(oldName) == -1) {
-          throw Error('Blockly.LexicalVariable.renamingCapturables: oldName ' +
+          throw Error('LexicalVariable.renamingCapturables: oldName ' +
               oldName +
               ' is not in declarations {' + namesDeclaredHere.join(',') + '}');
         }
         const namesDeclaredAbove = [];
-        Blockly.FieldLexicalVariable.getNamesInScope(sourceBlock)
+        FieldLexicalVariable.getNamesInScope(sourceBlock)
             .map(function(pair) {
               if (pair[0] == pair[1]) {
                 namesDeclaredAbove.push(pair[0]);
@@ -707,7 +705,7 @@ Blockly.LexicalVariable.renameParamRenamingCapturables =
         // of declBlock.
         if (declaredNames.indexOf(newName) != -1) {
           throw Error(
-              'Blockly.LexicalVariable.renameParamRenamingCapturables:' +
+              'LexicalVariable.renameParamRenamingCapturables:' +
               ' newName ' +
               newName +
               ' is in existing declarations {' + declaredNames.join(',') + '}');
@@ -720,7 +718,7 @@ Blockly.LexicalVariable.renameParamRenamingCapturables =
             sourceBlock.renameBound(boundSubstitution, freeSubstitution);
           } else {
             throw Error(
-                'Blockly.LexicalVariable.renameParamRenamingCapturables:' +
+                'LexicalVariable.renameParamRenamingCapturables:' +
                 ' block ' +
                 sourceBlock.type +
                 ' is not a declaration block.');
@@ -738,13 +736,13 @@ Blockly.LexicalVariable.renameParamRenamingCapturables =
  * @param freeRenaming: a dictionary (i.e., object) mapping old names to new
  *     names
  */
-Blockly.LexicalVariable.renameFree = function(block, freeSubstitution) {
+LexicalVariable.renameFree = function(block, freeSubstitution) {
   if (block) { // If block is falsey, do nothing.
     if (block.renameFree) { // should be defined on every declaration block
       block.renameFree(freeSubstitution);
     } else {
       block.getChildren().map(function(blk) {
-        Blockly.LexicalVariable.renameFree(blk, freeSubstitution);
+        LexicalVariable.renameFree(blk, freeSubstitution);
       });
     }
   }
@@ -756,7 +754,7 @@ Blockly.LexicalVariable.renameFree = function(block, freeSubstitution) {
  * @param block
  * @return (NameSet) set of all free names in block
  */
-Blockly.LexicalVariable.freeVariables = function(block) {
+LexicalVariable.freeVariables = function(block) {
   let result = [];
   if (!block) {
     // input and next block slots might not empty
@@ -766,7 +764,7 @@ Blockly.LexicalVariable.freeVariables = function(block) {
     result = block.freeVariables();
   } else {
     const nameSets = block.getChildren().map(function(blk) {
-      return Blockly.LexicalVariable.freeVariables(blk);
+      return LexicalVariable.freeVariables(blk);
     });
     result = Blockly.NameSet.unionAll(nameSets);
   }
@@ -791,7 +789,7 @@ Blockly.LexicalVariable.freeVariables = function(block) {
  *     (declared above the declaration of this name) or internal declarations
  *     (declared inside the scope of this name).
  */
-Blockly.LexicalVariable.renameParamWithoutRenamingCapturables =
+LexicalVariable.renameParamWithoutRenamingCapturables =
     function(sourceBlock, oldName, newName, OKNewNames) {
       if (oldName === newName) {
         return oldName;
@@ -816,7 +814,7 @@ Blockly.LexicalVariable.renameParamWithoutRenamingCapturables =
         }
       }
       const helperInfo =
-          Blockly.LexicalVariable.renameParamWithoutRenamingCapturablesInfo(
+          LexicalVariable.renameParamWithoutRenamingCapturablesInfo(
               sourceBlock, oldName, sourcePrefix);
       const blocksToRename = helperInfo[0];
       const capturables = helperInfo[1];
@@ -838,9 +836,9 @@ Blockly.LexicalVariable.renameParamWithoutRenamingCapturables =
           }
         }
       }
-      const conflicts = Blockly.LexicalVariable.sortAndRemoveDuplicates(
+      const conflicts = LexicalVariable.sortAndRemoveDuplicates(
           capturables.concat(declaredNames));
-      newName = Blockly.FieldLexicalVariable.nameNotIn(newName, conflicts);
+      newName = FieldLexicalVariable.nameNotIn(newName, conflicts);
 
       // Special case: if newName is oldName, we're done!
       if (!(newName === oldName)) {
@@ -889,7 +887,7 @@ Blockly.LexicalVariable.renameParamWithoutRenamingCapturables =
  *     (e.g., "param a", "index i, "local x") this is a list of *unprefixed*
  *     names.
  */
-Blockly.LexicalVariable.renameParamWithoutRenamingCapturablesInfo =
+LexicalVariable.renameParamWithoutRenamingCapturablesInfo =
     function(sourceBlock, oldName, sourcePrefix) {
       // var sourceBlock = this; // The block containing the declaration of
       // oldName sourceBlock is block in which name is being changed. Can be
@@ -912,7 +910,7 @@ Blockly.LexicalVariable.renameParamWithoutRenamingCapturablesInfo =
       // to old name and (1) capturable names = names to which oldName cannot
       // be renamed without changing meaning of program.
       const referenceResults = inScopeBlocks.map(function(blk) {
-        return Blockly.LexicalVariable.referenceResult(blk, oldName,
+        return LexicalVariable.referenceResult(blk, oldName,
             sourcePrefix, []);
       });
       let blocksToRename = []; // A list of all getter/setter blocks whose that
@@ -932,7 +930,7 @@ Blockly.LexicalVariable.renameParamWithoutRenamingCapturablesInfo =
         capturables = capturables.concat(referenceResults[r][1]);
       }
       capturables =
-          Blockly.LexicalVariable.sortAndRemoveDuplicates(capturables);
+          LexicalVariable.sortAndRemoveDuplicates(capturables);
       return [blocksToRename, capturables];
     };
 
@@ -962,7 +960,7 @@ Blockly.LexicalVariable.renameParamWithoutRenamingCapturablesInfo =
  * @param ident
  * @return {{isLegal: boolean, transformed: string}}
  */
-Blockly.LexicalVariable.checkIdentifier = function(ident) {
+LexicalVariable.checkIdentifier = function(ident) {
   const transformed = ident.trim() // Remove leading and trailing whitespace
       .replace(/[\s\xa0]+/g, '_'); // Replace nonempty sequences of internal
   // spaces by underscores
@@ -984,8 +982,8 @@ Blockly.LexicalVariable.checkIdentifier = function(ident) {
   return {isLegal: isLegal, transformed: transformed};
 };
 
-Blockly.LexicalVariable.makeLegalIdentifier = function(ident) {
-  const check = Blockly.LexicalVariable.checkIdentifier(ident);
+LexicalVariable.makeLegalIdentifier = function(ident) {
+  const check = LexicalVariable.checkIdentifier(ident);
   if (check.isLegal) {
     return check.transformed;
   } else if (check.transformed === '') {
@@ -1005,7 +1003,7 @@ Blockly.LexicalVariable.makeLegalIdentifier = function(ident) {
 // 12/25-27/2012] Updated to (1) add prefix argument, (2) handle local
 // declaration statements/expressions, and (3) treat prefixes correctly when
 // they're used.
-Blockly.LexicalVariable.referenceResult = function(block, name, prefix, env) {
+LexicalVariable.referenceResult = function(block, name, prefix, env) {
   if (!block) { // special case when block is null
     return [[], []];
   }
@@ -1021,12 +1019,12 @@ Blockly.LexicalVariable.referenceResult = function(block, name, prefix, env) {
           loopVar);
     }
     const newEnv = env.concat([loopVar]);
-    const listResults = Blockly.LexicalVariable.referenceResult(
+    const listResults = LexicalVariable.referenceResult(
         block.getInputTargetBlock('LIST'), name, prefix, env);
-    const doResults = Blockly.LexicalVariable.referenceResult(
+    const doResults = LexicalVariable.referenceResult(
         block.getInputTargetBlock('DO'), name, prefix, newEnv);
-    const nextResults = Blockly.LexicalVariable.referenceResult(
-        Blockly.LexicalVariable.getNextTargetBlock(block), name, prefix, env);
+    const nextResults = LexicalVariable.referenceResult(
+        LexicalVariable.getNextTargetBlock(block), name, prefix, env);
     referenceResults = [listResults, doResults, nextResults];
   } else if (block.type === 'controls_forRange' ||
              block.type === 'controls_for') {
@@ -1038,16 +1036,16 @@ Blockly.LexicalVariable.referenceResult = function(block, name, prefix, env) {
               loopVar);
     }
     const newEnv = env.concat([loopVar]);
-    const startResults = Blockly.LexicalVariable.referenceResult(
+    const startResults = LexicalVariable.referenceResult(
         block.getInputTargetBlock('START'), name, prefix, env);
-    const endResults = Blockly.LexicalVariable.referenceResult(
+    const endResults = LexicalVariable.referenceResult(
         block.getInputTargetBlock('END'), name, prefix, env);
-    const stepResults = Blockly.LexicalVariable.referenceResult(
+    const stepResults = LexicalVariable.referenceResult(
         block.getInputTargetBlock('STEP'), name, prefix, env);
-    const doResults = Blockly.LexicalVariable.referenceResult(
+    const doResults = LexicalVariable.referenceResult(
         block.getInputTargetBlock('DO'), name, prefix, newEnv);
-    const nextResults = Blockly.LexicalVariable.referenceResult(
-        Blockly.LexicalVariable.getNextTargetBlock(block), name, prefix, env);
+    const nextResults = LexicalVariable.referenceResult(
+        LexicalVariable.getNextTargetBlock(block), name, prefix, env);
     referenceResults =
         [startResults, endResults, stepResults, doResults, nextResults];
   } else if ((block.type === 'local_declaration_statement') ||
@@ -1073,22 +1071,22 @@ Blockly.LexicalVariable.referenceResult = function(block, name, prefix, env) {
       }
     }
     const initResults = localInits.map(function(init) {
-      return Blockly.LexicalVariable.referenceResult(init, name, prefix, env);
+      return LexicalVariable.referenceResult(init, name, prefix, env);
     });
     if (block.type === 'local_declaration_statement') {
-      const doResults = Blockly.LexicalVariable.referenceResult(
+      const doResults = LexicalVariable.referenceResult(
           block.getInputTargetBlock('STACK'), name, prefix, newEnv);
-      const nextResults = Blockly.LexicalVariable.referenceResult(
-          Blockly.LexicalVariable.getNextTargetBlock(block), name, prefix, env);
+      const nextResults = LexicalVariable.referenceResult(
+          LexicalVariable.getNextTargetBlock(block), name, prefix, env);
       referenceResults = initResults.concat([doResults, nextResults]);
     } else { // (block.type === "local_declaration_expression") {
-      const returnResults = Blockly.LexicalVariable.referenceResult(
+      const returnResults = LexicalVariable.referenceResult(
           block.getInputTargetBlock('RETURN'), name, prefix, newEnv);
       referenceResults = initResults.concat([returnResults]);
     }
   } else { // General case for blocks that do not introduce new names
     referenceResults = block.getChildren().map(function(blk) {
-      return Blockly.LexicalVariable.referenceResult(blk, name, prefix, env);
+      return LexicalVariable.referenceResult(blk, name, prefix, env);
     });
   }
   let blocksToRename = [];
@@ -1137,7 +1135,7 @@ Blockly.LexicalVariable.referenceResult = function(block, name, prefix, env) {
   return [blocksToRename, capturables];
 };
 
-Blockly.LexicalVariable.sortAndRemoveDuplicates = function(strings) {
+LexicalVariable.sortAndRemoveDuplicates = function(strings) {
   const sorted = strings.sort();
   const nodups = [];
   if (strings.length >= 1) {
@@ -1155,7 +1153,7 @@ Blockly.LexicalVariable.sortAndRemoveDuplicates = function(strings) {
 
 // [lyn, 11/23/12] Given a block, return the block connected to its next
 // connection; If there is no next connection or no block, return null.
-Blockly.LexicalVariable.getNextTargetBlock = function(block) {
+LexicalVariable.getNextTargetBlock = function(block) {
   if (block && block.nextConnection && block.nextConnection.targetBlock()) {
     return block.nextConnection.targetBlock();
   } else {
@@ -1172,7 +1170,7 @@ Blockly.LexicalVariable.getNextTargetBlock = function(block) {
  * @return True iff strings1 and strings2 have the same names in the same
  *     order; false otherwise.
  */
-Blockly.LexicalVariable.stringListsEqual = function(strings1, strings2) {
+LexicalVariable.stringListsEqual = function(strings1, strings2) {
   const len1 = strings1.length;
   const len2 = strings2.length;
   if (len1 !== len2) {

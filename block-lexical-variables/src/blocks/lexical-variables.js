@@ -93,6 +93,11 @@ import '../msg';
 import * as WarningHandler from '../warningHandler';
 import {FieldParameterFlydown} from '../fields/field_parameter_flydown';
 import {FieldFlydown} from '../fields/field_flydown';
+import {FieldGlobalFlydown} from '../fields/field_global_flydown';
+import {
+  FieldLexicalVariable,
+  LexicalVariable,
+} from '../fields/field_lexical_variable';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -127,7 +132,7 @@ Blockly.Blocks['global_declaration'] = {
     this.setStyle('variable_blocks');
     this.appendValueInput('VALUE')
         .appendField(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TITLE_INIT)
-        .appendField(new Blockly.FieldGlobalFlydown(
+        .appendField(new FieldGlobalFlydown(
             Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_NAME,
             FieldFlydown.DISPLAY_BELOW), 'NAME')
         .appendField(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TO);
@@ -155,7 +160,7 @@ Blockly.Blocks['lexical_variable_get'] = {
     // Let the theme determine the color.
     // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
     this.setStyle('variable_blocks');
-    this.fieldVar_ = new Blockly.FieldLexicalVariable(' ');
+    this.fieldVar_ = new FieldLexicalVariable(' ');
     this.fieldVar_.setBlock(this);
     this.appendDummyInput()
         .appendField(Blockly.Msg.LANG_VARIABLES_GET_TITLE_GET)
@@ -234,7 +239,7 @@ Blockly.Blocks['lexical_variable_set'] = {
     // Let the theme determine the color.
     // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
     this.setStyle('variable_blocks');
-    this.fieldVar_ = new Blockly.FieldLexicalVariable(' ');
+    this.fieldVar_ = new FieldLexicalVariable(' ');
     this.fieldVar_.setBlock(this);
     this.appendValueInput('VALUE')
         .appendField(Blockly.Msg.LANG_VARIABLES_SET_TITLE_SET)
@@ -272,14 +277,14 @@ Blockly.Blocks['lexical_variable_set'] = {
     }
     // [lyn, 06/26/2014] Don't forget to rename children!
     this.getChildren().map(function(blk) {
-      Blockly.LexicalVariable.renameFree(blk, freeSubstitution);
+      LexicalVariable.renameFree(blk, freeSubstitution);
     });
   },
   freeVariables: function() { // return the free lexical variables of this block
     // [lyn, 06/27/2014] Find free vars of *all* children, including subsequent
     // commands in NEXT slot.
     const childrenFreeVars = this.getChildren().map(function(blk) {
-      return Blockly.LexicalVariable.freeVariables(blk);
+      return LexicalVariable.freeVariables(blk);
     });
     const result = Blockly.NameSet.unionAll(childrenFreeVars);
     const prefixPair = Blockly.unprefixName(this.getFieldValue('VAR'));
@@ -506,7 +511,7 @@ Blockly.Blocks['local_declaration_statement'] = {
     }
 
     // Reconstruct inputs only if local list has changed
-    if (!Blockly.LexicalVariable.stringListsEqual(this.localNames_,
+    if (!LexicalVariable.stringListsEqual(this.localNames_,
         newLocalNames)) {
       // Switch off rendering while the block is rebuilt.
       // var savedRendered = this.rendered;
@@ -555,7 +560,7 @@ Blockly.Blocks['local_declaration_statement'] = {
     }
     return varList;
   },
-  // Interface with Blockly.LexicalVariable.renameParam
+  // Interface with LexicalVariable.renameParam
   declaredNames: function() {
     return this.getVars();
   },
@@ -570,7 +575,7 @@ Blockly.Blocks['local_declaration_statement'] = {
     }
     return connections;
   },
-  // Interface with Blockly.LexicalVariable.renameParam
+  // Interface with LexicalVariable.renameParam
   blocksInScope: function() {
     // *** [lyn, 11/24/12]
     // This will go away with DO-AND-RETURN block
@@ -586,7 +591,7 @@ Blockly.Blocks['local_declaration_statement'] = {
   renameVars: function(substitution) {
     const localNames = this.declaredNames();
     const renamedLocalNames = substitution.map(localNames);
-    if (!Blockly.LexicalVariable.stringListsEqual(renamedLocalNames,
+    if (!LexicalVariable.stringListsEqual(renamedLocalNames,
         localNames)) {
       const initializerConnections = this.initializerConnections();
       this.updateDeclarationInputs_(renamedLocalNames, initializerConnections);
@@ -610,14 +615,14 @@ Blockly.Blocks['local_declaration_statement'] = {
     const localNames = this.declaredNames();
     for (let i = 0; i < localNames.length; i++) {
       // This is LET semantics, not LET* semantics, and needs to change!
-      Blockly.LexicalVariable.renameFree(this.getInputTargetBlock('DECL' + i),
+      LexicalVariable.renameFree(this.getInputTargetBlock('DECL' + i),
           freeSubstitution);
     }
     const paramSubstitution = boundSubstitution.restrictDomain(localNames);
     this.renameVars(paramSubstitution);
     const newFreeSubstitution = freeSubstitution.remove(localNames)
         .extend(paramSubstitution);
-    Blockly.LexicalVariable.renameFree(
+    LexicalVariable.renameFree(
         this.getInputTargetBlock(this.bodyInputName), newFreeSubstitution);
     const newMutation = Blockly.Xml.domToText(this.mutationToDom());
     if (Blockly.Events.isEnabled()) {
@@ -627,14 +632,14 @@ Blockly.Blocks['local_declaration_statement'] = {
     }
     if (this.nextConnection) {
       const nextBlock = this.nextConnection.targetBlock();
-      Blockly.LexicalVariable.renameFree(nextBlock, freeSubstitution);
+      LexicalVariable.renameFree(nextBlock, freeSubstitution);
     }
   },
   renameFree: function(freeSubstitution) {
     // This is LET semantics, not LET* semantics, and needs to change!
     const localNames = this.declaredNames();
     const localNameSet = new Blockly.NameSet(localNames);
-    const bodyFreeVars = Blockly.LexicalVariable.freeVariables(
+    const bodyFreeVars = LexicalVariable.freeVariables(
         this.getInputTargetBlock(this.bodyInputName));
     bodyFreeVars.subtract(localNameSet);
     const renamedFreeVars = bodyFreeVars.renamed(freeSubstitution);
@@ -648,7 +653,7 @@ Blockly.Blocks['local_declaration_statement'] = {
       const boundBindings = {};
       const capturedVarList = capturedVars.toList();
       for (let i = 0, capturedVar; capturedVar = capturedVarList[i]; i++) {
-        const newCapturedVar = Blockly.FieldLexicalVariable.nameNotIn(
+        const newCapturedVar = FieldLexicalVariable.nameNotIn(
             capturedVar,
             forbiddenNames);
         boundBindings[capturedVar] = newCapturedVar;
@@ -661,7 +666,7 @@ Blockly.Blocks['local_declaration_statement'] = {
     }
   },
   freeVariables: function() { // return the free lexical variables of this block
-    const result = Blockly.LexicalVariable.freeVariables(
+    const result = LexicalVariable.freeVariables(
         this.getInputTargetBlock(this.bodyInputName));
     const localNames = this.declaredNames();
     result.subtract(new Blockly.NameSet(localNames)); // This is LET semantics,
@@ -669,12 +674,12 @@ Blockly.Blocks['local_declaration_statement'] = {
     // but should be changed!
     const numDecls = localNames.length;
     for (let i = 0; i < numDecls; i++) {
-      result.union(Blockly.LexicalVariable.freeVariables(
+      result.union(LexicalVariable.freeVariables(
           this.getInputTargetBlock('DECL' + i)));
     }
     if (this.nextConnection) {
       const nextBlock = this.nextConnection.targetBlock();
-      result.unite(Blockly.LexicalVariable.freeVariables(nextBlock));
+      result.unite(LexicalVariable.freeVariables(nextBlock));
     }
     return result;
   },
@@ -773,7 +778,7 @@ Blockly.Blocks['local_mutatorarg'] = {
         .appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_MUTATOR_ARG_TITLE_NAME)
         .appendField(new Blockly.FieldTextInput(
             Blockly.Msg.LANG_VARIABLES_LOCAL_MUTATOR_ARG_DEFAULT_VARIABLE,
-            Blockly.LexicalVariable.renameParam),
+            LexicalVariable.renameParam),
         'NAME');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
@@ -832,7 +837,7 @@ Blockly.Blocks['local_mutatorarg'] = {
           if (secondIndex != -1) {
             // If we get here, there is a duplicate on insertion that must be
             // resolved
-            const newName = Blockly.FieldLexicalVariable.nameNotIn(paramName,
+            const newName = FieldLexicalVariable.nameNotIn(paramName,
                 declaredNames);
             this.setFieldValue(newName, 'NAME');
           }

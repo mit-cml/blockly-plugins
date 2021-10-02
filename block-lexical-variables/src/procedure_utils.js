@@ -14,6 +14,10 @@
 
 import * as Blockly from 'blockly';
 import './msg';
+import {
+  FieldLexicalVariable,
+  LexicalVariable,
+} from './fields/field_lexical_variable';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -146,7 +150,7 @@ export const renameProcedure = function(newName) {
   const originalNewName = newName;
 
   // [lyn, 10/27/13] now check legality of identifiers
-  newName = Blockly.LexicalVariable.makeLegalIdentifier(newName);
+  newName = LexicalVariable.makeLegalIdentifier(newName);
 
   // [lyn, 10/28/13] Prevent two procedures from having the same name.
   const procBlocks = getAllProcedureDeclarationBlocksExcept(
@@ -154,7 +158,7 @@ export const renameProcedure = function(newName) {
   const procNames = procBlocks.map(function(decl) {
     return decl.getFieldValue('NAME');
   });
-  newName = Blockly.FieldLexicalVariable.nameNotIn(newName, procNames);
+  newName = FieldLexicalVariable.nameNotIn(newName, procNames);
   if (newName !== originalNewName) {
     this.doValueUpdate_(newName);
   }

@@ -30,14 +30,14 @@ const goog = {
   },
 };
 
-Blockly.FieldNoCheckDropdown = function(...args) {
+export const FieldNoCheckDropdown = function(...args) {
   // Call superclass constructor
   Blockly.FieldDropdown.apply(this, args);
 };
 
-goog.inherits(Blockly.FieldNoCheckDropdown, Blockly.FieldDropdown);
+goog.inherits(FieldNoCheckDropdown, Blockly.FieldDropdown);
 
-Blockly.FieldNoCheckDropdown.prototype.doClassValidation_ = function(
+FieldNoCheckDropdown.prototype.doClassValidation_ = function(
     opt_newValue) {
   let isValueValid = false;
   const options = this.getOptions(true);
@@ -60,14 +60,14 @@ Blockly.FieldNoCheckDropdown.prototype.doClassValidation_ = function(
 /**
  * Construct a FieldNoCheckDropdown from a JSON arg object.
  * @param {!Object} options A JSON object with options (options).
- * @return {!Blockly.FieldNoCheckDropdown} The new field instance.
+ * @return {!FieldNoCheckDropdown} The new field instance.
  * @package
  * @nocollapse
  */
-Blockly.FieldNoCheckDropdown.fromJson = function(options) {
-  return new Blockly.FieldNoCheckDropdown(options['options'],
+FieldNoCheckDropdown.fromJson = function(options) {
+  return new FieldNoCheckDropdown(options['options'],
       undefined, options);
 };
 
 Blockly.fieldRegistry.register('field_nocheck_dropdown',
-    Blockly.FieldNoCheckDropdown);
+    FieldNoCheckDropdown);

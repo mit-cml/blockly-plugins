@@ -14,6 +14,7 @@
 import * as Blockly from 'blockly';
 import '../msg';
 import {FieldFlydown} from './field_flydown';
+import {LexicalVariable} from './field_lexical_variable';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -39,18 +40,18 @@ goog.require('AI.Blockly.FieldFlydown');
  * @extends {Blockly.Field}
  * @constructor
  */
-Blockly.FieldGlobalFlydown = function(name, displayLocation) {
-  Blockly.FieldGlobalFlydown.superClass_.constructor.call(this, name, true,
+export const FieldGlobalFlydown = function(name, displayLocation) {
+  FieldGlobalFlydown.superClass_.constructor.call(this, name, true,
       displayLocation,
       // rename all references to this global variable
-      Blockly.LexicalVariable.renameGlobal);
+      LexicalVariable.renameGlobal);
 };
-goog.inherits(Blockly.FieldGlobalFlydown, FieldFlydown);
+goog.inherits(FieldGlobalFlydown, FieldFlydown);
 
-Blockly.FieldGlobalFlydown.prototype.fieldCSSClassName =
+FieldGlobalFlydown.prototype.fieldCSSClassName =
     'blocklyFieldParameter';
 
-Blockly.FieldGlobalFlydown.prototype.flyoutCSSClassName =
+FieldGlobalFlydown.prototype.flyoutCSSClassName =
     'blocklyFieldParameterFlydown';
 
 /**
@@ -59,7 +60,7 @@ Blockly.FieldGlobalFlydown.prototype.flyoutCSSClassName =
  * block for this parameter field.
  *  @return {!Array.<string>} List of two XML elements.
  **/
-Blockly.FieldGlobalFlydown.prototype.flydownBlocksXML_ = function() {
+FieldGlobalFlydown.prototype.flydownBlocksXML_ = function() {
   // global name for this parameter field.
   const name = Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + ' ' + this.getText();
   const getterSetterXML =
@@ -81,14 +82,14 @@ Blockly.FieldGlobalFlydown.prototype.flydownBlocksXML_ = function() {
 /**
  * Constructs a FieldGlobalFlydown from a JSON arg object.
  * @param {!Object} options A JSON object with options.
- * @return {Blockly.FieldGlobalFlydown} The new field instance.
+ * @return {FieldParameterFlydown} The new field instance.
  * @package
  * @nocollapse
  */
-Blockly.FieldGlobalFlydown.fromJson = function(options) {
+FieldGlobalFlydown.fromJson = function(options) {
   const name = Blockly.utils.replaceMessageReferences(options['name']);
-  return new Blockly.FieldGlobalFlydown(name);
+  return new FieldGlobalFlydown(name);
 };
 
 Blockly.fieldRegistry.register('field_global_flydown',
-    Blockly.FieldGlobalFlydown);
+    FieldGlobalFlydown);
