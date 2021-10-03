@@ -41,7 +41,7 @@ export const FieldProcedureName = function(text) {
   FieldProcedureName.superClass_.constructor.call(this, text,
       ProcedureUtils.renameProcedure);
 };
-goog.inherits(FieldProcedureName, Blockly.FieldTextInput);
+Blockly.utils.object.inherits(FieldProcedureName, Blockly.FieldTextInput);
 
 /**
  * Set the value of the field.

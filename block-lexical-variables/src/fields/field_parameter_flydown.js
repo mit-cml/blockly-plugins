@@ -74,7 +74,7 @@ export const FieldParameterFlydown = function(name, isEditable,
   FieldParameterFlydown.superClass_.constructor.call(
       this, name, isEditable, opt_displayLocation, changeHandler);
 };
-goog.inherits(FieldParameterFlydown, FieldFlydown);
+Blockly.utils.object.inherits(FieldParameterFlydown, FieldFlydown);
 
 FieldParameterFlydown.prototype.fieldCSSClassName =
     'blocklyFieldParameter';

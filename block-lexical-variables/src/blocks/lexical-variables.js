@@ -98,6 +98,7 @@ import {
   FieldLexicalVariable,
   LexicalVariable,
 } from '../fields/field_lexical_variable';
+import * as Utilities from '../utilities';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -354,7 +355,7 @@ Blockly.Blocks['local_declaration_statement'] = {
   // Retrieve local names from mutation element of XML for block
   domToMutation: function(xmlElement) {
     // and replace existing declarations
-    const children = goog.dom.getChildren(xmlElement);
+    const children = Utilities.getChildren(xmlElement);
     if (children.length > 0) { // Ensure xml element is nonempty
       // Else we'll overwrite initial list with "name" for new block
       this.localNames_ = [];

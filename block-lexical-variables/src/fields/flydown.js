@@ -46,7 +46,7 @@ export const Flydown = function(workspaceOptions) {
   Flydown.superClass_.constructor.call(this, workspaceOptions);
   this.dragAngleRange_ = 360;
 };
-goog.inherits(Flydown, Blockly.VerticalFlyout);
+Blockly.utils.object.inherits(Flydown, Blockly.VerticalFlyout);
 
 /**
  * Previous CSS class for this flydown.

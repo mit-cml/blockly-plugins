@@ -30,10 +30,6 @@ const goog = {
 goog.provide('Blockly.Blocks.Utilities');
 goog.require('AI.Blockly.Msg');
 
-if (!Blockly.Blocks.Utilities) {
-  Blockly.Blocks.Utilities = {};
-}
-
 /**
  * Checks that the given otherConnection is compatible with an InstantInTime
  * connection. If the workspace is currently loading (eg the blocks are not
@@ -43,7 +39,7 @@ if (!Blockly.Blocks.Utilities) {
  *
  * @return {boolean}
  */
-Blockly.Blocks.Utilities.InstantInTime = function(myConn, otherConn) {
+export const InstantInTime = function(myConn, otherConn) {
   if (!myConn.sourceBlock_.rendered ||
       !otherConn.sourceBlock_.rendered) {
     if (otherConn.check_ && !otherConn.check_.includes('InstantInTime')) {
@@ -61,7 +57,7 @@ Blockly.Blocks.Utilities.InstantInTime = function(myConn, otherConn) {
 // and by the string "COMPONENT"
 // The Yail type 'any' is repsented by Javascript null, to match
 // Blockly's convention
-Blockly.Blocks.Utilities.YailTypeToBlocklyTypeMap = {
+export const YailTypeToBlocklyTypeMap = {
   'number': {
     'input': ['Number'],
     'output': ['Number', 'String', 'Key'],
@@ -83,8 +79,8 @@ Blockly.Blocks.Utilities.YailTypeToBlocklyTypeMap = {
     'output': ['COMPONENT', 'Key'],
   },
   'InstantInTime': {
-    'input': ['InstantInTime', Blockly.Blocks.Utilities.InstantInTime],
-    'output': ['InstantInTime', Blockly.Blocks.Utilities.InstantInTime],
+    'input': ['InstantInTime', InstantInTime],
+    'output': ['InstantInTime', InstantInTime],
   },
   'any': {
     'input': null,
@@ -104,8 +100,8 @@ Blockly.Blocks.Utilities.YailTypeToBlocklyTypeMap = {
   },
 };
 
-Blockly.Blocks.Utilities.OUTPUT = 'output';
-Blockly.Blocks.Utilities.INPUT = 'input';
+export const OUTPUT = 'output';
+export const INPUT = 'input';
 
 /**
  * Gets the equivalent Blockly type for a given Yail type.
@@ -115,9 +111,8 @@ Blockly.Blocks.Utilities.INPUT = 'input';
  *
  * @return {string}
  */
-Blockly.Blocks.Utilities.yailTypeToBlocklyType = function(yail, inputOrOutput) {
-  const type = Blockly.Blocks.Utilities
-      .YailTypeToBlocklyTypeMap[yail][inputOrOutput];
+export const yailTypeToBlocklyType = function(yail, inputOrOutput) {
+  const type = YailTypeToBlocklyTypeMap[yail][inputOrOutput];
   if (type === undefined) {
     throw new Error('Unknown Yail type: ' + yail + ' -- YailTypeToBlocklyType');
   }
@@ -128,22 +123,42 @@ Blockly.Blocks.Utilities.yailTypeToBlocklyType = function(yail, inputOrOutput) {
 // Blockly doesn't wrap tooltips, so these can get too wide.  We'll create our
 // own tooltip setter that wraps to length 60.
 
-Blockly.Blocks.Utilities.setTooltip = function(block, tooltip) {
-  block.setTooltip(Blockly.Blocks.Utilities.wrapSentence(tooltip, 60));
+export const setTooltip = function(block, tooltip) {
+  block.setTooltip(wrapSentence(tooltip, 60));
 };
 
 // Wrap a string by splitting at spaces. Permit long chunks if there
 // are no spaces.
 
-Blockly.Blocks.Utilities.wrapSentence = function(str, len) {
+export const wrapSentence = function(str, len) {
   str = str.trim();
   if (str.length < len) return str;
   const place = (str.lastIndexOf(' ', len));
   if (place == -1) {
     return str.substring(0, len).trim() +
-        Blockly.Blocks.Utilities.wrapSentence(str.substring(len), len);
+        wrapSentence(str.substring(len), len);
   } else {
     return str.substring(0, place).trim() + '\n' +
-        Blockly.Blocks.Utilities.wrapSentence(str.substring(place), len);
+        wrapSentence(str.substring(place), len);
   }
 };
+
+/**
+ * Returns an array containing just the element children of the given element.
+ * @param {Element} element The element whose element children we want.
+ * @return {!(Array<!Element>|NodeList<!Element>)} An array or array-like list
+ *     of just the element children of the given element.
+ */
+export const getChildren = function(element) {
+  'use strict';
+  // We check if the children attribute is supported for child elements
+  // since IE8 misuses the attribute by also including comments.
+  if (element.children != undefined) {
+    return element.children;
+  }
+  // Fall back to manually filtering the element's child nodes.
+  return Array.prototype.filter.call(element.childNodes, function(node) {
+    return node.nodeType == goog.dom.NodeType.ELEMENT_NODE;
+  });
+};
+

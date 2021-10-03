@@ -106,7 +106,7 @@ export const FieldLexicalVariable = function(varname) {
 };
 
 // FieldLexicalVariable is a subclass of FieldDropdown.
-goog.inherits(FieldLexicalVariable, Blockly.FieldDropdown);
+Blockly.utils.object.inherits(FieldLexicalVariable, Blockly.FieldDropdown);
 
 /**
  * Set the variable name.

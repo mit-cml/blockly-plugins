@@ -14,6 +14,8 @@
 'use strict';
 
 import * as Blockly from 'blockly';
+import * as Utilities from '../utilities';
+
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
   provide: (_) => {
@@ -27,25 +29,6 @@ const goog = {
     assertObject: (_) => {
     },
   },
-};
-
-/**
- * Returns an array containing just the element children of the given element.
- * @param {Element} element The element whose element children we want.
- * @return {!(Array<!Element>|NodeList<!Element>)} An array or array-like list
- *     of just the element children of the given element.
- */
-goog.dom.getChildren = function(element) {
-  'use strict';
-  // We check if the children attribute is supported for child elements
-  // since IE8 misuses the attribute by also including comments.
-  if (element.children != undefined) {
-    return element.children;
-  }
-  // Fall back to manually filtering the element's child nodes.
-  return Array.prototype.filter.call(element.childNodes, function(node) {
-    return node.nodeType == goog.dom.NodeType.ELEMENT_NODE;
-  });
 };
 
 Blockly.utils.addClass = Blockly.utils.dom.addClass;
@@ -84,7 +67,7 @@ export const FieldFlydown =
       FieldFlydown.superClass_.constructor.call(
           this, name, opt_changeHandler);
     };
-goog.inherits(FieldFlydown, Blockly.FieldTextInput);
+Blockly.utils.object.inherits(FieldFlydown, Blockly.FieldTextInput);
 
 /**
  * Milliseconds to wait before showing flydown after mouseover event on flydown
@@ -226,7 +209,7 @@ FieldFlydown.prototype.showFlydown_ = function() {
   const blocksDom = Blockly.Xml.textToDom(blocksXMLText);
   // [lyn, 11/10/13] Use goog.dom.getChildren rather than .children or
   //    .childNodes to make this code work across browsers.
-  const blocksXMLList = goog.dom.getChildren(blocksDom);
+  const blocksXMLList = Utilities.getChildren(blocksDom);
 
   const xy = Blockly.getMainWorkspace().getSvgXY(this.borderRect_);
   const borderBBox = this.borderRect_.getBBox();

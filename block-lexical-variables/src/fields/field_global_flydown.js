@@ -46,7 +46,7 @@ export const FieldGlobalFlydown = function(name, displayLocation) {
       // rename all references to this global variable
       LexicalVariable.renameGlobal);
 };
-goog.inherits(FieldGlobalFlydown, FieldFlydown);
+Blockly.utils.object.inherits(FieldGlobalFlydown, FieldFlydown);
 
 FieldGlobalFlydown.prototype.fieldCSSClassName =
     'blocklyFieldParameter';

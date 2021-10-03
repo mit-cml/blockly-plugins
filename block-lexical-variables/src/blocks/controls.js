@@ -44,6 +44,7 @@ import {
   FieldLexicalVariable,
   LexicalVariable,
 } from '../fields/field_lexical_variable';
+import * as Utilities from '../utilities';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -77,8 +78,8 @@ Blockly.Blocks['controls_forRange'] = {
     // [lyn, 11/30/12] Changed variable to be text input box that does renaming
     // right (i.e., avoids variable capture)
     this.appendValueInput('START')
-        .setCheck(Blockly.Blocks.Utilities.yailTypeToBlocklyType('number',
-            Blockly.Blocks.Utilities.INPUT))
+        .setCheck(Utilities.yailTypeToBlocklyType('number',
+            Utilities.INPUT))
         .appendField(Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_ITEM)
         .appendField(new FieldParameterFlydown(
             Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_VAR, true,
@@ -86,13 +87,13 @@ Blockly.Blocks['controls_forRange'] = {
         .appendField(Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_START)
         .setAlign(Blockly.ALIGN_RIGHT);
     this.appendValueInput('END')
-        .setCheck(Blockly.Blocks.Utilities.yailTypeToBlocklyType('number',
-            Blockly.Blocks.Utilities.INPUT))
+        .setCheck(Utilities.yailTypeToBlocklyType('number',
+            Utilities.INPUT))
         .appendField(Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_END)
         .setAlign(Blockly.ALIGN_RIGHT);
     this.appendValueInput('STEP')
-        .setCheck(Blockly.Blocks.Utilities.yailTypeToBlocklyType('number',
-            Blockly.Blocks.Utilities.INPUT))
+        .setCheck(Utilities.yailTypeToBlocklyType('number',
+            Utilities.INPUT))
         .appendField(Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_STEP)
         .setAlign(Blockly.ALIGN_RIGHT);
     this.appendStatementInput('DO')
@@ -202,8 +203,8 @@ Blockly.Blocks['controls_forEach'] = {
     // [lyn, 11/29/12] Changed variable to be text input box that does renaming
     // right (i.e., avoids variable capture)
     this.appendValueInput('LIST')
-        .setCheck(Blockly.Blocks.Utilities.yailTypeToBlocklyType('list',
-            Blockly.Blocks.Utilities.INPUT))
+        .setCheck(Utilities.yailTypeToBlocklyType('list',
+            Utilities.INPUT))
         .appendField(Blockly.Msg.LANG_CONTROLS_FOREACH_INPUT_ITEM)
         .appendField(new FieldParameterFlydown(
             Blockly.Msg.LANG_CONTROLS_FOREACH_INPUT_VAR,

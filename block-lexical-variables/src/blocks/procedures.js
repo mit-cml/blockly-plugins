@@ -89,6 +89,7 @@ import {
   LexicalVariable,
 } from '../fields/field_lexical_variable';
 import {FieldNoCheckDropdown} from '../fields/field_nocheck_dropdown';
+import * as Utilities from '../utilities';
 
 // TODO: Maybe make a single importable goog compatibility object
 const goog = {
@@ -387,7 +388,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
   },
   domToMutation: function(xmlElement) {
     const params = [];
-    const children = goog.dom.getChildren(xmlElement);
+    const children = Utilities.getChildren(xmlElement);
     for (let x = 0, childNode; childNode = children[x]; x++) {
       if (childNode.nodeName.toLowerCase() == 'arg') {
         params.push(childNode.getAttribute('name'));
@@ -953,7 +954,7 @@ Blockly.Blocks['procedures_callnoreturn'] = {
     // [lyn, 10/27/13] Significantly cleaned up this code. Always take arg
     // names from xmlElement. Do not attempt to find definition.
     this.arguments_ = [];
-    const children = goog.dom.getChildren(xmlElement);
+    const children = Utilities.getChildren(xmlElement);
     for (let x = 0, childNode; childNode = children[x]; x++) {
       if (childNode.nodeName.toLowerCase() == 'arg') {
         this.arguments_.push(childNode.getAttribute('name'));

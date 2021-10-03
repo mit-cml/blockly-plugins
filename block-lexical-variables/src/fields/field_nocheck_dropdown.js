@@ -35,7 +35,7 @@ export const FieldNoCheckDropdown = function(...args) {
   Blockly.FieldDropdown.apply(this, args);
 };
 
-goog.inherits(FieldNoCheckDropdown, Blockly.FieldDropdown);
+Blockly.utils.object.inherits(FieldNoCheckDropdown, Blockly.FieldDropdown);
 
 FieldNoCheckDropdown.prototype.doClassValidation_ = function(
     opt_newValue) {
