@@ -36,10 +36,6 @@ Blockly.WorkspaceSvg.prototype.getTopWorkspace = function() {
   return parent;
 };
 
-Blockly.WorkspaceSvg.prototype.hideChaff = function() {
-  this.flydown_ && this.flydown_.hide();
-};
-
 Blockly.WorkspaceSvg.prototype.getWarningHandler = function() {
   return WarningHandler;
 };

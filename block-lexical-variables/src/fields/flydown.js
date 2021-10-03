@@ -105,6 +105,8 @@ Flydown.prototype.setCSSClass = function(newCSSClassName) {
 Flydown.prototype.init = function(workspace) {
   // Flydowns have no scrollbar
   Blockly.Flyout.prototype.init.call(this, workspace, false);
+  workspace.getComponentManager().addCapability(this.id,
+      Blockly.ComponentManager.Capability.AUTOHIDEABLE);
 };
 
 /**
@@ -269,6 +271,10 @@ Flydown.prototype.hide = function() {
     FieldFlydown.openFieldFlydown_ = null;
   }
   this.shouldHide = true;
+};
+
+Flydown.prototype.autoHide = function() {
+  this.hide();
 };
 
 // Note: nothing additional beyond flyout disposal needs to be done to dispose
