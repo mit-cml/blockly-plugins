@@ -139,7 +139,7 @@ export const removeProcedureValues = function(name, workspace) {
 /**
  * Rename a procedure definition to a new name.
  *
- * @this AI.Blockly.FieldProcedureName
+ * @this FieldProcedureName
  * @param {!string} newName New name for the procedure represented by the
  *     field's source block.
  * @return {string} The new, validated name of the block.

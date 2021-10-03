@@ -30,20 +30,18 @@ goog.provide('AI.Blockly.FieldProcedureName');
 
 goog.require('Blockly.FieldTextInput');
 
-export const AI = {Blockly: {}};
-
 /**
  * FieldProcedureName is a specialization of {@link Blockly.FieldTextInput}
- * that handles renaming procedures in the {@link AI.Blockly.ProcedureDatabase}
+ * that handles renaming procedures in the {@link ProcedureDatabase}
  * when the procedure's name is changed.
  * @param {?string} text
  * @constructor
  */
-AI.Blockly.FieldProcedureName = function(text) {
-  AI.Blockly.FieldProcedureName.superClass_.constructor.call(this, text,
+export const FieldProcedureName = function(text) {
+  FieldProcedureName.superClass_.constructor.call(this, text,
       ProcedureUtils.renameProcedure);
 };
-goog.inherits(AI.Blockly.FieldProcedureName, Blockly.FieldTextInput);
+goog.inherits(FieldProcedureName, Blockly.FieldTextInput);
 
 /**
  * Set the value of the field.
@@ -52,11 +50,11 @@ goog.inherits(AI.Blockly.FieldProcedureName, Blockly.FieldTextInput);
  * @param {?string} newValue The new value of the field.
  * @override
  */
-AI.Blockly.FieldProcedureName.prototype.setValue = function(newValue) {
+FieldProcedureName.prototype.setValue = function(newValue) {
   const oldValue = this.getValue();
   this.oldName_ = oldValue;
   this.doValueUpdate_(newValue);
-  AI.Blockly.FieldProcedureName.superClass_.setValue.call(this, newValue);
+  FieldProcedureName.superClass_.setValue.call(this, newValue);
   newValue = this.getValue();
   if (typeof newValue === 'string' && this.sourceBlock_) {
     const procDb = this.sourceBlock_.workspace.getProcedureDatabase();
@@ -71,28 +69,28 @@ AI.Blockly.FieldProcedureName.prototype.setValue = function(newValue) {
   this.oldName_ = undefined;
 };
 /*
-AI.Blockly.FieldProcedureName.prototype.onHtmlInputChange_ = function(e) {
+FieldProcedureName.prototype.onHtmlInputChange_ = function(e) {
   if (e.type == 'keypress') {
     console.log('Suppressed keypress event');
     return;  // suppress change handling on key press
   }
   console.log("input's value is " + Blockly.FieldTextInput.htmlInput_.value);
-  AI.Blockly.FieldProcedureName.superClass_.onHtmlInputChange_.call(this, e);
+  FieldProcedureName.superClass_.onHtmlInputChange_.call(this, e);
 };
 */
 
 /**
  * Constructs a FieldProcedureName from a JSON arg object.
  * @param {!Object} options A JSON object with options.
- * @return {AI.Blockly.FieldProcedureName} The new field instance.
+ * @return {FieldProcedureName} The new field instance.
  * @package
  * @nocollapse
  */
-AI.Blockly.FieldProcedureName.fromJson = function(options) {
+FieldProcedureName.fromJson = function(options) {
   const name = Blockly.utils.replaceMessageReferences(options['name']);
-  return new AI.Blockly.FieldProcedureName(name);
+  return new FieldProcedureName(name);
 };
 
 Blockly.fieldRegistry.register('field_procedurename',
-    AI.Blockly.FieldProcedureName);
+    FieldProcedureName);
 

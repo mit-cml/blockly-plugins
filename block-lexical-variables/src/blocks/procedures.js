@@ -79,7 +79,7 @@
 
 import * as Blockly from 'blockly';
 import '../msg';
-import {AI} from '../fields/field_procedurename';
+import {FieldProcedureName} from '../fields/field_procedurename';
 import * as WarningHandler from '../warningHandler';
 import * as ProcedureUtils from '../procedure_utils';
 import {FieldParameterFlydown} from '../fields/field_parameter_flydown';
@@ -124,7 +124,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
         Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_PROCEDURE, this);
     this.appendDummyInput('HEADER')
         .appendField(Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_DEFINE)
-        .appendField(new AI.Blockly.FieldProcedureName(name), 'NAME');
+        .appendField(new FieldProcedureName(name), 'NAME');
     this.horizontalParameters = true; // horizontal by default
     this.appendStatementInput('STACK')
         .appendField(Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_DO);
@@ -227,7 +227,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     const headerInput =
         this.appendDummyInput('HEADER')
             .appendField(Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_DEFINE)
-            .appendField(new AI.Blockly.FieldProcedureName(procName), 'NAME');
+            .appendField(new FieldProcedureName(procName), 'NAME');
 
     // add an input title for each argument
     // name each input after the block and where it appears in the block to
@@ -576,7 +576,7 @@ Blockly.Blocks['procedures_defreturn'] = {
         Blockly.Msg.LANG_PROCEDURES_DEFRETURN_PROCEDURE, this);
     this.appendDummyInput('HEADER')
         .appendField(Blockly.Msg.LANG_PROCEDURES_DEFRETURN_DEFINE)
-        .appendField(new AI.Blockly.FieldProcedureName(name), 'NAME');
+        .appendField(new FieldProcedureName(name), 'NAME');
     this.horizontalParameters = true; // horizontal by default
     // this.appendIndentedValueInput('RETURN')
     //     .appendField(Blockly.Msg.LANG_PROCEDURES_DEFRETURN_RETURN);
