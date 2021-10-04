@@ -18,18 +18,6 @@
 import * as Blockly from 'blockly';
 import '../msg';
 
-// TODO: Maybe make a single importable goog compatibility object
-const goog = {
-  provide: (_) => {},
-  require: (_) => {},
-  inherits: Blockly.utils.object.inherits,
-  dom: Blockly.utils.dom,
-  userAgent: Blockly.utils.userAgent,
-  asserts: {
-    assertObject: (_) => {},
-  },
-};
-
 export const FieldNoCheckDropdown = function(...args) {
   // Call superclass constructor
   Blockly.FieldDropdown.apply(this, args);
@@ -37,8 +25,7 @@ export const FieldNoCheckDropdown = function(...args) {
 
 Blockly.utils.object.inherits(FieldNoCheckDropdown, Blockly.FieldDropdown);
 
-FieldNoCheckDropdown.prototype.doClassValidation_ = function(
-    opt_newValue) {
+FieldNoCheckDropdown.prototype.doClassValidation_ = function(opt_newValue) {
   let isValueValid = false;
   const options = this.getOptions(true);
   for (let i = 0, option; (option = options[i]); i++) {
