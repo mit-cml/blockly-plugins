@@ -16,25 +16,6 @@ import * as Blockly from 'blockly';
 import './msg';
 import * as ProcedureUtils from './procedure_utils';
 
-// TODO: Maybe make a single importable goog compatibility object
-const goog = {
-  provide: (_) => {
-  },
-  require: (_) => {
-  },
-  inherits: Blockly.utils.object.inherits,
-  dom: Blockly.utils.dom,
-  userAgent: Blockly.utils.userAgent,
-  asserts: {
-    assertObject: (_) => {
-    },
-  },
-};
-
-goog.provide('AI.Blockly.ProcedureDatabase');
-goog.require('Blockly');
-goog.require('goog.object');
-
 /**
  * ProcedureDatabase provides a per-workspace data store for manipulating
  * procedure definitions in the Blocks editor.
@@ -131,21 +112,20 @@ ProcedureDatabase.prototype.getMenuItems = function(returnValue) {
  */
 ProcedureDatabase.prototype.getDeclarationBlocks =
     function(returnValue) {
-      return goog.object.getValues(
+      return Blockly.utils.object.values(
           returnValue ? this.returnProcedures_ : this.voidProcedures_);
     };
 
-ProcedureDatabase.prototype.getDeclarationsBlocksExcept =
-    function(block) {
-      const blockArray = [];
-      goog.object.forEach(this.procedures_, function(b) {
-        if (b !== block) blockArray.push(b);
-      });
-      return blockArray;
-    };
+ProcedureDatabase.prototype.getDeclarationsBlocksExcept = function(block) {
+  const blockArray = [];
+  Blockly.utils.values(this.procedures_).forEach(function(b) {
+    if (b !== block) blockArray.push(b);
+  });
+  return blockArray;
+};
 
 ProcedureDatabase.prototype.getAllDeclarationNames = function() {
-  return goog.object.getValues(this.procedures_)
+  return Blockly.utils.values(this.procedures_)
       .map(function(block) {
         return block.getFieldValue('NAME');
       });

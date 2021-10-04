@@ -17,25 +17,6 @@ import '../msg';
 import {FieldFlydown} from './field_flydown';
 import {LexicalVariable} from './field_lexical_variable';
 
-// TODO: Maybe make a single importable goog compatibility object
-const goog = {
-  provide: (_) => {
-  },
-  require: (_) => {
-  },
-  inherits: Blockly.utils.object.inherits,
-  dom: Blockly.utils.dom,
-  userAgent: Blockly.utils.userAgent,
-  asserts: {
-    assertObject: (_) => {
-    },
-  },
-};
-
-goog.provide('AI.Blockly.FieldParameterFlydown');
-
-goog.require('AI.Blockly.FieldFlydown');
-
 /**
  * Class for a parameter declaration field with flyout menu of getter/setter
  * blocks on mouse over.

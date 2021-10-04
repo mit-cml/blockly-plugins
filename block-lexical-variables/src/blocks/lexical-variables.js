@@ -100,25 +100,6 @@ import {
 } from '../fields/field_lexical_variable';
 import * as Utilities from '../utilities';
 
-// TODO: Maybe make a single importable goog compatibility object
-const goog = {
-  provide: (_) => {
-  },
-  require: (_) => {
-  },
-  inherits: Blockly.utils.object.inherits,
-  dom: Blockly.utils.dom,
-  userAgent: Blockly.utils.userAgent,
-  asserts: {
-    assertObject: (_) => {
-    },
-  },
-};
-
-goog.provide('Blockly.Blocks.lexicalvariables');
-goog.require('Blockly.Blocks.Utilities');
-goog.require('goog.dom');
-
 delete Blockly.Blocks['global_declaration'];
 /**
  * Prototype bindings for a global variable declaration block.

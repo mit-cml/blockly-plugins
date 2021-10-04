@@ -15,27 +15,6 @@
 
 import * as Blockly from 'blockly';
 import {FieldFlydown} from './field_flydown';
-// TODO: Maybe make a single importable goog compatibility object
-const goog = {
-  provide: (_) => {
-  },
-  require: (_) => {
-  },
-  inherits: Blockly.utils.object.inherits,
-  dom: Blockly.utils.dom,
-  userAgent: Blockly.utils.userAgent,
-  asserts: {
-    assertObject: (_) => {
-    },
-  },
-};
-Blockly.utils.addClass = Blockly.utils.dom.addClass;
-Blockly.utils.removeClass = Blockly.utils.dom.removeClass;
-
-goog.require('Blockly.Flyout');
-goog.require('Blockly.VerticalFlyout');
-goog.require('Blockly.Block');
-goog.require('Blockly.Comment');
 
 /**
  * Class for a flydown.

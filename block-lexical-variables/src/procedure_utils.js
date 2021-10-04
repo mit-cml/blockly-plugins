@@ -19,21 +19,6 @@ import {
   LexicalVariable,
 } from './fields/field_lexical_variable';
 
-// TODO: Maybe make a single importable goog compatibility object
-const goog = {
-  provide: (_) => {},
-  require: (_) => {},
-  inherits: Blockly.utils.object.inherits,
-  dom: Blockly.utils.dom,
-  userAgent: Blockly.utils.userAgent,
-  asserts: {
-    assertObject: (_) => {},
-  },
-};
-
-goog.provide('Blockly.FieldProcedure');
-goog.provide('Blockly.AIProcedure');
-
 const procDefaultValue = ['', ''];
 
 export const onChange = function(procedureId) {

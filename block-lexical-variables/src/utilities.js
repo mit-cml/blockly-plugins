@@ -12,24 +12,6 @@
 import * as Blockly from 'blockly';
 import './msg';
 
-// TODO: Maybe make a single importable goog compatibility object
-const goog = {
-  provide: (_) => {
-  },
-  require: (_) => {
-  },
-  inherits: Blockly.utils.object.inherits,
-  dom: Blockly.utils.dom,
-  userAgent: Blockly.utils.userAgent,
-  asserts: {
-    assertObject: (_) => {
-    },
-  },
-};
-
-goog.provide('Blockly.Blocks.Utilities');
-goog.require('AI.Blockly.Msg');
-
 /**
  * Checks that the given otherConnection is compatible with an InstantInTime
  * connection. If the workspace is currently loading (eg the blocks are not
@@ -153,12 +135,12 @@ export const getChildren = function(element) {
   'use strict';
   // We check if the children attribute is supported for child elements
   // since IE8 misuses the attribute by also including comments.
-  if (element.children != undefined) {
+  if (element.children !== undefined) {
     return element.children;
   }
   // Fall back to manually filtering the element's child nodes.
   return Array.prototype.filter.call(element.childNodes, function(node) {
-    return node.nodeType == goog.dom.NodeType.ELEMENT_NODE;
+    return node.nodeType == Blockly.utils.dom.NodeType.ELEMENT_NODE;
   });
 };
 

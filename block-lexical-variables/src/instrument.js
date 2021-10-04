@@ -18,22 +18,6 @@
 // TODO: Maybe just delete this file and delete all the instrumentation
 // booleans since they all are set to true by default.
 
-import * as Blockly from 'blockly';
-
-// TODO: Maybe make a single importable goog compatibility object
-const goog = {
-  provide: (_) => {},
-  require: (_) => {},
-  inherits: Blockly.utils.object.inherits,
-  dom: Blockly.utils.dom,
-  userAgent: Blockly.utils.userAgent,
-  asserts: {
-    assertObject: (_) => {},
-  },
-};
-
-goog.provide('AI.Blockly.Instrument');
-
 /** Is instrumentation turned on? */
 // isOn = true;
 export let isOn = false; // [lyn, 04/08/14] Turn off for production

@@ -91,27 +91,6 @@ import {
 import {FieldNoCheckDropdown} from '../fields/field_nocheck_dropdown';
 import * as Utilities from '../utilities';
 
-// TODO: Maybe make a single importable goog compatibility object
-const goog = {
-  provide: (_) => {
-  },
-  require: (_) => {
-  },
-  inherits: Blockly.utils.object.inherits,
-  dom: Blockly.utils.dom,
-  userAgent: Blockly.utils.userAgent,
-  asserts: {
-    assertObject: (_) => {
-    },
-  },
-};
-
-goog.provide('Blockly.Blocks.procedures');
-
-goog.require('Blockly.Blocks.Utilities');
-goog.require('goog.dom');
-goog.require('AI.Blockly.FieldProcedureName');
-
 Blockly.Blocks['procedures_defnoreturn'] = {
   // Define a procedure with no return value.
   category: 'Procedures', // Procedures are handled specially.

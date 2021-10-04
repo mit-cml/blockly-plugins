@@ -46,25 +46,6 @@ import {
 } from '../fields/field_lexical_variable';
 import * as Utilities from '../utilities';
 
-// TODO: Maybe make a single importable goog compatibility object
-const goog = {
-  provide: (_) => {
-  },
-  require: (_) => {
-  },
-  inherits: Blockly.utils.object.inherits,
-  dom: Blockly.utils.dom,
-  userAgent: Blockly.utils.userAgent,
-  asserts: {
-    assertObject: (_) => {
-    },
-  },
-};
-
-goog.provide('Blockly.Blocks.control');
-
-goog.require('Blockly.Blocks.Utilities');
-
 Blockly.Blocks['controls_forRange'] = {
   // For range.
   category: 'Control',

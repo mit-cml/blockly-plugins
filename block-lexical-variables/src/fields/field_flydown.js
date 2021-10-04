@@ -16,29 +16,6 @@
 import * as Blockly from 'blockly';
 import * as Utilities from '../utilities';
 
-// TODO: Maybe make a single importable goog compatibility object
-const goog = {
-  provide: (_) => {
-  },
-  require: (_) => {
-  },
-  inherits: Blockly.utils.object.inherits,
-  dom: Blockly.utils.dom,
-  userAgent: Blockly.utils.userAgent,
-  asserts: {
-    assertObject: (_) => {
-    },
-  },
-};
-
-Blockly.utils.addClass = Blockly.utils.dom.addClass;
-Blockly.utils.removeClass = Blockly.utils.dom.removeClass;
-
-goog.provide('AI.Blockly.FieldFlydown');
-
-goog.require('Blockly.FieldTextInput');
-goog.require('Blockly.Options');
-
 /**
  * Class for a clickable parameter field.
  * @param {string} name The initial parameter name in the field.
@@ -129,13 +106,13 @@ FieldFlydown.prototype.init = function(block) {
   FieldFlydown.superClass_.init.call(this, block);
 
   // Remove inherited field css classes ...
-  Blockly.utils.removeClass(/** @type {!Element} */ (this.fieldGroup_),
+  Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.fieldGroup_),
       'blocklyEditableText');
-  Blockly.utils.removeClass(/** @type {!Element} */ (this.fieldGroup_),
+  Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.fieldGroup_),
       'blocklyNoNEditableText');
   // ... and add new ones, so that look and feel of flyout fields can be
   // customized
-  Blockly.utils.addClass(/** @type {!Element} */ (this.fieldGroup_),
+  Blockly.utils.dom.addClass(/** @type {!Element} */ (this.fieldGroup_),
       this.fieldCSSClassName);
 
   this.mouseOverWrapper_ =
@@ -275,7 +252,6 @@ function callAllValidators(field, text) {
 // which is incompatible with how our validators work (we expect to be called
 // before the change since in order to find the old references to be renamed).
 FieldFlydown.prototype.onHtmlInputChange_ = function(e) {
-  goog.asserts.assertObject(this.htmlInput_);
   const htmlInput = this.htmlInput_;
   const text = htmlInput.value;
   if (text !== htmlInput.oldValue_) {
@@ -285,12 +261,12 @@ FieldFlydown.prototype.onHtmlInputChange_ = function(e) {
       valid = callAllValidators(this, htmlInput.value);
     }
     if (valid === null) {
-      Blockly.utils.addClass(htmlInput, 'blocklyInvalidInput');
+      Blockly.utils.dom.addClass(htmlInput, 'blocklyInvalidInput');
     } else {
-      Blockly.utils.removeClass(htmlInput, 'blocklyInvalidInput');
+      Blockly.utils.dom.removeClass(htmlInput, 'blocklyInvalidInput');
       this.doValueUpdate_(valid);
     }
-  } else if (goog.userAgent.WEBKIT) {
+  } else if (Blockly.utils.userAgent.WEBKIT) {
     // Cursor key.  Render the source block to show the caret moving.
     // Chrome only (version 26, OS X).
     this.sourceBlock_.render();

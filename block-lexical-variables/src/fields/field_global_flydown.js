@@ -16,22 +16,6 @@ import '../msg';
 import {FieldFlydown} from './field_flydown';
 import {LexicalVariable} from './field_lexical_variable';
 
-// TODO: Maybe make a single importable goog compatibility object
-const goog = {
-  provide: (_) => {},
-  require: (_) => {},
-  inherits: Blockly.utils.object.inherits,
-  dom: Blockly.utils.dom,
-  userAgent: Blockly.utils.userAgent,
-  asserts: {
-    assertObject: (_) => {},
-  },
-};
-
-goog.provide('AI.Blockly.FieldGlobalFlydown');
-
-goog.require('AI.Blockly.FieldFlydown');
-
 /**
  * Class for a clickable global variable declaration field.
  * @param name
