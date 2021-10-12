@@ -24,7 +24,7 @@
     "lexical-variables",
     "local-variables"
   ],
-  "homepage": "https://github.com/mit-mcl/blockly-plugins/tree/master/block-lexical-variables#readme",
+  "homepage": "https://github.com/mit-cml/blockly-plugins/tree/main/block-lexical-variables#readme",
   "bugs": {
     "url": "https://github.com/mit-mcl/blockly-plugins/issues"
   },
