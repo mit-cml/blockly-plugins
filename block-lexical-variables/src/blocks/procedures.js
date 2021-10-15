@@ -100,11 +100,9 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     // Let the theme determine the color.
     // this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
     this.setStyle('procedure_blocks');
-    const name = Blockly.Procedures.findLegalName(
+    const legalName = Blockly.Procedures.findLegalName(
         Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_PROCEDURE, this);
-    this.appendDummyInput('HEADER')
-        .appendField(Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_DEFINE)
-        .appendField(new FieldProcedureName(name), 'NAME');
+    this.createHeader(legalName);
     this.horizontalParameters = true; // horizontal by default
     this.appendStatementInput('STACK')
         .appendField(Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_DO);
@@ -116,6 +114,11 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     // Other methods guarantee the invariant that this variable contains
     // the list of names declared in the local declaration block.
     this.warnings = [{name: 'checkEmptySockets', sockets: ['STACK']}];
+  },
+  createHeader: function(procName) {
+    return this.appendDummyInput('HEADER')
+        .appendField(Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_DEFINE)
+        .appendField(new FieldProcedureName(procName), 'NAME');
   },
   onchange: function() {
     // ensure arguments_ is in sync
@@ -204,10 +207,11 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     this.inputList = [];
 
     // console.log("updateParams_: create input HEADER");
-    const headerInput =
-        this.appendDummyInput('HEADER')
-            .appendField(Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_DEFINE)
-            .appendField(new FieldProcedureName(procName), 'NAME');
+    const headerInput = this.createHeader(procName);
+    // const headerInput =
+    //     this.appendDummyInput('HEADER')
+    //         .appendField(Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_DEFINE)
+    //         .appendField(new FieldProcedureName(procName), 'NAME');
 
     // add an input title for each argument
     // name each input after the block and where it appears in the block to
@@ -1031,3 +1035,46 @@ Blockly.Blocks['procedures_callreturn'] = {
       Blockly.Blocks.procedures_callnoreturn.removeProcedureValue,
 };
 
+Blockly.Blocks['procedures_lambda'] = {
+  init: function() {
+    this.createHeader();
+    this.appendStatementInput('STACK')
+        .setCheck(null);
+    this.horizontalParameters = true; // horizontal by default
+    this.setOutput(true, 'procedure');
+    this.setColour(230);
+    this.setTooltip('Makes a procedure!');
+    this.setHelpUrl('http://www.r6rs.org/final/html/r6rs/r6rs-Z-H-14.html#node_idx_364');
+    // this.appendDummyInput('HEADER')
+    //     .appendField(fieldProcName, 'NAME');
+    this.setStyle('procedure_blocks');
+    this.setMutator(new Blockly.Mutator(['procedures_mutatorarg']));
+    this.arguments_ = [];
+    this.warnings = [{name: 'checkEmptySockets', sockets: ['STACK']}];
+  },
+  createHeader: function(ignored) {
+    return this.appendDummyInput('HEADER').appendField('λ');
+  },
+  onchange: Blockly.Blocks.procedures_defnoreturn.onchange,
+  updateParams_: Blockly.Blocks.procedures_defnoreturn.updateParams_,
+  parameterFlydown: Blockly.Blocks.procedures_defnoreturn.parameterFlydown,
+  setParameterOrientation:
+    Blockly.Blocks.procedures_defnoreturn.setParameterOrientation,
+  mutationToDom: Blockly.Blocks.procedures_defnoreturn.mutationToDom,
+  domToMutation: Blockly.Blocks.procedures_defnoreturn.domToMutation,
+  decompose: Blockly.Blocks.procedures_defnoreturn.decompose,
+  compose: Blockly.Blocks.procedures_defnoreturn.compose,
+  dispose: Blockly.Blocks.procedures_defnoreturn.dispose,
+  getProcedureDef: Blockly.Blocks.procedures_defnoreturn.getProcedureDef,
+  getVars: Blockly.Blocks.procedures_defnoreturn.getVars,
+  declaredNames: Blockly.Blocks.procedures_defnoreturn.declaredNames,
+  declaredVariables: Blockly.Blocks.procedures_defnoreturn.declaredVariables,
+  renameVar: Blockly.Blocks.procedures_defnoreturn.renameVar,
+  renameVars: Blockly.Blocks.procedures_defnoreturn.renameVars,
+  renameBound: Blockly.Blocks.procedures_defnoreturn.renameBound,
+  renameFree: Blockly.Blocks.procedures_defnoreturn.renameFree,
+  freeVariables: Blockly.Blocks.procedures_defnoreturn.freeVariables,
+  blocksInScope: Blockly.Blocks.procedures_defnoreturn.blocksInScope,
+  customContextMenu: Blockly.Blocks.procedures_defnoreturn.customContextMenu,
+  getParameters: Blockly.Blocks.procedures_defnoreturn.getParameters,
+};
