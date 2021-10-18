@@ -961,7 +961,9 @@ LexicalVariable.checkIdentifier = function(ident) {
   // Character.isJavaIdentifierPart(int) Note: to take complement of character
   // set, put ^ first. Note: to include '-' in character set, put it first or
   // right after ^
-  const legalRegexp = /^[^-0-9!&%^/>=<`'"#:;,\\*+.()|{}[\] ][^-!&%^/>=<'"#:;,\\*+.()|{}[\] ]*$/;
+  const legalStartCharRegExp = '^[^-0-9!&%^/>=<`\'"#:;,\\\\*+.()|{}[\\] ]';
+  const legalRestCharsRegExp = '[^-!&%^/>=<\'"#:;,\\\\*+.()|{}[\\] ]*$';
+  const legalRegexp = new RegExp(legalStartCharRegExp + legalRestCharsRegExp);
   // " Make Emacs Happy
   const isLegal = transformed.search(legalRegexp) == 0;
   return {isLegal: isLegal, transformed: transformed};
