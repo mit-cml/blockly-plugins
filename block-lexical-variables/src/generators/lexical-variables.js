@@ -21,7 +21,7 @@ function getVariableName(name) {
       prefix === Shared.GLOBAL_KEYWORD) {
     return unprefixedName;
   } else {
-    return (Shared.possiblyPrefixYailNameWith(prefix))(unprefixedName);
+    return (Shared.possiblyPrefixGeneratedVarName(prefix))(unprefixedName);
   }
 }
 

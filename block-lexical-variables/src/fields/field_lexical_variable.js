@@ -223,18 +223,18 @@ FieldLexicalVariable.getNamesInScope = function(block) {
  */
 // [lyn, 11/15/13] Factored this out from getNamesInScope to work on any block
 FieldLexicalVariable.getLexicalNamesInScope = function(block) {
-  const procedureParamNames = []; // from procedure/function declarations
-  const loopNames = []; // from for loops
-  const rangeNames = []; // from range loops
-  const localNames = []; // from local variable declaration
+  // const procedureParamNames = []; // from procedure/function declarations
+  // const loopNames = []; // from for loops
+  // const rangeNames = []; // from range loops
+  // const localNames = []; // from local variable declaration
   let allLexicalNames = []; // all non-global names
   const innermostPrefix = {}; // paulmw's mechanism for keeping track of
   // innermost prefix in case
   // where prefix is an annotation rather than a separate namespace
   let parent;
   let child;
-  let params;
-  let i;
+  // let params;
+  // let i;
 
   // [lyn, 12/24/2012] Abstract over name handling
   /**
@@ -243,11 +243,19 @@ FieldLexicalVariable.getLexicalNamesInScope = function(block) {
    * @param prefix
    */
   function rememberName(name, list, prefix) {
-    list.push(name);
-    if (!innermostPrefix[name]) {
-      // only set this if not already set from an inner scope.
-      innermostPrefix[name] = prefix;
+    let fullName;
+    if (!Shared.usePrefixInCode) { // Only a single namespace
+      if (!innermostPrefix[name]) {
+        // only set this if not already set from an inner scope.
+        innermostPrefix[name] = prefix;
+      }
+      fullName =
+          (Shared.possiblyPrefixMenuNameWith(innermostPrefix[name]))(name);
+    } else { // multiple namespaces distinguished by prefixes
+      // note: correctly handles case where some prefixes are the same
+      fullName = (Shared.possiblyPrefixMenuNameWith(prefix))(name);
     }
+    list.push(fullName);
   }
 
   child = block;
@@ -255,73 +263,80 @@ FieldLexicalVariable.getLexicalNamesInScope = function(block) {
     parent = child.getParent();
     if (parent) {
       while (parent) {
+        if (parent.withLexicalVarsAndPrefix) {
+          parent.withLexicalVarsAndPrefix(child, (lexVar, prefix) => {
+            rememberName(lexVar, allLexicalNames, prefix);
+          });
+        }
         // TODO: Maybe change this logic to instead call a function on the
         // block.
-        if ((parent.type === 'procedures_defnoreturn') ||
-            (parent.type === 'procedures_defreturn')) {
-          params = parent.declaredNames(); // [lyn, 10/13/13] Names from block,
-          // not arguments_ instance var
-          for (i = 0; i < params.length; i++) {
-            rememberName(params[i], procedureParamNames,
-                Shared.procedureParameterPrefix);
-          }
-        } else if ((parent.type === 'controls_forEach') &&
-            (parent.getInputTargetBlock('DO') == child)) {
-          // Only DO is in scope, not other inputs!
-          const loopName = parent.getFieldValue('VAR');
-          rememberName(loopName, loopNames, Shared.loopParameterPrefix);
-        } else if ((parent.type === 'controls_forRange' ||
-                    parent.type === 'controls_for') &&
-            (parent.getInputTargetBlock('DO') == child)) {
-          // Only DO is in scope, not other inputs!
-          const rangeName = parent.getFieldValue('VAR');
-          rememberName(rangeName, rangeNames, Shared.loopRangeParameterPrefix);
-        } else if ((parent.type === 'local_declaration_expression' &&
-                parent.getInputTargetBlock('RETURN') == child) ||
-            // only body is in scope of names
-            (parent.type === 'local_declaration_statement' &&
-                parent.getInputTargetBlock('STACK') == child)) {
-          params = parent.declaredNames(); // [lyn, 10/13/13] Names from block,
-          // not localNames_ instance var
-          for (i = 0; i < params.length; i++) {
-            rememberName(params[i], localNames, Shared.localNamePrefix);
-          }
-        }
+        // if ((parent.type === 'procedures_defnoreturn') ||
+        //     (parent.type === 'procedures_defreturn')) {
+        //   params = parent.declaredNames(); // [lyn, 10/13/13] Names from block,
+        //   // not arguments_ instance var
+        //   for (i = 0; i < params.length; i++) {
+        //     rememberName(params[i], procedureParamNames,
+        //         Shared.procedureParameterPrefix);
+        //   }
+        // } else if ((parent.type === 'controls_forEach') &&
+        //     (parent.getInputTargetBlock('DO') == child)) {
+        //   // Only DO is in scope, not other inputs!
+        //   const loopName = parent.getFieldValue('VAR');
+        //   rememberName(loopName, loopNames, Shared.loopParameterPrefix);
+        // } else if ((parent.type === 'controls_forRange' ||
+        //             parent.type === 'controls_for') &&
+        //     (parent.getInputTargetBlock('DO') == child)) {
+        //   // Only DO is in scope, not other inputs!
+        //   const rangeName = parent.getFieldValue('VAR');
+        //   rememberName(rangeName, rangeNames, Shared.loopRangeParameterPrefix);
+        // } else if ((parent.type === 'local_declaration_expression' &&
+        //         parent.getInputTargetBlock('RETURN') == child) ||
+        //     // only body is in scope of names
+        //     (parent.type === 'local_declaration_statement' &&
+        //         parent.getInputTargetBlock('STACK') == child)) {
+        //   params = parent.declaredNames(); // [lyn, 10/13/13] Names from block,
+        //   // not localNames_ instance var
+        //   for (i = 0; i < params.length; i++) {
+        //     rememberName(params[i], localNames, Shared.localNamePrefix);
+        //   }
+        // }
         child = parent;
         parent = parent.getParent(); // keep moving up the chain.
       }
     }
   }
 
-  if (!Shared.usePrefixInCode) { // Only a single namespace
-    allLexicalNames = procedureParamNames.concat(loopNames)
-        .concat(rangeNames)
-        .concat(localNames);
-    allLexicalNames =
-        LexicalVariable.sortAndRemoveDuplicates(allLexicalNames);
-    // Add prefix as annotation only when Shared.showPrefixToUser is true
-    allLexicalNames = allLexicalNames.map(
-        function(name) {
-          // return ((possiblyPrefixNameWith(Shared.menuSeparator))
-          // (innermostPrefix[name])) (name);
-          return (Shared.possiblyPrefixMenuNameWith(innermostPrefix[name]))(
-              name);
-        },
-    );
-  } else { // multiple namespaces distinguished by prefixes
-    // note: correctly handles case where some prefixes are the same
-    allLexicalNames =
-        procedureParamNames.map(
-            Shared.possiblyPrefixMenuNameWith(Shared.procedureParameterPrefix))
-            .concat(loopNames.map(
-                Shared.possiblyPrefixMenuNameWith(Shared.loopParameterPrefix)))
-            .concat(rangeNames.map(Shared.possiblyPrefixMenuNameWith(
-                Shared.loopRangeParameterPrefix)))
-            .concat(localNames.map(
-                Shared.possiblyPrefixMenuNameWith(Shared.localNamePrefix)));
-    allLexicalNames =
-        LexicalVariable.sortAndRemoveDuplicates(allLexicalNames);
-  }
+  // if (!Shared.usePrefixInCode) { // Only a single namespace
+  //   allLexicalNames = allLexicalNames
+  //       .concat(loopNames)
+  //       .concat(rangeNames)
+  //       .concat(localNames);
+  //   allLexicalNames =
+  //       LexicalVariable.sortAndRemoveDuplicates(allLexicalNames);
+  //   // Add prefix as annotation only when Shared.showPrefixToUser is true
+  //   allLexicalNames = allLexicalNames.map(
+  //       function(name) {
+  //         // return ((possiblyPrefixNameWith(Shared.menuSeparator))
+  //         // (innermostPrefix[name])) (name);
+  //         return (Shared.possiblyPrefixMenuNameWith(innermostPrefix[name]))(
+  //             name);
+  //       },
+  //   );
+  // } else { // multiple namespaces distinguished by prefixes
+  //   // note: correctly handles case where some prefixes are the same
+  //   allLexicalNames =
+  //       procedureParamNames.map(
+  //           Shared.possiblyPrefixMenuNameWith(Shared.procedureParameterPrefix))
+  //           .concat(loopNames.map(
+  //               Shared.possiblyPrefixMenuNameWith(Shared.loopParameterPrefix)))
+  //           .concat(rangeNames.map(Shared.possiblyPrefixMenuNameWith(
+  //               Shared.loopRangeParameterPrefix)))
+  //           .concat(localNames.map(
+  //               Shared.possiblyPrefixMenuNameWith(Shared.localNamePrefix)));
+  //   allLexicalNames =
+  //       LexicalVariable.sortAndRemoveDuplicates(allLexicalNames);
+  // }
+  allLexicalNames = LexicalVariable.sortAndRemoveDuplicates(allLexicalNames);
   return allLexicalNames.map(function(name) {
     return [name, name];
   });
@@ -782,21 +797,22 @@ LexicalVariable.renameParamWithoutRenamingCapturables =
       sourceBlock.declaredNames ? sourceBlock.declaredNames() : [];
       let sourcePrefix = '';
       if (Shared.showPrefixToUser) {
-        const type = sourceBlock.type;
-        if (type === 'procedures_mutatorarg' ||
-            type === 'procedures_defnoreturn' ||
-            type === 'procedures_defreturn') {
-          sourcePrefix = Shared.procedureParameterPrefix;
-        } else if (type === 'controls_forEach') {
-          sourcePrefix = Shared.loopParameterPrefix;
-        } else if (type === 'controls_forRange' ||
-                   type === 'controls_for') {
-          sourcePrefix = Shared.loopRangeParameterPrefix;
-        } else if (type === 'local_declaration_statement' ||
-            type === 'local_declaration_expression' ||
-            type === 'local_mutatorarg') {
-          sourcePrefix = Shared.localNamePrefix;
-        }
+        sourcePrefix = this.lexicalVarPrefix;
+        // const type = sourceBlock.type;
+        // if (type === 'procedures_mutatorarg' ||
+        //     type === 'procedures_defnoreturn' ||
+        //     type === 'procedures_defreturn') {
+        //   sourcePrefix = Shared.procedureParameterPrefix;
+        // } else if (type === 'controls_forEach') {
+        //   sourcePrefix = Shared.loopParameterPrefix;
+        // } else if (type === 'controls_forRange' ||
+        //            type === 'controls_for') {
+        //   sourcePrefix = Shared.loopRangeParameterPrefix;
+        // } else if (type === 'local_declaration_statement' ||
+        //     type === 'local_declaration_expression' ||
+        //     type === 'local_mutatorarg') {
+        //   sourcePrefix = Shared.localNamePrefix;
+        // }
       }
       const helperInfo =
           LexicalVariable.renameParamWithoutRenamingCapturablesInfo(

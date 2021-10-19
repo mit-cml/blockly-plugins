@@ -99,6 +99,7 @@ import {
   LexicalVariable,
 } from '../fields/field_lexical_variable';
 import * as Utilities from '../utilities';
+import * as Shared from '../shared';
 
 delete Blockly.Blocks['global_declaration'];
 /**
@@ -302,6 +303,16 @@ Blockly.Blocks['local_declaration_statement'] = {
     this.setNextStatement(true);
 
     this.setTooltip(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_TOOLTIP);
+    this.lexicalVarPrefix = Shared.localNamePrefix;
+  },
+  withLexicalVarsAndPrefix: function(child, proc) {
+    if (this.getInputTargetBlock(this.bodyInputName) == child) {
+      const localNames = this.declaredNames();
+      // not arguments_ instance var
+      for (let i = 0; i < localNames.length; i++) {
+        proc(localNames[i], this.lexicalVarPrefix);
+      }
+    }
   },
   initLocals: function() {
     // Let the theme determine the color.
@@ -690,6 +701,8 @@ Blockly.Blocks['local_declaration_expression'] = {
     this.setTooltip(
         Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_EXPRESSION_TOOLTIP);
   },
+  withLexicalVarsAndPrefix:
+    Blockly.Blocks.local_declaration_statement.withLexicalVarsAndPrefix,
   onchange: Blockly.Blocks.local_declaration_statement.onchange,
   mutationToDom: Blockly.Blocks.local_declaration_statement.mutationToDom,
   domToMutation: Blockly.Blocks.local_declaration_statement.domToMutation,
@@ -766,6 +779,7 @@ Blockly.Blocks['local_mutatorarg'] = {
     this.setNextStatement(true);
     this.setTooltip('');
     this.contextMenu = false;
+    this.lexicalVarPrefix = Shared.localNamePrefix;
   },
   getContainerBlock: function() {
     let parent = this.getParent();

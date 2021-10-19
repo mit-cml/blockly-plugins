@@ -45,6 +45,7 @@ import {
   LexicalVariable,
 } from '../fields/field_lexical_variable';
 import * as Utilities from '../utilities';
+import * as Shared from '../shared';
 
 Blockly.Blocks['controls_forRange'] = {
   // For range.
@@ -83,6 +84,13 @@ Blockly.Blocks['controls_forRange'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setTooltip(Blockly.Msg.LANG_CONTROLS_FORRANGE_TOOLTIP);
+    this.lexicalVarPrefix = Shared.loopRangeParameterPrefix;
+  },
+  withLexicalVarsAndPrefix: function(child, proc) {
+    if (this.getInputTargetBlock('DO') == child) {
+      const lexVar = this.getFieldValue('VAR');
+      proc(lexVar, this.lexicalVarPrefix);
+    }
   },
   getVars: function() {
     return [this.getFieldValue('VAR')];
@@ -197,7 +205,10 @@ Blockly.Blocks['controls_forEach'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setTooltip(Blockly.Msg.LANG_CONTROLS_FOREACH_TOOLTIP);
+    this.lexicalVarPrefix = Shared.loopParameterPrefix;
   },
+  withLexicalVarsAndPrefix:
+    Blockly.Blocks.controls_forRange.withLexicalVarsAndPrefix,
   getVars: function() {
     return [this.getFieldValue('VAR')];
   },
