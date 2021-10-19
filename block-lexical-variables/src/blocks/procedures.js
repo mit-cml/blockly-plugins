@@ -627,6 +627,7 @@ Blockly.Blocks['procedures_mutatorcontainer'] = {
     this.appendStatementInput('STACK');
     this.setTooltip(Blockly.Msg.LANG_PROCEDURES_MUTATORCONTAINER_TOOLTIP);
     this.contextMenu = false;
+    this.mustNotRenameCapturables = true;
   },
   // [lyn. 11/24/12] Set procBlock associated with this container.
   setProcBlock: function(procBlock) {
@@ -687,6 +688,7 @@ Blockly.Blocks['procedures_mutatorarg'] = {
     this.setTooltip(Blockly.Msg.LANG_PROCEDURES_MUTATORARG_TOOLTIP);
     this.contextMenu = false;
     this.lexicalVarPrefix = Shared.procedureParameterPrefix;
+    this.mustNotRenameCapturables = true;
   },
   // [lyn, 11/24/12] Return the container this mutator arg is in, or null if
   // it's not in one. Dynamically calculate this by walking up chain, because

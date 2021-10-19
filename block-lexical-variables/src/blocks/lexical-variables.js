@@ -125,6 +125,9 @@ Blockly.Blocks['global_declaration'] = {
     const field = this.getField('NAME');
     return field ? [field.getText()] : [];
   },
+  getGlobalNames: function() {
+    return this.getVars()
+  },
   renameVar: function(oldName, newName) {
     if (Blockly.Names.equals(oldName, this.getFieldValue('NAME'))) {
       this.setFieldValue(newName, 'NAME');
@@ -738,6 +741,7 @@ Blockly.Blocks['local_mutatorcontainer'] = {
     this.appendStatementInput('STACK');
     this.setTooltip(Blockly.Msg.LANG_VARIABLES_LOCAL_MUTATOR_CONTAINER_TOOLTIP);
     this.contextMenu = false;
+    this.mustNotRenameCapturables = true;
   },
   // [lyn. 11/24/12] Set procBlock associated with this container.
   setDefBlock: function(defBlock) {
@@ -780,6 +784,7 @@ Blockly.Blocks['local_mutatorarg'] = {
     this.setTooltip('');
     this.contextMenu = false;
     this.lexicalVarPrefix = Shared.localNamePrefix;
+    this.mustNotRenameCapturables = true;
   },
   getContainerBlock: function() {
     let parent = this.getParent();

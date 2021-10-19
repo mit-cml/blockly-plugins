@@ -161,9 +161,9 @@ FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
     }
     for (let i = 0; i < blocks.length; i++) {
       const block = blocks[i];
-      if ((block.type === 'global_declaration') &&
+      if ((block.getGlobalNames) &&
           (block != optExcludedBlock)) {
-        globals.push(block.getFieldValue('NAME'));
+        globals.push(...block.getGlobalNames());
       }
     }
   }
@@ -656,7 +656,7 @@ LexicalVariable.renameParam = function(newName) {
 LexicalVariable.renameParamFromTo =
     function(block, oldName, newName, renameCapturables) {
       // Handle mutator blocks specially
-      if (block.type && block.type.indexOf('mutator') != -1) {
+      if (block.mustNotRenameCapturables) {
         return LexicalVariable.renameParamWithoutRenamingCapturables(
             block, oldName, newName, []);
       } else if (renameCapturables) {
@@ -798,21 +798,6 @@ LexicalVariable.renameParamWithoutRenamingCapturables =
       let sourcePrefix = '';
       if (Shared.showPrefixToUser) {
         sourcePrefix = this.lexicalVarPrefix;
-        // const type = sourceBlock.type;
-        // if (type === 'procedures_mutatorarg' ||
-        //     type === 'procedures_defnoreturn' ||
-        //     type === 'procedures_defreturn') {
-        //   sourcePrefix = Shared.procedureParameterPrefix;
-        // } else if (type === 'controls_forEach') {
-        //   sourcePrefix = Shared.loopParameterPrefix;
-        // } else if (type === 'controls_forRange' ||
-        //            type === 'controls_for') {
-        //   sourcePrefix = Shared.loopRangeParameterPrefix;
-        // } else if (type === 'local_declaration_statement' ||
-        //     type === 'local_declaration_expression' ||
-        //     type === 'local_mutatorarg') {
-        //   sourcePrefix = Shared.localNamePrefix;
-        // }
       }
       const helperInfo =
           LexicalVariable.renameParamWithoutRenamingCapturablesInfo(
