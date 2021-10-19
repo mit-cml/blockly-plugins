@@ -268,74 +268,11 @@ FieldLexicalVariable.getLexicalNamesInScope = function(block) {
             rememberName(lexVar, allLexicalNames, prefix);
           });
         }
-        // TODO: Maybe change this logic to instead call a function on the
-        // block.
-        // if ((parent.type === 'procedures_defnoreturn') ||
-        //     (parent.type === 'procedures_defreturn')) {
-        //   params = parent.declaredNames(); // [lyn, 10/13/13] Names from block,
-        //   // not arguments_ instance var
-        //   for (i = 0; i < params.length; i++) {
-        //     rememberName(params[i], procedureParamNames,
-        //         Shared.procedureParameterPrefix);
-        //   }
-        // } else if ((parent.type === 'controls_forEach') &&
-        //     (parent.getInputTargetBlock('DO') == child)) {
-        //   // Only DO is in scope, not other inputs!
-        //   const loopName = parent.getFieldValue('VAR');
-        //   rememberName(loopName, loopNames, Shared.loopParameterPrefix);
-        // } else if ((parent.type === 'controls_forRange' ||
-        //             parent.type === 'controls_for') &&
-        //     (parent.getInputTargetBlock('DO') == child)) {
-        //   // Only DO is in scope, not other inputs!
-        //   const rangeName = parent.getFieldValue('VAR');
-        //   rememberName(rangeName, rangeNames, Shared.loopRangeParameterPrefix);
-        // } else if ((parent.type === 'local_declaration_expression' &&
-        //         parent.getInputTargetBlock('RETURN') == child) ||
-        //     // only body is in scope of names
-        //     (parent.type === 'local_declaration_statement' &&
-        //         parent.getInputTargetBlock('STACK') == child)) {
-        //   params = parent.declaredNames(); // [lyn, 10/13/13] Names from block,
-        //   // not localNames_ instance var
-        //   for (i = 0; i < params.length; i++) {
-        //     rememberName(params[i], localNames, Shared.localNamePrefix);
-        //   }
-        // }
         child = parent;
         parent = parent.getParent(); // keep moving up the chain.
       }
     }
   }
-
-  // if (!Shared.usePrefixInCode) { // Only a single namespace
-  //   allLexicalNames = allLexicalNames
-  //       .concat(loopNames)
-  //       .concat(rangeNames)
-  //       .concat(localNames);
-  //   allLexicalNames =
-  //       LexicalVariable.sortAndRemoveDuplicates(allLexicalNames);
-  //   // Add prefix as annotation only when Shared.showPrefixToUser is true
-  //   allLexicalNames = allLexicalNames.map(
-  //       function(name) {
-  //         // return ((possiblyPrefixNameWith(Shared.menuSeparator))
-  //         // (innermostPrefix[name])) (name);
-  //         return (Shared.possiblyPrefixMenuNameWith(innermostPrefix[name]))(
-  //             name);
-  //       },
-  //   );
-  // } else { // multiple namespaces distinguished by prefixes
-  //   // note: correctly handles case where some prefixes are the same
-  //   allLexicalNames =
-  //       procedureParamNames.map(
-  //           Shared.possiblyPrefixMenuNameWith(Shared.procedureParameterPrefix))
-  //           .concat(loopNames.map(
-  //               Shared.possiblyPrefixMenuNameWith(Shared.loopParameterPrefix)))
-  //           .concat(rangeNames.map(Shared.possiblyPrefixMenuNameWith(
-  //               Shared.loopRangeParameterPrefix)))
-  //           .concat(localNames.map(
-  //               Shared.possiblyPrefixMenuNameWith(Shared.localNamePrefix)));
-  //   allLexicalNames =
-  //       LexicalVariable.sortAndRemoveDuplicates(allLexicalNames);
-  // }
   allLexicalNames = LexicalVariable.sortAndRemoveDuplicates(allLexicalNames);
   return allLexicalNames.map(function(name) {
     return [name, name];
@@ -995,131 +932,136 @@ LexicalVariable.referenceResult = function(block, name, prefix, env) {
   if (!block) { // special case when block is null
     return [[], []];
   }
-  // [lyn, 11/29/12] Added forEach and forRange loops
-  let referenceResults = []; // For collected reference results in subblocks
-  // Handle constructs that can introduce names here specially (should figure
-  // out a better way to generalize this!)
-  if (block.type === 'controls_forEach') {
-    let loopVar = block.getFieldValue('VAR');
-    // Invariant: Shared.showPrefixToUser must also be true!
-    if (Shared.usePrefixInCode) {
-      loopVar = (Shared.possiblyPrefixMenuNameWith(Shared.loopParameterPrefix))(
-          loopVar);
-    }
-    const newEnv = env.concat([loopVar]);
-    const listResults = LexicalVariable.referenceResult(
-        block.getInputTargetBlock('LIST'), name, prefix, env);
-    const doResults = LexicalVariable.referenceResult(
-        block.getInputTargetBlock('DO'), name, prefix, newEnv);
-    const nextResults = LexicalVariable.referenceResult(
-        LexicalVariable.getNextTargetBlock(block), name, prefix, env);
-    referenceResults = [listResults, doResults, nextResults];
-  } else if (block.type === 'controls_forRange' ||
-             block.type === 'controls_for') {
-    let loopVar = block.getFieldValue('VAR');
-    // Invariant: Shared.showPrefixToUser must also be true!
-    if (Shared.usePrefixInCode) {
-      loopVar =
-          (Shared.possiblyPrefixMenuNameWith(Shared.loopRangeParameterPrefix))(
-              loopVar);
-    }
-    const newEnv = env.concat([loopVar]);
-    const startResults = LexicalVariable.referenceResult(
-        block.getInputTargetBlock('START'), name, prefix, env);
-    const endResults = LexicalVariable.referenceResult(
-        block.getInputTargetBlock('END'), name, prefix, env);
-    const stepResults = LexicalVariable.referenceResult(
-        block.getInputTargetBlock('STEP'), name, prefix, env);
-    const doResults = LexicalVariable.referenceResult(
-        block.getInputTargetBlock('DO'), name, prefix, newEnv);
-    const nextResults = LexicalVariable.referenceResult(
-        LexicalVariable.getNextTargetBlock(block), name, prefix, env);
-    referenceResults =
-        [startResults, endResults, stepResults, doResults, nextResults];
-  } else if ((block.type === 'local_declaration_statement') ||
-      (block.type === 'local_declaration_expression')) {
-    // Collect locally declared names ...
-    const localDeclNames = [];
-    for (let i = 0; block.getInput('DECL' + i); i++) {
-      let localName = block.getFieldValue('VAR' + i);
-      // Invariant: Shared.showPrefixToUser must also be true!
-      if (Shared.usePrefixInCode) {
-        localName = (Shared.possiblyPrefixMenuNameWith(Shared.localNamePrefix))(
-            localName);
-      }
-      localDeclNames.push(localName);
-    }
-    const newEnv = env.concat(localDeclNames); // ... and add to environment
-    // Collect locally initialization expressions:
-    const localInits = [];
-    for (let i = 0; block.getInput('DECL' + i); i++) {
-      const init = block.getInputTargetBlock('DECL' + i);
-      if (init) {
-        localInits.push(init);
-      }
-    }
-    const initResults = localInits.map(function(init) {
-      return LexicalVariable.referenceResult(init, name, prefix, env);
-    });
-    if (block.type === 'local_declaration_statement') {
-      const doResults = LexicalVariable.referenceResult(
-          block.getInputTargetBlock('STACK'), name, prefix, newEnv);
-      const nextResults = LexicalVariable.referenceResult(
-          LexicalVariable.getNextTargetBlock(block), name, prefix, env);
-      referenceResults = initResults.concat([doResults, nextResults]);
-    } else { // (block.type === "local_declaration_expression") {
-      const returnResults = LexicalVariable.referenceResult(
-          block.getInputTargetBlock('RETURN'), name, prefix, newEnv);
-      referenceResults = initResults.concat([returnResults]);
-    }
-  } else { // General case for blocks that do not introduce new names
-    referenceResults = block.getChildren().map(function(blk) {
-      return LexicalVariable.referenceResult(blk, name, prefix, env);
-    });
-  }
+  const referenceResults = block.referenceResults ?
+      block.referenceResults(name, prefix, env) :
+      block.getChildren().map(function(blk) {
+        return LexicalVariable.referenceResult(blk, name, prefix, env);
+      });
+  // // [lyn, 11/29/12] Added forEach and forRange loops
+  // let referenceResults = []; // For collected reference results in subblocks
+  // // Handle constructs that can introduce names here specially (should figure
+  // // out a better way to generalize this!)
+  // if (block.type === 'controls_forEach') {
+  //   let loopVar = block.getFieldValue('VAR');
+  //   // Invariant: Shared.showPrefixToUser must also be true!
+  //   if (Shared.usePrefixInCode) {
+  //     loopVar = (Shared.possiblyPrefixMenuNameWith(Shared.loopParameterPrefix))(
+  //         loopVar);
+  //   }
+  //   const newEnv = env.concat([loopVar]);
+  //   const listResults = LexicalVariable.referenceResult(
+  //       block.getInputTargetBlock('LIST'), name, prefix, env);
+  //   const doResults = LexicalVariable.referenceResult(
+  //       block.getInputTargetBlock('DO'), name, prefix, newEnv);
+  //   const nextResults = LexicalVariable.referenceResult(
+  //       LexicalVariable.getNextTargetBlock(block), name, prefix, env);
+  //   referenceResults = [listResults, doResults, nextResults];
+  // } else if (block.type === 'controls_forRange' ||
+  //            block.type === 'controls_for') {
+  //   let loopVar = block.getFieldValue('VAR');
+  //   // Invariant: Shared.showPrefixToUser must also be true!
+  //   if (Shared.usePrefixInCode) {
+  //     loopVar =
+  //         (Shared.possiblyPrefixMenuNameWith(Shared.loopRangeParameterPrefix))(
+  //             loopVar);
+  //   }
+  //   const newEnv = env.concat([loopVar]);
+  //   const startResults = LexicalVariable.referenceResult(
+  //       block.getInputTargetBlock('START'), name, prefix, env);
+  //   const endResults = LexicalVariable.referenceResult(
+  //       block.getInputTargetBlock('END'), name, prefix, env);
+  //   const stepResults = LexicalVariable.referenceResult(
+  //       block.getInputTargetBlock('STEP'), name, prefix, env);
+  //   const doResults = LexicalVariable.referenceResult(
+  //       block.getInputTargetBlock('DO'), name, prefix, newEnv);
+  //   const nextResults = LexicalVariable.referenceResult(
+  //       LexicalVariable.getNextTargetBlock(block), name, prefix, env);
+  //   referenceResults =
+  //       [startResults, endResults, stepResults, doResults, nextResults];
+  // } else if ((block.type === 'local_declaration_statement') ||
+  //     (block.type === 'local_declaration_expression')) {
+  //   // Collect locally declared names ...
+  //   const localDeclNames = [];
+  //   for (let i = 0; block.getInput('DECL' + i); i++) {
+  //     let localName = block.getFieldValue('VAR' + i);
+  //     // Invariant: Shared.showPrefixToUser must also be true!
+  //     if (Shared.usePrefixInCode) {
+  //       localName = (Shared.possiblyPrefixMenuNameWith(Shared.localNamePrefix))(
+  //           localName);
+  //     }
+  //     localDeclNames.push(localName);
+  //   }
+  //   const newEnv = env.concat(localDeclNames); // ... and add to environment
+  //   // Collect locally initialization expressions:
+  //   const localInits = [];
+  //   for (let i = 0; block.getInput('DECL' + i); i++) {
+  //     const init = block.getInputTargetBlock('DECL' + i);
+  //     if (init) {
+  //       localInits.push(init);
+  //     }
+  //   }
+  //   const initResults = localInits.map(function(init) {
+  //     return LexicalVariable.referenceResult(init, name, prefix, env);
+  //   });
+  //   if (block.type === 'local_declaration_statement') {
+  //     const doResults = LexicalVariable.referenceResult(
+  //         block.getInputTargetBlock('STACK'), name, prefix, newEnv);
+  //     const nextResults = LexicalVariable.referenceResult(
+  //         LexicalVariable.getNextTargetBlock(block), name, prefix, env);
+  //     referenceResults = initResults.concat([doResults, nextResults]);
+  //   } else { // (block.type === "local_declaration_expression") {
+  //     const returnResults = LexicalVariable.referenceResult(
+  //         block.getInputTargetBlock('RETURN'), name, prefix, newEnv);
+  //     referenceResults = initResults.concat([returnResults]);
+  //   }
+  // } else { // General case for blocks that do not introduce new names
+  //   referenceResults = block.getChildren().map(function(blk) {
+  //     return LexicalVariable.referenceResult(blk, name, prefix, env);
+  //   });
+  // }
   let blocksToRename = [];
   let capturables = [];
   for (let r = 0; r < referenceResults.length; r++) {
     blocksToRename = blocksToRename.concat(referenceResults[r][0]);
     capturables = capturables.concat(referenceResults[r][1]);
   }
-  // Base case: getters/setters is where all the interesting action occurs
-  if ((block.type === 'lexical_variable_get') ||
-      (block.type === 'lexical_variable_set')) {
-    const possiblyPrefixedReferenceName = block.getField('VAR').getText();
-    const unprefixedPair = Shared.unprefixName(possiblyPrefixedReferenceName);
-    const referencePrefix = unprefixedPair[0];
-    const referenceName = unprefixedPair[1];
-    const referenceNotInEnv = ((Shared.usePrefixInCode &&
-            (env.indexOf(possiblyPrefixedReferenceName) == -1)) ||
-        ((!Shared.usePrefixInCode) && (env.indexOf(referenceName) == -1)));
-    if (!(referencePrefix === Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX)) {
-      if ((referenceName === name) && referenceNotInEnv) {
-        // if referenceName refers to name and not some intervening
-        // declaration, it's a reference to be renamed:
-        blocksToRename.push(block);
-        // Any intervening declared name with the same prefix as the searched
-        // for name can be captured:
-        if (Shared.usePrefixInCode) {
-          for (let i = 0; i < env.length; i++) {
-            // env is a list of prefixed names.
-            const unprefixedEntry = Shared.unprefixName(env[i]);
-            if (prefix === unprefixedEntry[0]) {
-              capturables.push(unprefixedEntry[1]);
-            }
-          }
-        } else { // Shared.usePrefixInYail
-          capturables = capturables.concat(env);
-        }
-      } else if (referenceNotInEnv &&
-          (!Shared.usePrefixInCode || prefix === referencePrefix)) {
-        // If reference is not in environment, it's externally declared and
-        // capturable When Shared.usePrefixInYail is true, only consider names
-        // with same prefix to be capturable
-        capturables.push(referenceName);
-      }
-    }
-  }
+  // // Base case: getters/setters is where all the interesting action occurs
+  // if ((block.type === 'lexical_variable_get') ||
+  //     (block.type === 'lexical_variable_set')) {
+  //   const possiblyPrefixedReferenceName = block.getField('VAR').getText();
+  //   const unprefixedPair = Shared.unprefixName(possiblyPrefixedReferenceName);
+  //   const referencePrefix = unprefixedPair[0];
+  //   const referenceName = unprefixedPair[1];
+  //   const referenceNotInEnv = ((Shared.usePrefixInCode &&
+  //           (env.indexOf(possiblyPrefixedReferenceName) == -1)) ||
+  //       ((!Shared.usePrefixInCode) && (env.indexOf(referenceName) == -1)));
+  //   if (!(referencePrefix === Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX)) {
+  //     if ((referenceName === name) && referenceNotInEnv) {
+  //       // if referenceName refers to name and not some intervening
+  //       // declaration, it's a reference to be renamed:
+  //       blocksToRename.push(block);
+  //       // Any intervening declared name with the same prefix as the searched
+  //       // for name can be captured:
+  //       if (Shared.usePrefixInCode) {
+  //         for (let i = 0; i < env.length; i++) {
+  //           // env is a list of prefixed names.
+  //           const unprefixedEntry = Shared.unprefixName(env[i]);
+  //           if (prefix === unprefixedEntry[0]) {
+  //             capturables.push(unprefixedEntry[1]);
+  //           }
+  //         }
+  //       } else { // Shared.usePrefixInYail
+  //         capturables = capturables.concat(env);
+  //       }
+  //     } else if (referenceNotInEnv &&
+  //         (!Shared.usePrefixInCode || prefix === referencePrefix)) {
+  //       // If reference is not in environment, it's externally declared and
+  //       // capturable When Shared.usePrefixInYail is true, only consider names
+  //       // with same prefix to be capturable
+  //       capturables.push(referenceName);
+  //     }
+  //   }
+  // }
   return [blocksToRename, capturables];
 };
 

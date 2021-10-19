@@ -164,6 +164,44 @@ Blockly.Blocks['lexical_variable_get'] = {
       WarningHandler.checkErrors(this);
     });
   },
+  referenceResults: function(name, prefix, env) {
+    let blocksToRename = [];
+    let capturables = [];
+    const possiblyPrefixedReferenceName = this.getField('VAR').getText();
+    const unprefixedPair = Shared.unprefixName(possiblyPrefixedReferenceName);
+    const referencePrefix = unprefixedPair[0];
+    const referenceName = unprefixedPair[1];
+    const referenceNotInEnv = ((Shared.usePrefixInCode &&
+            (env.indexOf(possiblyPrefixedReferenceName) == -1)) ||
+        ((!Shared.usePrefixInCode) && (env.indexOf(referenceName) == -1)));
+    if (!(referencePrefix === Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX)) {
+      if ((referenceName === name) && referenceNotInEnv) {
+        // if referenceName refers to name and not some intervening
+        // declaration, it's a reference to be renamed:
+        blocksToRename.push(this);
+        // Any intervening declared name with the same prefix as the searched
+        // for name can be captured:
+        if (Shared.usePrefixInCode) {
+          for (let i = 0; i < env.length; i++) {
+            // env is a list of prefixed names.
+            const unprefixedEntry = Shared.unprefixName(env[i]);
+            if (prefix === unprefixedEntry[0]) {
+              capturables.push(unprefixedEntry[1]);
+            }
+          }
+        } else { // Shared.usePrefixInYail
+          capturables = capturables.concat(env);
+        }
+      } else if (referenceNotInEnv &&
+          (!Shared.usePrefixInCode || prefix === referencePrefix)) {
+        // If reference is not in environment, it's externally declared and
+        // capturable When Shared.usePrefixInYail is true, only consider names
+        // with same prefix to be capturable
+        capturables.push(referenceName);
+      }
+    }
+    return [[blocksToRename, capturables]];
+  },
   getVars: function() {
     return [this.getFieldValue('VAR')];
   },
@@ -245,6 +283,7 @@ Blockly.Blocks['lexical_variable_set'] = {
       WarningHandler.checkErrors(this);
     });
   },
+  referenceResults: Blockly.Blocks.lexical_variable_get.referenceResults,
   getVars: function() {
     return [this.getFieldValue('VAR')];
   },
@@ -307,6 +346,36 @@ Blockly.Blocks['local_declaration_statement'] = {
 
     this.setTooltip(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_TOOLTIP);
     this.lexicalVarPrefix = Shared.localNamePrefix;
+  },
+  referenceResults: function(name, prefix, env) {
+    // Collect locally declared names ...
+    const localDeclNames = [];
+    for (let i = 0; this.getInput('DECL' + i); i++) {
+      let localName = this.getFieldValue('VAR' + i);
+      // Invariant: Shared.showPrefixToUser must also be true!
+      if (Shared.usePrefixInCode) {
+        localName = (Shared.possiblyPrefixMenuNameWith(Shared.localNamePrefix))(
+            localName);
+      }
+      localDeclNames.push(localName);
+    }
+    const newEnv = env.concat(localDeclNames); // ... and add to environment
+    // Collect locally initialization expressions:
+    const localInits = [];
+    for (let i = 0; this.getInput('DECL' + i); i++) {
+      const init = this.getInputTargetBlock('DECL' + i);
+      if (init) {
+        localInits.push(init);
+      }
+    }
+    const initResults = localInits.map(function(init) {
+      return LexicalVariable.referenceResult(init, name, prefix, env);
+    });
+    const doResults = LexicalVariable.referenceResult(
+        this.getInputTargetBlock('STACK'), name, prefix, newEnv);
+    const nextResults = LexicalVariable.referenceResult(
+        LexicalVariable.getNextTargetBlock(this), name, prefix, env);
+    return initResults.concat([doResults, nextResults]);
   },
   withLexicalVarsAndPrefix: function(child, proc) {
     if (this.getInputTargetBlock(this.bodyInputName) == child) {
@@ -703,6 +772,34 @@ Blockly.Blocks['local_declaration_expression'] = {
     this.setOutput(true, null);
     this.setTooltip(
         Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_EXPRESSION_TOOLTIP);
+  },
+  referenceResults: function(name, prefix, env) {
+    // Collect locally declared names ...
+    const localDeclNames = [];
+    for (let i = 0; this.getInput('DECL' + i); i++) {
+      let localName = this.getFieldValue('VAR' + i);
+      // Invariant: Shared.showPrefixToUser must also be true!
+      if (Shared.usePrefixInCode) {
+        localName = (Shared.possiblyPrefixMenuNameWith(Shared.localNamePrefix))(
+            localName);
+      }
+      localDeclNames.push(localName);
+    }
+    const newEnv = env.concat(localDeclNames); // ... and add to environment
+    // Collect locally initialization expressions:
+    const localInits = [];
+    for (let i = 0; this.getInput('DECL' + i); i++) {
+      const init = this.getInputTargetBlock('DECL' + i);
+      if (init) {
+        localInits.push(init);
+      }
+    }
+    const initResults = localInits.map(function(init) {
+      return LexicalVariable.referenceResult(init, name, prefix, env);
+    });
+    const returnResults = LexicalVariable.referenceResult(
+        this.getInputTargetBlock('RETURN'), name, prefix, newEnv);
+    return initResults.concat([returnResults]);
   },
   withLexicalVarsAndPrefix:
     Blockly.Blocks.local_declaration_statement.withLexicalVarsAndPrefix,
