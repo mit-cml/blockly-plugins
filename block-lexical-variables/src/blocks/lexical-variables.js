@@ -165,8 +165,15 @@ Blockly.Blocks['lexical_variable_get'] = {
     });
   },
   referenceResults: function(name, prefix, env) {
+    const childrensReferenceResults = this.getChildren().map(function(blk) {
+      return LexicalVariable.referenceResult(blk, name, prefix, env);
+    });
     let blocksToRename = [];
     let capturables = [];
+    for (let r = 0; r < childrensReferenceResults.length; r++) {
+      blocksToRename = blocksToRename.concat(childrensReferenceResults[r][0]);
+      capturables = capturables.concat(childrensReferenceResults[r][1]);
+    }
     const possiblyPrefixedReferenceName = this.getField('VAR').getText();
     const unprefixedPair = Shared.unprefixName(possiblyPrefixedReferenceName);
     const referencePrefix = unprefixedPair[0];
@@ -189,7 +196,7 @@ Blockly.Blocks['lexical_variable_get'] = {
               capturables.push(unprefixedEntry[1]);
             }
           }
-        } else { // Shared.usePrefixInYail
+        } else { // Shared.usePrefixInCode
           capturables = capturables.concat(env);
         }
       } else if (referenceNotInEnv &&
