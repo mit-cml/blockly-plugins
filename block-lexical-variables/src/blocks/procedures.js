@@ -1058,6 +1058,9 @@ Blockly.Blocks['procedures_callreturn'] = {
 };
 
 Blockly.Blocks['procedures_lambda'] = {
+  // Define an unnamed procedure with a return value.
+  category: 'Procedures', // Procedures are handled specially.
+  bodyInputName: 'STACK',
   init: function() {
     this.createHeader();
     this.appendStatementInput('STACK')
