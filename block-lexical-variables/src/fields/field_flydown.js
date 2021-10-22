@@ -97,7 +97,7 @@ FieldFlydown.prototype.showEditor_ = function() {
   if (FieldFlydown.showPid_) { // cancel a pending flydown for editing
     clearTimeout(FieldFlydown.showPid_);
     FieldFlydown.showPid_ = 0;
-    Blockly.hideChaff();
+    Blockly.getMainWorkspace().hideChaff();
   }
   FieldFlydown.superClass_.showEditor_.call(this);
 };
@@ -167,7 +167,7 @@ FieldFlydown.prototype.showFlydownMaker_ = function() {
  * wrapped in <xml> tags.
  */
 FieldFlydown.prototype.showFlydown_ = function() {
-  Blockly.hideChaff();
+  Blockly.getMainWorkspace().hideChaff();
   const flydown = Blockly.getMainWorkspace().getFlydown();
 
   // Add flydown to top-level svg, *not* to main workspace svg
