@@ -90,6 +90,7 @@ import {
 } from '../fields/field_lexical_variable';
 import {FieldNoCheckDropdown} from '../fields/field_nocheck_dropdown';
 import * as Utilities from '../utilities';
+import * as Shared from '../shared';
 
 Blockly.Blocks['procedures_defnoreturn'] = {
   // Define a procedure with no return value.
@@ -100,11 +101,9 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     // Let the theme determine the color.
     // this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
     this.setStyle('procedure_blocks');
-    const name = Blockly.Procedures.findLegalName(
+    const legalName = Blockly.Procedures.findLegalName(
         Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_PROCEDURE, this);
-    this.appendDummyInput('HEADER')
-        .appendField(Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_DEFINE)
-        .appendField(new FieldProcedureName(name), 'NAME');
+    this.createHeader(legalName);
     this.horizontalParameters = true; // horizontal by default
     this.appendStatementInput('STACK')
         .appendField(Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_DO);
@@ -116,6 +115,19 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     // Other methods guarantee the invariant that this variable contains
     // the list of names declared in the local declaration block.
     this.warnings = [{name: 'checkEmptySockets', sockets: ['STACK']}];
+    this.lexicalVarPrefix = Shared.procedureParameterPrefix;
+  },
+  createHeader: function(procName) {
+    return this.appendDummyInput('HEADER')
+        .appendField(Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_DEFINE)
+        .appendField(new FieldProcedureName(procName), 'NAME');
+  },
+  withLexicalVarsAndPrefix: function(_, proc) {
+    const params = this.declaredNames();
+    // not arguments_ instance var
+    for (let i = 0; i < params.length; i++) {
+      proc(params[i], this.lexicalVarPrefix);
+    }
   },
   onchange: function() {
     // ensure arguments_ is in sync
@@ -204,10 +216,11 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     this.inputList = [];
 
     // console.log("updateParams_: create input HEADER");
-    const headerInput =
-        this.appendDummyInput('HEADER')
-            .appendField(Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_DEFINE)
-            .appendField(new FieldProcedureName(procName), 'NAME');
+    const headerInput = this.createHeader(procName);
+    // const headerInput =
+    //     this.appendDummyInput('HEADER')
+    //         .appendField(Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_DEFINE)
+    //         .appendField(new FieldProcedureName(procName), 'NAME');
 
     // add an input title for each argument
     // name each input after the block and where it appears in the block to
@@ -552,11 +565,14 @@ Blockly.Blocks['procedures_defreturn'] = {
     // Let the theme determine the color.
     // this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
     this.setStyle('procedure_blocks');
-    const name = Blockly.Procedures.findLegalName(
+    // const name = Blockly.Procedures.findLegalName(
+    //     Blockly.Msg.LANG_PROCEDURES_DEFRETURN_PROCEDURE, this);
+    // this.appendDummyInput('HEADER')
+    //     .appendField(Blockly.Msg.LANG_PROCEDURES_DEFRETURN_DEFINE)
+    //     .appendField(new FieldProcedureName(name), 'NAME');
+    const legalName = Blockly.Procedures.findLegalName(
         Blockly.Msg.LANG_PROCEDURES_DEFRETURN_PROCEDURE, this);
-    this.appendDummyInput('HEADER')
-        .appendField(Blockly.Msg.LANG_PROCEDURES_DEFRETURN_DEFINE)
-        .appendField(new FieldProcedureName(name), 'NAME');
+    this.createHeader(legalName);
     this.horizontalParameters = true; // horizontal by default
     // this.appendIndentedValueInput('RETURN')
     //     .appendField(Blockly.Msg.LANG_PROCEDURES_DEFRETURN_RETURN);
@@ -568,6 +584,13 @@ Blockly.Blocks['procedures_defreturn'] = {
     this.arguments_ = [];
     this.warnings = [{name: 'checkEmptySockets', sockets: ['RETURN']}];
   },
+  createHeader: function(procName) {
+    return this.appendDummyInput('HEADER')
+        .appendField(Blockly.Msg.LANG_PROCEDURES_DEFRETURN_DEFINE)
+        .appendField(new FieldProcedureName(procName), 'NAME');
+  },
+  withLexicalVarsAndPrefix:
+      Blockly.Blocks.procedures_defnoreturn.withLexicalVarsAndPrefix,
   onchange: Blockly.Blocks.procedures_defnoreturn.onchange,
   // [lyn, 11/24/12] return list of procedure body (if there is one)
   updateParams_: Blockly.Blocks.procedures_defnoreturn.updateParams_,
@@ -604,6 +627,7 @@ Blockly.Blocks['procedures_mutatorcontainer'] = {
     this.appendStatementInput('STACK');
     this.setTooltip(Blockly.Msg.LANG_PROCEDURES_MUTATORCONTAINER_TOOLTIP);
     this.contextMenu = false;
+    this.mustNotRenameCapturables = true;
   },
   // [lyn. 11/24/12] Set procBlock associated with this container.
   setProcBlock: function(procBlock) {
@@ -663,6 +687,8 @@ Blockly.Blocks['procedures_mutatorarg'] = {
     this.setNextStatement(true);
     this.setTooltip(Blockly.Msg.LANG_PROCEDURES_MUTATORARG_TOOLTIP);
     this.contextMenu = false;
+    this.lexicalVarPrefix = Shared.procedureParameterPrefix;
+    this.mustNotRenameCapturables = true;
   },
   // [lyn, 11/24/12] Return the container this mutator arg is in, or null if
   // it's not in one. Dynamically calculate this by walking up chain, because
@@ -1030,4 +1056,3 @@ Blockly.Blocks['procedures_callreturn'] = {
   removeProcedureValue:
       Blockly.Blocks.procedures_callnoreturn.removeProcedureValue,
 };
-

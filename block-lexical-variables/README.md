@@ -142,6 +142,12 @@ Note that unlike with standard Blockly, you should **not** use a custom toolbox 
 for your variable, as this would interfere with the way that variables are declared and
 used with this plugin.  Just create an ordinary Variables category, if you want, and
 place the lexical-variable-get and lexical-variable-set blocks in there.
+
+In theory, you can also use the lexical variable fields to build your own blocks,
+but the process is not documented yet.  If you're really curious, take a look
+at the block definitions.  Basically, in addition to using the fields there are
+a bunch of properties and methods that you need to define on your blocks to make it
+all work.
 ## Credits
 As mentioned earlier, this plugin is based on code written for
 [MIT App Inventor](https://github.com/mit-cml/appinventor-sources). The lexical 

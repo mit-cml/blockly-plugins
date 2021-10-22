@@ -1,23 +1,22 @@
 import * as Blockly from 'blockly';
 import './msg';
 
-// TODO: Replace references to YAIL with generic language
 /* [Added by paulmw in patch 15]
    There are three ways that you can change how lexical variables
    are handled:
 
-   1. Show prefixes to users, and separate namespace in yail
+   1. Show prefixes to users, and separate namespace in code
    Blockly.showPrefixToUser = true;
-   Blockly.usePrefixInYail = true;
+   Blockly.usePrefixInCode = true;
 
-   2. Show prefixes to users, lexical variables share namespace yail
+   2. Show prefixes to users, lexical variables share namespace code
    Blockly.showPrefixToUser = true;
-   Blockly.usePrefixInYail = false;
+   Blockly.usePrefixInCode = false;
 
-   3. Hide prefixes from users, lexical variables share namespace yail
+   3. Hide prefixes from users, lexical variables share namespace code
    //The default (as of 12/21/12)
    Blockly.showPrefixToUser = false;
-   Blockly.usePrefixInYail = false;
+   Blockly.usePrefixInCode = false;
 
    It is not possible to hide the prefix and have separate namespaces
    because Blockly does not allow to items in a list to have the same name
@@ -110,7 +109,7 @@ export const unprefixName = function(name) {
 };
 
 // Curried for convenient use in generators/lexical-variables.js
-export const possiblyPrefixYailNameWith = function(prefix) {
+export const possiblyPrefixGeneratedVarName = function(prefix) {
   return function(name) {
     // e.g., "param_x" vs "x"
     return (usePrefixInCode ? (prefix + prefixSeparator) : '') + name;
