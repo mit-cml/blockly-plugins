@@ -126,7 +126,7 @@ Blockly.Blocks['global_declaration'] = {
     return field ? [field.getText()] : [];
   },
   getGlobalNames: function() {
-    return this.getVars()
+    return this.getVars();
   },
   renameVar: function(oldName, newName) {
     if (Blockly.Names.equals(oldName, this.getFieldValue('NAME'))) {
