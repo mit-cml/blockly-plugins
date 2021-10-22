@@ -14,7 +14,6 @@ import {init} from '../src/index';
 
 // TODO: Edit list of blocks.
 const allBlocks = [
-  'procedures_lambda',
   'global_declaration',
   'controls_for',
   'controls_forRange',
