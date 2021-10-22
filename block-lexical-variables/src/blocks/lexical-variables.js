@@ -699,7 +699,7 @@ Blockly.Blocks['local_declaration_statement'] = {
     const newMutation = Blockly.Xml.domToText(this.mutationToDom());
     if (Blockly.Events.isEnabled()) {
       Blockly.Events.fire(
-          new Blockly.Events.Change(this, 'mutation', null, oldMutation,
+          new Blockly.Events.BlockChange(this, 'mutation', null, oldMutation,
               newMutation));
     }
     if (this.nextConnection) {
