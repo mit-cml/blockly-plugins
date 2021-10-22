@@ -148,14 +148,14 @@ FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
     return Blockly.getMainWorkspace().getWarningHandler().cachedGlobalNames;
   }
   const globals = [];
-  if (Blockly.mainWorkspace) {
+  if (Blockly.getMainWorkspace()) {
     let blocks = [];
     if (Instrument.useLynGetGlobalNamesFix) {
-      blocks = Blockly.mainWorkspace.getTopBlocks(); // [lyn, 04/13/14] Only
+      blocks = Blockly.getMainWorkspace().getTopBlocks(); // [lyn, 04/13/14] Only
       // need top blocks, not
       // all blocks!
     } else {
-      blocks = Blockly.mainWorkspace.getAllBlocks(); // [lyn, 11/10/12] Is
+      blocks = Blockly.getMainWorkspace().getAllBlocks(); // [lyn, 11/10/12] Is
       // there a better way to
       // get workspace?
     }
@@ -541,8 +541,8 @@ LexicalVariable.renameGlobal = function(newName) {
   newName = FieldLexicalVariable.nameNotIn(newName, globals);
   if (this.sourceBlock_.rendered) {
     // Rename getters and setters
-    if (Blockly.mainWorkspace) {
-      const blocks = Blockly.mainWorkspace.getAllBlocks();
+    if (Blockly.getMainWorkspace()) {
+      const blocks = Blockly.getMainWorkspace().getAllBlocks();
       for (let i = 0; i < blocks.length; i++) {
         const block = blocks[i];
         const renamingFunction = block.renameLexicalVar;
