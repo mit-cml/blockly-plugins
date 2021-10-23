@@ -151,13 +151,11 @@ FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
   if (Blockly.getMainWorkspace()) {
     let blocks = [];
     if (Instrument.useLynGetGlobalNamesFix) {
-      blocks = Blockly.getMainWorkspace().getTopBlocks(); // [lyn, 04/13/14] Only
-      // need top blocks, not
-      // all blocks!
+      // [lyn, 04/13/14] Only need top blocks, not all blocks!
+      blocks = Blockly.getMainWorkspace().getTopBlocks();
     } else {
-      blocks = Blockly.getMainWorkspace().getAllBlocks(); // [lyn, 11/10/12] Is
-      // there a better way to
-      // get workspace?
+      // [lyn, 11/10/12] Is there a better way to get workspace?
+      blocks = Blockly.getMainWorkspace().getAllBlocks();
     }
     for (let i = 0; i < blocks.length; i++) {
       const block = blocks[i];
