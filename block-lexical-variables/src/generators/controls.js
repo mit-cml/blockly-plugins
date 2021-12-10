@@ -12,11 +12,11 @@ Blockly.JavaScript['controls_for'] = function(block) {
   // For loop.
   const variable0 = Blockly.JavaScript.nameDB_.getName(
       block.getFieldValue('VAR'), Blockly.VARIABLE_CATEGORY_NAME);
-  const argument0 = Blockly.JavaScript.valueToCode(block, 'FROM',
+  const argument0 = Blockly.JavaScript.valueToCode(block, 'START',
       Blockly.JavaScript.ORDER_ASSIGNMENT) || '0';
-  const argument1 = Blockly.JavaScript.valueToCode(block, 'TO',
+  const argument1 = Blockly.JavaScript.valueToCode(block, 'END',
       Blockly.JavaScript.ORDER_ASSIGNMENT) || '0';
-  const increment = Blockly.JavaScript.valueToCode(block, 'BY',
+  const increment = Blockly.JavaScript.valueToCode(block, 'STEP',
       Blockly.JavaScript.ORDER_ASSIGNMENT) || '1';
   let branch = Blockly.JavaScript.statementToCode(block, 'DO');
   branch = Blockly.JavaScript.addLoopTrap(branch, block);
@@ -100,7 +100,7 @@ Blockly.JavaScript['controls_forEach'] = function(block) {
   }
   const indexVar = Blockly.JavaScript.nameDB_.getDistinctName(
       variable0 + '_index', Blockly.VARIABLE_CATEGORY_NAME);
-  branch = Blockly.JavaScript.INDENT + variable0 + ' = ' +
+  branch = Blockly.JavaScript.INDENT + 'const ' + variable0 + ' = ' +
       listVar + '[' + indexVar + '];\n' + branch;
   code += 'for (let ' + indexVar + ' in ' + listVar + ') {\n' + branch + '}\n';
   return code;
