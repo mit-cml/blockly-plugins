@@ -13,7 +13,7 @@ Blockly.JavaScript['procedures_callreturn'] = function(block) {
   const funcName = Blockly.JavaScript.nameDB_.getName(
       block.getFieldValue('PROCNAME'), Blockly.PROCEDURE_CATEGORY_NAME);
   const args = [];
-  const variables = block.getVars();
+  const variables = block.arguments_;
   for (let i = 0; i < variables.length; i++) {
     args[i] = Blockly.JavaScript.valueToCode(block, 'ARG' + i,
         Blockly.JavaScript.ORDER_NONE) || 'null';
