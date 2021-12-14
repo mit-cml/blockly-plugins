@@ -139,7 +139,7 @@ const workspace = Blockly.inject(...);
 LexicalVariables.init(workspace);
 ```
 Note that unlike with standard Blockly, you should **not** use a custom toolbox category
-for your variable, as this would interfere with the way that variables are declared and
+for your variables, as this would interfere with the way that variables are declared and
 used with this plugin.  Just create an ordinary Variables category, if you want, and
 place the lexical-variable-get and lexical-variable-set blocks in there.
 
