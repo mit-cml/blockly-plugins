@@ -116,10 +116,11 @@ FieldFlydown.prototype.init = function(block) {
       this.fieldCSSClassName);
 
   this.mouseOverWrapper_ =
-      Blockly.bindEvent_(this.fieldGroup_, 'mouseover', this,
+      Blockly.browserEvents.bind(this.fieldGroup_, 'mouseover', this,
           this.onMouseOver_);
   this.mouseOutWrapper_ =
-      Blockly.bindEvent_(this.fieldGroup_, 'mouseout', this, this.onMouseOut_);
+      Blockly.browserEvents.bind(this.fieldGroup_, 'mouseout', this,
+          this.onMouseOut_);
 };
 
 FieldFlydown.prototype.onMouseOver_ = function(e) {
