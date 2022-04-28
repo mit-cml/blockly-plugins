@@ -110,8 +110,6 @@ Blockly.Blocks['global_declaration'] = {
   category: 'Variables',
   helpUrl: Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_HELPURL,
   init: function() {
-    // Let the theme determine the color.
-    // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
     this.setStyle('variable_blocks');
     this.appendValueInput('VALUE')
         .appendField(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TITLE_INIT)
@@ -143,8 +141,6 @@ Blockly.Blocks['lexical_variable_get'] = {
   category: 'Variables',
   helpUrl: Blockly.Msg.LANG_VARIABLES_GET_HELPURL,
   init: function() {
-    // Let the theme determine the color.
-    // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
     this.setStyle('variable_blocks');
     this.fieldVar_ = new FieldLexicalVariable(' ');
     this.fieldVar_.setBlock(this);
@@ -267,8 +263,6 @@ Blockly.Blocks['lexical_variable_set'] = {
   helpUrl: Blockly.Msg.LANG_VARIABLES_SET_HELPURL, // *** [lyn, 11/10/12] Fix
   // this
   init: function() {
-    // Let the theme determine the color.
-    // this.setColour(Blockly.VARIABLE_CATEGORY_HUE);
     this.setStyle('variable_blocks');
     this.fieldVar_ = new FieldLexicalVariable(' ');
     this.fieldVar_.setBlock(this);
@@ -343,6 +337,7 @@ Blockly.Blocks['local_declaration_statement'] = {
   helpUrl: Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_HELPURL,
   bodyInputName: 'STACK',
   init: function() {
+    this.setStyle('variable_blocks');
     this.initLocals();
     this.appendStatementInput('STACK')
         .appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_IN_DO);
@@ -770,6 +765,7 @@ Blockly.Blocks['local_declaration_expression'] = {
   initLocals: Blockly.Blocks.local_declaration_statement.initLocals,
   bodyInputName: 'RETURN',
   init: function() {
+    this.setStyle('variables_blocks');
     this.initLocals();
     // this.appendIndentedValueInput('RETURN')
     this.appendValueInput('RETURN')
