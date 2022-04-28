@@ -84,6 +84,7 @@ Flydown.prototype.setCSSClass = function(newCSSClassName) {
 Flydown.prototype.init = function(workspace) {
   // Flydowns have no scrollbar
   Blockly.Flyout.prototype.init.call(this, workspace, false);
+  this.workspace_.setTheme(workspace.getTheme());
   workspace.getComponentManager().addCapability(this.id,
       Blockly.ComponentManager.Capability.AUTOHIDEABLE);
 };
