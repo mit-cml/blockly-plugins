@@ -32,6 +32,16 @@ import './generators/lexical-variables';
 import * as Blockly from 'blockly';
 import {Flydown} from './fields/flydown';
 
+// Export Flydown and fields for use by plugin users.
+// Note that we might eb exporting too much here, but let's see how it goes.
+export * from './fields/flydown';
+export * from './fields/field_flydown';
+export * from './fields/field_global_flydown';
+export * from './fields/field_parameter_flydown';
+export * from './fields/field_lexical_variable';
+export * from './fields/field_nocheck_dropdown';
+export * from './fields/field_procedurename';
+
 /**
  * @param workspace
  */
