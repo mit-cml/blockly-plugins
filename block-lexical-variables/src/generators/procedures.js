@@ -21,3 +21,8 @@ Blockly.JavaScript['procedures_callreturn'] = function(block) {
   const code = funcName + '(' + args.join(', ') + ')';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
+
+Blockly.JavaScript['procedures_ifreturn'] = function (block) {
+  let retVal = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_ATOMIC);
+  return '\nreturn ' + retVal + ';\n'
+};

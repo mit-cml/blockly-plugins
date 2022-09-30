@@ -1056,3 +1056,12 @@ Blockly.Blocks['procedures_callreturn'] = {
   removeProcedureValue:
       Blockly.Blocks.procedures_callnoreturn.removeProcedureValue,
 };
+
+Blockly.Blocks['procedures_ifreturn'] = {
+  init: function() {
+    this.appendValueInput('VALUE').appendField(
+        "RETURN");
+    this.setPreviousStatement(true);
+    this.setStyle('procedure_blocks');
+  },
+};
