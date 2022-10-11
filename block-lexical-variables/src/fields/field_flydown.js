@@ -33,46 +33,78 @@ import * as Utilities from '../utilities';
  * @extends {Blockly.FieldTextInput}
  * @constructor
  */
-export const FieldFlydown =
-    function(name, isEditable, opt_displayLocation, opt_changeHandler) {
+export class FieldFlydown extends Blockly.FieldTextInput {
+  /**
+   * Milliseconds to wait before showing flydown after mouseover event on flydown
+   * field.
+   * @type {number}
+   * @const
+   */
+  static timeout = 500;
+
+  /**
+   * Process ID for timer event to show flydown (scheduled by mouseover event).
+   * @type {number}
+   * @const
+   */
+  static showPid_ = 0;
+
+  /**
+   * Which instance of FieldFlydown (or a subclass) is an open flydown attached
+   * to?
+   * @type {FieldFlydown}
+   * @private
+   */
+  static openFieldFlydown_ = null;
+
+// These control the positions of the flydown.
+  static DISPLAY_BELOW = 'BELOW';
+  static DISPLAY_RIGHT = 'RIGHT';
+  static DISPLAY_LOCATION = FieldFlydown.DISPLAY_BELOW;
+
+  constructor(name, isEditable, opt_displayLocation, opt_changeHandler) {
+      super(name, opt_changeHandler);
       // This by itself does not control editability
       this.EDITABLE = isEditable;
       // [lyn, 10/27/13] Make flydown direction an instance variable
+
       this.displayLocation = opt_displayLocation ||
           FieldFlydown.DISPLAY_RIGHT;
+  };
 
-      FieldFlydown.superClass_.constructor.call(
-          this, name, opt_changeHandler);
-    };
-Blockly.utils.object.inherits(FieldFlydown, Blockly.FieldTextInput);
+  // Override FieldTextInput's showEditor_ so it's only called for EDITABLE field.
+  showEditor_() {
+    if (!this.EDITABLE) {
+      return;
+    }
+    if (FieldFlydown.showPid_) { // cancel a pending flydown for editing
+      clearTimeout(FieldFlydown.showPid_);
+      FieldFlydown.showPid_ = 0;
+      Blockly.common.getMainWorkspace().hideChaff();
+    }
+    super.showEditor_();
+  };
 
-/**
- * Milliseconds to wait before showing flydown after mouseover event on flydown
- * field.
- * @type {number}
- * @const
- */
-FieldFlydown.timeout = 500;
+  init(block) {
+    super.init(block);
+    // Remove inherited field css classes ...
+    Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.fieldGroup_),
+        'blocklyEditableText');
+    Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.fieldGroup_),
+        'blocklyNoNEditableText');
+    // ... and add new ones, so that look and feel of flyout fields can be
+    // customized
+    Blockly.utils.dom.addClass(/** @type {!Element} */ (this.fieldGroup_),
+        this.fieldCSSClassName);
 
-/**
- * Process ID for timer event to show flydown (scheduled by mouseover event).
- * @type {number}
- * @const
- */
-FieldFlydown.showPid_ = 0;
-
-/**
- * Which instance of FieldFlydown (or a subclass) is an open flydown attached
- * to?
- * @type {FieldFlydown}
- * @private
- */
-FieldFlydown.openFieldFlydown_ = null;
-
-// These control the positions of the flydown.
-FieldFlydown.DISPLAY_BELOW = 'BELOW';
-FieldFlydown.DISPLAY_RIGHT = 'RIGHT';
-FieldFlydown.DISPLAY_LOCATION = FieldFlydown.DISPLAY_BELOW;
+    this.mouseOverWrapper_ =
+        Blockly.browserEvents.bind(this.fieldGroup_, 'mouseover', this,
+            this.onMouseOver_);
+    this.mouseOutWrapper_ =
+        Blockly.browserEvents.bind(this.fieldGroup_, 'mouseout', this,
+            this.onMouseOut_);
+  };
+}
 
 /**
  * Default CSS class name for the field itself.
@@ -88,40 +120,6 @@ FieldFlydown.prototype.fieldCSSClassName = 'blocklyFieldFlydownField';
  */
 FieldFlydown.prototype.flyoutCSSClassName =
     'blocklyFieldFlydownFlydown';
-
-// Override FieldTextInput's showEditor_ so it's only called for EDITABLE field.
-FieldFlydown.prototype.showEditor_ = function() {
-  if (!this.EDITABLE) {
-    return;
-  }
-  if (FieldFlydown.showPid_) { // cancel a pending flydown for editing
-    clearTimeout(FieldFlydown.showPid_);
-    FieldFlydown.showPid_ = 0;
-    Blockly.getMainWorkspace().hideChaff();
-  }
-  FieldFlydown.superClass_.showEditor_.call(this);
-};
-
-FieldFlydown.prototype.init = function(block) {
-  FieldFlydown.superClass_.init.call(this, block);
-
-  // Remove inherited field css classes ...
-  Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.fieldGroup_),
-      'blocklyEditableText');
-  Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.fieldGroup_),
-      'blocklyNoNEditableText');
-  // ... and add new ones, so that look and feel of flyout fields can be
-  // customized
-  Blockly.utils.dom.addClass(/** @type {!Element} */ (this.fieldGroup_),
-      this.fieldCSSClassName);
-
-  this.mouseOverWrapper_ =
-      Blockly.browserEvents.bind(this.fieldGroup_, 'mouseover', this,
-          this.onMouseOver_);
-  this.mouseOutWrapper_ =
-      Blockly.browserEvents.bind(this.fieldGroup_, 'mouseout', this,
-          this.onMouseOut_);
-};
 
 FieldFlydown.prototype.onMouseOver_ = function(e) {
   // [lyn, 10/22/13] No flydowns in a flyout!
@@ -168,14 +166,14 @@ FieldFlydown.prototype.showFlydownMaker_ = function() {
  * wrapped in <xml> tags.
  */
 FieldFlydown.prototype.showFlydown_ = function() {
-  Blockly.getMainWorkspace().hideChaff();
-  const flydown = Blockly.getMainWorkspace().getFlydown();
+  Blockly.common.getMainWorkspace().hideChaff();
+  const flydown = Blockly.common.getMainWorkspace().getFlydown();
 
   // Add flydown to top-level svg, *not* to main workspace svg
   // This is essential for correct positioning of flydown via translation
   // (If it's in workspace svg, it will be additionally translated by
   //  workspace svg translation relative to Blockly.svg.)
-  Blockly.getMainWorkspace().getParentSvg().appendChild(flydown.svgGroup_);
+  Blockly.common.getMainWorkspace().getParentSvg().appendChild(flydown.svgGroup_);
 
   // Adjust scale for current zoom level
   const scale = flydown.targetWorkspace.scale;
@@ -189,7 +187,7 @@ FieldFlydown.prototype.showFlydown_ = function() {
   //    .childNodes to make this code work across browsers.
   const blocksXMLList = Utilities.getChildren(blocksDom);
 
-  const xy = Blockly.getMainWorkspace().getSvgXY(this.borderRect_);
+  const xy = Blockly.common.getMainWorkspace().getSvgXY(this.borderRect_);
   const borderBBox = this.borderRect_.getBBox();
   if (this.displayLocation === FieldFlydown.DISPLAY_BELOW) {
     xy.y += borderBBox.height * scale;
@@ -213,7 +211,7 @@ FieldFlydown.hide = function() {
   // Clear any pending timer event to show flydown.
   window.clearTimeout(FieldFlydown.showPid_);
   // Hide any displayed flydown.
-  const flydown = Blockly.getMainWorkspace().getFlydown();
+  const flydown = Blockly.common.getMainWorkspace().getFlydown();
   if (flydown) {
     flydown.hide();
   }

@@ -21,37 +21,38 @@ import * as ProcedureUtils from '../procedure_utils';
  * @param {?string} text
  * @constructor
  */
-export const FieldProcedureName = function(text) {
-  FieldProcedureName.superClass_.constructor.call(this, text,
-      ProcedureUtils.renameProcedure);
-};
-Blockly.utils.object.inherits(FieldProcedureName, Blockly.FieldTextInput);
-
-/**
- * Set the value of the field.
- *
- * @see Blockly.FieldTextInput.setValue
- * @param {?string} newValue The new value of the field.
- * @override
- */
-FieldProcedureName.prototype.setValue = function(newValue) {
-  const oldValue = this.getValue();
-  this.oldName_ = oldValue;
-  this.doValueUpdate_(newValue);
-  FieldProcedureName.superClass_.setValue.call(this, newValue);
-  newValue = this.getValue();
-  if (typeof newValue === 'string' && this.sourceBlock_) {
-    const procDb = this.sourceBlock_.workspace.getProcedureDatabase();
-    if (procDb) {
-      if (procDb.getProcedure(this.sourceBlock_.id)) {
-        procDb.renameProcedure(this.sourceBlock_.id, oldValue, newValue);
-      } else {
-        procDb.addProcedure(newValue, this.sourceBlock_);
+export class FieldProcedureName extends Blockly.FieldTextInput {
+  constructor(text) {
+    super(text, ProcedureUtils.renameProcedure);
+  };
+  /**
+   * Set the value of the field.
+   *
+   * @see Blockly.FieldTextInput.setValue
+   * @param {?string} newValue The new value of the field.
+   * @override
+   */
+  setValue(newValue) {
+    const oldValue = this.getValue();
+    this.oldName_ = oldValue;
+    this.doValueUpdate_(newValue);
+    super.setValue(newValue);
+    newValue = this.getValue();
+    if (typeof newValue === 'string' && this.sourceBlock_) {
+      const procDb = this.sourceBlock_.workspace.getProcedureDatabase();
+      if (procDb) {
+        if (procDb.getProcedure(this.sourceBlock_.id)) {
+          procDb.renameProcedure(this.sourceBlock_.id, oldValue, newValue);
+        } else {
+          procDb.addProcedure(newValue, this.sourceBlock_);
+        }
       }
     }
-  }
-  this.oldName_ = undefined;
-};
+    this.oldName_ = undefined;
+  };
+
+}
+
 /*
 FieldProcedureName.prototype.onHtmlInputChange_ = function(e) {
   if (e.type == 'keypress') {

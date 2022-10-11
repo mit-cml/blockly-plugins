@@ -68,7 +68,7 @@ suite('BlockTemplate', function() {
           {title: 'Trivial', expectedCode: 'TODO',
             createBlock: trivialCreateBlock},
         ]},
-      {title: 'PHP', generator: Blockly.PHP,
+      {title: 'PHP', generator: Blockly.php,
         testCases: [
           {title: 'Trivial', expectedCode: 'TODO',
             createBlock: trivialCreateBlock},

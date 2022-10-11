@@ -21,11 +21,12 @@ import {FieldFlydown} from './field_flydown';
  * @constructor
  * @param workspaceOptions
  */
-export const Flydown = function(workspaceOptions) {
-  Flydown.superClass_.constructor.call(this, workspaceOptions);
-  this.dragAngleRange_ = 360;
+export class Flydown extends Blockly.VerticalFlyout {
+  constructor(workspaceOptions) {
+    super(workspaceOptions);
+    this.dragAngleRange_ = 360;
+  }
 };
-Blockly.utils.object.inherits(Flydown, Blockly.VerticalFlyout);
 
 /**
  * Previous CSS class for this flydown.

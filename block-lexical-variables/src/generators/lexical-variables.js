@@ -2,10 +2,11 @@
 
 import * as Shared from '../shared';
 import * as Blockly from 'blockly';
+import {javascriptGenerator} from 'blockly/javascript';
 
-Blockly.JavaScript['lexical_variable_get'] = function(block) {
+javascriptGenerator['lexical_variable_get'] = function(block) {
   const code = getVariableName(block.getFieldValue('VAR'));
-  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+  return [code, javascriptGenerator.ORDER_ATOMIC];
 };
 
 /**
@@ -32,41 +33,41 @@ function getVariableName(name) {
  * @return {string} The code.
  */
 function genBasicSetterCode(block, varFieldName) {
-  const argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE',
-      Blockly.JavaScript.ORDER_ASSIGNMENT) || '0';
+  const argument0 = javascriptGenerator.valueToCode(block, 'VALUE',
+      javascriptGenerator.ORDER_ASSIGNMENT) || '0';
   const varName = getVariableName(block.getFieldValue(varFieldName));
   return varName + ' = ' + argument0 + ';\n';
 }
 
-Blockly.JavaScript['lexical_variable_set'] = function(block) {
+javascriptGenerator['lexical_variable_set'] = function(block) {
   // Variable setter.
   return genBasicSetterCode(block, 'VAR');
 };
 
-Blockly.JavaScript['global_declaration'] = function(block) {
+javascriptGenerator['global_declaration'] = function(block) {
   // Global variable declaration
   return 'var ' + genBasicSetterCode(block, 'NAME');
 };
 
-Blockly.JavaScript['local_declaration_statement'] = function() {
+javascriptGenerator['local_declaration_statement'] = function() {
   let code = '{\n  let ';
   for (let i=0; this.getFieldValue('VAR' + i); i++) {
     code += (Shared.usePrefixInCode ? 'local_' : '') +
         this.getFieldValue('VAR' + i);
-    code += ' = ' + ( Blockly.JavaScript.valueToCode(this,
-        'DECL' + i, Blockly.JavaScript.ORDER_NONE) || '0' );
+    code += ' = ' + ( javascriptGenerator.valueToCode(this,
+        'DECL' + i, javascriptGenerator.ORDER_NONE) || '0' );
     code += ', ';
   }
   // Get rid of the last comma
   code = code.slice(0, -2);
   code += ';\n';
-  code += Blockly.JavaScript.statementToCode(this, 'STACK',
-      Blockly.JavaScript.ORDER_NONE);
+  code += javascriptGenerator.statementToCode(this, 'STACK',
+      javascriptGenerator.ORDER_NONE);
   code += '}\n';
   return code;
 };
 
-Blockly.JavaScript['local_declaration_expression'] = function() {
+javascriptGenerator['local_declaration_expression'] = function() {
   // TODO
   return 'NOT IMPLEMENTED YET';
 };
