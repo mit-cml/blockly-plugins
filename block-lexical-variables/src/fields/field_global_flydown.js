@@ -24,13 +24,13 @@ import {LexicalVariable} from './field_lexical_variable';
  * @extends {Blockly.Field}
  * @constructor
  */
-export const FieldGlobalFlydown = function(name, displayLocation) {
-  FieldGlobalFlydown.superClass_.constructor.call(this, name, true,
-      displayLocation,
-      // rename all references to this global variable
-      LexicalVariable.renameGlobal);
-};
-Blockly.utils.object.inherits(FieldGlobalFlydown, FieldFlydown);
+export class FieldGlobalFlydown extends FieldFlydown {
+  constructor(name, displayLocation) {
+    super(name, true, displayLocation,
+        // rename all references to this global variable
+        LexicalVariable.renameGlobal);
+  };
+}
 
 FieldGlobalFlydown.prototype.fieldCSSClassName =
     'blocklyFieldParameter';

@@ -54,7 +54,7 @@ export const onChange = function(procedureId) {
 };
 
 export const getProcedureNames = function(returnValue, opt_workspace) {
-  const workspace = opt_workspace || Blockly.getMainWorkspace();
+  const workspace = opt_workspace || Blockly.common.getMainWorkspace();
   const topBlocks = workspace.getTopBlocks();
   const procNameArray = [procDefaultValue];
   for (let i=0; i<topBlocks.length; i++) {
@@ -77,7 +77,7 @@ export const getProcedureNames = function(returnValue, opt_workspace) {
 // declaraations (defreturn)
 export const getProcedureDeclarationBlocks = function(returnValue,
     opt_workspace) {
-  const workspace = opt_workspace || Blockly.getMainWorkspace();
+  const workspace = opt_workspace || Blockly.common.getMainWorkspace();
   const topBlocks = workspace.getTopBlocks(false);
   const blockArray = [];
   for (let i=0; i<topBlocks.length; i++) {
@@ -106,7 +106,7 @@ export const getAllProcedureDeclarationBlocksExcept = function(block) {
 
 export const removeProcedureValues = function(name, workspace) {
   if (workspace && // [lyn, 04/13/14] ensure workspace isn't undefined
-      workspace === Blockly.getMainWorkspace()) {
+      workspace === Blockly.common.getMainWorkspace()) {
     const blockArray = workspace.getAllBlocks();
     for (let i=0; i<blockArray.length; i++) {
       const block = blockArray[i];

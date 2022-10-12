@@ -79,41 +79,39 @@ import * as Instrument from '../instrument';
  * @extends Blockly.FieldDropdown
  * @constructor
  */
-export const FieldLexicalVariable = function(varname) {
-  // Call parent's constructor.
-  Blockly.FieldDropdown.call(this, FieldLexicalVariable.dropdownCreate,
-      FieldLexicalVariable.dropdownChange);
-  if (varname) {
-    this.doValueUpdate_(varname);
-  } else {
-    this.doValueUpdate_(Blockly.Variables.generateUniqueName());
-  }
-};
-
-// FieldLexicalVariable is a subclass of FieldDropdown.
-Blockly.utils.object.inherits(FieldLexicalVariable, Blockly.FieldDropdown);
-
-/**
- * Set the variable name.
- * @param {string} text New text.
- */
-FieldLexicalVariable.prototype.setValue = function(text) {
-  // Fix for issue #1901. If the variable name contains a space separating two
-  // words, and the first isn't "global", then replace the first word with
-  // global. This fixes an issue where the translated "global" keyword was
-  // being stored instead of the English keyword, resulting in errors when
-  // moving between languages in the App Inventor UI. NB: This makes an
-  // assumption that we won't allow for multi-word variables in the future.
-  // Right now variables identifiers still need to be a sequence of
-  // non-whitespace characters, so only global variables will split on a space.
-  if (text && text !== ' ') {
-    const parts = text.split(' ');
-    if (parts.length == 2 && parts[0] !== 'global') {
-      text = 'global ' + parts[1];
+export class FieldLexicalVariable extends Blockly.FieldDropdown {
+  constructor(varname) {
+    // Call parent's constructor.
+    super(FieldLexicalVariable.dropdownCreate, FieldLexicalVariable.dropdownChange);
+    if (varname) {
+      this.doValueUpdate_(varname);
+    } else {
+      this.doValueUpdate_(Blockly.Variables.generateUniqueName());
     }
-  }
-  FieldLexicalVariable.superClass_.setValue.call(this, text);
-};
+  };
+
+  /**
+   * Set the variable name.
+   * @param {string} text New text.
+   */
+  setValue(text) {
+    // Fix for issue #1901. If the variable name contains a space separating two
+    // words, and the first isn't "global", then replace the first word with
+    // global. This fixes an issue where the translated "global" keyword was
+    // being stored instead of the English keyword, resulting in errors when
+    // moving between languages in the App Inventor UI. NB: This makes an
+    // assumption that we won't allow for multi-word variables in the future.
+    // Right now variables identifiers still need to be a sequence of
+    // non-whitespace characters, so only global variables will split on a space.
+    if (text && text !== ' ') {
+      const parts = text.split(' ');
+      if (parts.length == 2 && parts[0] !== 'global') {
+        text = 'global ' + parts[1];
+      }
+    }
+    super.setValue(text);
+  };
+}
 
 FieldLexicalVariable.prototype.doClassValidation_ = function(
     opt_newValue) {
@@ -142,20 +140,20 @@ FieldLexicalVariable.prototype.setBlock = function(block) {
 // Neil's code to avoid global declaration being created
 FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
   // TODO: Maybe switch to injectable warning/error handling
-  if (Instrument.useLynCacheGlobalNames && Blockly.getMainWorkspace() &&
-      Blockly.getMainWorkspace().getWarningHandler &&
-      Blockly.getMainWorkspace().getWarningHandler().cacheGlobalNames) {
-    return Blockly.getMainWorkspace().getWarningHandler().cachedGlobalNames;
+  if (Instrument.useLynCacheGlobalNames && Blockly.common.getMainWorkspace() &&
+      Blockly.common.getMainWorkspace().getWarningHandler &&
+      Blockly.common.getMainWorkspace().getWarningHandler().cacheGlobalNames) {
+    return Blockly.common.getMainWorkspace().getWarningHandler().cachedGlobalNames;
   }
   const globals = [];
-  if (Blockly.getMainWorkspace()) {
+  if (Blockly.common.getMainWorkspace()) {
     let blocks = [];
     if (Instrument.useLynGetGlobalNamesFix) {
       // [lyn, 04/13/14] Only need top blocks, not all blocks!
-      blocks = Blockly.getMainWorkspace().getTopBlocks();
+      blocks = Blockly.common.getMainWorkspace().getTopBlocks();
     } else {
       // [lyn, 11/10/12] Is there a better way to get workspace?
-      blocks = Blockly.getMainWorkspace().getAllBlocks();
+      blocks = Blockly.common.getMainWorkspace().getAllBlocks();
     }
     for (let i = 0; i < blocks.length; i++) {
       const block = blocks[i];
@@ -311,7 +309,14 @@ TODO: I'm leaving the following in for now (but commented) because at one point
  * @protected
  */
 FieldLexicalVariable.prototype.doValueUpdate_ = function(newValue) {
-  Blockly.FieldDropdown.superClass_.doValueUpdate_.call(this, newValue);
+  // The original call for the following looked like:
+  //   Blockly.FieldDropdown.superClass_.doValueUpdate_.call(this, newValue);
+  // but we can no longer use the Blockly.utils.object.inherits function, which sets the superclass_ property
+  // Note that if we just want the grandparent version of doValueUpdate_ we could use the following instead:
+  //   Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(this))).doValueUpdate_(newValue);
+  // but since the original directly referenced the parent/superclass of Blockly.FieldDropdown, we do the same.
+  Object.getPrototypeOf(Blockly.FieldDropdown).prototype.doValueUpdate_.call(this, newValue);
+
   // Note that we are asking getOptions to add newValue to the list of available
   // options.  We do that essentially to force callers up the chain to accept
   // newValue as an option.  This could potentially cause trouble, but it seems
@@ -539,8 +544,8 @@ LexicalVariable.renameGlobal = function(newName) {
   newName = FieldLexicalVariable.nameNotIn(newName, globals);
   if (this.sourceBlock_.rendered) {
     // Rename getters and setters
-    if (Blockly.getMainWorkspace()) {
-      const blocks = Blockly.getMainWorkspace().getAllBlocks();
+    if (Blockly.common.getMainWorkspace()) {
+      const blocks = Blockly.common.getMainWorkspace().getAllBlocks();
       for (let i = 0; i < blocks.length; i++) {
         const block = blocks[i];
         const renamingFunction = block.renameLexicalVar;

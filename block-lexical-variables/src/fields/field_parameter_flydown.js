@@ -35,27 +35,26 @@ import {LexicalVariable} from './field_lexical_variable';
  */
 // [lyn, 10/26/13] Added opt_additionalChangeHandler to handle propagation of
 //    renaming of proc decl params
-export const FieldParameterFlydown = function(name, isEditable,
-    opt_displayLocation, opt_additionalChangeHandler) {
-  const changeHandler = function(text) {
-    if (!FieldParameterFlydown.changeHandlerEnabled) {
-      return text;
-    }
+export class FieldParameterFlydown extends FieldFlydown {
+  constructor(name, isEditable, opt_displayLocation, opt_additionalChangeHandler) {
+    const changeHandler = function(text) {
+      if (!FieldParameterFlydown.changeHandlerEnabled) {
+        return text;
+      }
 
-    // Both of these should be called in the context of the field (ie
-    // 'this').
-    const possiblyRenamedText =
-        LexicalVariable.renameParam.call(this, text);
-    if (opt_additionalChangeHandler) {
-      opt_additionalChangeHandler.call(this, possiblyRenamedText);
-    }
-    return possiblyRenamedText;
+      // Both of these should be called in the context of the field (ie
+      // 'this').
+      const possiblyRenamedText =
+          LexicalVariable.renameParam.call(this, text);
+      if (opt_additionalChangeHandler) {
+        opt_additionalChangeHandler.call(this, possiblyRenamedText);
+      }
+      return possiblyRenamedText;
+    };
+
+    super(name, isEditable, opt_displayLocation, changeHandler);
   };
-
-  FieldParameterFlydown.superClass_.constructor.call(
-      this, name, isEditable, opt_displayLocation, changeHandler);
-};
-Blockly.utils.object.inherits(FieldParameterFlydown, FieldFlydown);
+}
 
 FieldParameterFlydown.prototype.fieldCSSClassName =
     'blocklyFieldParameter';

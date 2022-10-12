@@ -18,12 +18,12 @@
 import * as Blockly from 'blockly';
 import '../msg';
 
-export const FieldNoCheckDropdown = function(...args) {
-  // Call superclass constructor
-  Blockly.FieldDropdown.apply(this, args);
-};
-
-Blockly.utils.object.inherits(FieldNoCheckDropdown, Blockly.FieldDropdown);
+export class FieldNoCheckDropdown extends Blockly.FieldDropdown {
+  constructor(...args) {
+    // Call superclass constructor
+    super(...args);
+  };
+}
 
 FieldNoCheckDropdown.prototype.doClassValidation_ = function(opt_newValue) {
   let isValueValid = false;
