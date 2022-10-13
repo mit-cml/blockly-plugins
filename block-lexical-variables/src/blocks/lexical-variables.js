@@ -768,7 +768,7 @@ Blockly.Blocks['local_declaration_expression'] = {
     this.setStyle('variables_blocks');
     this.initLocals();
     // this.appendIndentedValueInput('RETURN')
-    this.appendValueInput('RETURN')
+    this.appendStatementInput('STACK')
         .appendField(
             Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_EXPRESSION_IN_RETURN);
     // Create plug for expression output

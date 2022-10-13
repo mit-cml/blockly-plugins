@@ -67,7 +67,26 @@ javascriptGenerator['local_declaration_statement'] = function() {
   return code;
 };
 
-javascriptGenerator['local_declaration_expression'] = function() {
-  // TODO
-  return 'NOT IMPLEMENTED YET';
+
+Blockly.JavaScript['local_declaration_expression'] = function() {
+  let code = '(function() {\n  ';
+  let hasVar = this.getFieldValue('VAR0')
+  if(hasVar) {
+    code += 'let '
+    for (let i=0; this.getFieldValue('VAR' + i); i++) {
+      code += (Shared.usePrefixInCode ? 'local_' : '') +
+          this.getFieldValue('VAR' + i);
+      code += ' = ' + ( Blockly.JavaScript.valueToCode(this,
+          'DECL' + i, Blockly.JavaScript.ORDER_NONE) || '0' );
+      code += ', ';
+    }
+    // Get rid of the last comma
+    code = code.slice(0, -2);
+    code += ';\n';
+  }
+
+  code += Blockly.JavaScript.statementToCode(this, 'STACK',
+      Blockly.JavaScript.ORDER_NONE);
+  code += '\n})()\n';
+  return [code, Blockly.JavaScript.ORDER_NONE];
 };
