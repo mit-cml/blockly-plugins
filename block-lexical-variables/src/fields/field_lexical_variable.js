@@ -327,6 +327,7 @@ FieldLexicalVariable.prototype.doValueUpdate_ = function(newValue) {
   for (let i = 0, option; (option = options[i]); i++) {
     if (option[1] == this.value_) {
       this.selectedOption_ = option;
+      break;
     }
   }
   this.forceRerender();
