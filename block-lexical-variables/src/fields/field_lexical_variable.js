@@ -317,13 +317,19 @@ FieldLexicalVariable.prototype.doValueUpdate_ = function(newValue) {
   // but since the original directly referenced the parent/superclass of Blockly.FieldDropdown, we do the same.
   Object.getPrototypeOf(Blockly.FieldDropdown).prototype.doValueUpdate_.call(this, newValue);
 
+  function genLocalizedValue (value) {
+    return value.startsWith('global ')
+        ? value.replace('global ', Blockly.Msg['LANG_VARIABLES_GLOBAL_PREFIX'] + ' ')
+        : value;
+  }
+
   // Note that we are asking getOptions to add newValue to the list of available
   // options.  We do that essentially to force callers up the chain to accept
   // newValue as an option.  This could potentially cause trouble, but it seems
   // to be ok for our use case.  It is ugly, though, since it bypasses an aspect
   // of the normal dropdown validation.
   const options =
-      this.getOptions(true, [[newValue, newValue]]);
+      this.getOptions(true, [[genLocalizedValue(newValue), newValue]]);
   for (let i = 0, option; (option = options[i]); i++) {
     if (option[1] == this.value_) {
       this.selectedOption_ = option;
