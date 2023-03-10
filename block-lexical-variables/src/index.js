@@ -49,7 +49,13 @@ export function init(workspace) {
   // TODO: Might need the next line
   // Blockly.DropDownDiv.createDom();
   const flydown = new Flydown(
-      new Blockly.Options({scrollbars: false}));
+      new Blockly.Options({
+        scrollbars: false,
+        rtl: workspace.RTL,
+        renderer: workspace.options.renderer,
+        rendererOverrides: workspace.options.rendererOverrides,
+      })
+  );
   // ***** [lyn, 10/05/2013] NEED TO WORRY ABOUT MULTIPLE BLOCKLIES! *****
   workspace.flydown_ = flydown;
   Blockly.utils.dom.insertAfter(flydown.createDom('g'),
