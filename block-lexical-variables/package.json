@@ -1,6 +1,6 @@
 {
   "name": "@mit-app-inventor/blockly-block-lexical-variables",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "A Blockly plugin providing lexical/local variable support and flydown variable getters and setters.",
   "scripts": {
     "audit:fix": "blockly-scripts auditFix",
