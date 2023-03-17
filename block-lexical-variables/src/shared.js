@@ -1,5 +1,5 @@
-import * as Blockly from 'blockly';
-import './msg';
+import Blockly from 'blockly';
+import './msg.js';
 
 /* [Added by paulmw in patch 15]
    There are three ways that you can change how lexical variables

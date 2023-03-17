@@ -8,9 +8,9 @@
  * @fileoverview Block test.
  */
 
-import * as Blockly from 'blockly';
+import Blockly from 'blockly';
 import {createPlayground} from '@blockly/dev-tools';
-import {init} from '../src/index';
+import {init} from '../src/index.js';
 
 // TODO: Edit list of blocks.
 const allBlocks = [

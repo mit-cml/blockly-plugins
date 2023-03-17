@@ -13,8 +13,8 @@
  */
 'use strict';
 
-import * as Blockly from 'blockly';
-import {FieldFlydown} from './field_flydown';
+import Blockly from 'blockly';
+import {FieldFlydown} from './field_flydown.js';
 
 /**
  * Class for a flydown.

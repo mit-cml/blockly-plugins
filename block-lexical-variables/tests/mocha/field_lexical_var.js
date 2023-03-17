@@ -5,9 +5,29 @@
  * @fileoverview Field lexical variable behavior tests.
  */
 
+import Blockly from 'blockly';
+import '../../src/utilities.js';
+import '../../src/workspace_svg.js';
+import '../../src/procedure_utils.js';
+import '../../src/fields/flydown.js';
+import '../../src/fields/field_flydown.js';
+import '../../src/fields/field_global_flydown.js';
+import '../../src/fields/field_nocheck_dropdown.js';
+import * as fls from '../../src/fields/field_lexical_variable.js';
+import '../../src/fields/field_parameter_flydown.js';
+import '../../src/fields/field_procedurename.js';
+import '../../src/blocks/lexical-variables.js';
+import '../../src/blocks/controls.js';
+import '../../src/procedure_database.js';
+import '../../src/blocks/procedures.js';
+import '../../src/generators/controls.js';
+import '../../src/generators/procedures.js';
+import '../../src/generators/lexical-variables.js';
+
+import chai from 'chai';
+
 suite ('FieldLexical', function() {
   setup(function() {
-    this.workspace = Blockly.inject('blocklyDiv', {});
 
     this.createBlock = function (type) {
       const block = this.workspace.newBlock(type);
@@ -38,7 +58,6 @@ suite ('FieldLexical', function() {
           '  </block>' +
           '</xml>');
       Blockly.Xml.domToWorkspace(xml, this.workspace);
-      const vars = Blockly.FieldLexicalVariable.getGlobalNames();
       chai.assert.sameOrderedMembers(vars, ['global', 'global2', 'global3']);
     });
     test('Top-Level Local', function() {

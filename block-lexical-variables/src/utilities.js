@@ -9,8 +9,8 @@
 
 'use strict';
 
-import * as Blockly from 'blockly';
-import './msg';
+import Blockly from 'blockly';
+import './msg.js';
 
 /**
  * Checks that the given otherConnection is compatible with an InstantInTime

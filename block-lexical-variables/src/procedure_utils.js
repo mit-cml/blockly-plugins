@@ -12,12 +12,12 @@
 
 'use strict';
 
-import * as Blockly from 'blockly';
-import './msg';
+import Blockly from 'blockly';
+import './msg.js';
 import {
   FieldLexicalVariable,
   LexicalVariable,
-} from './fields/field_lexical_variable';
+} from './fields/field_lexical_variable.js';
 
 const procDefaultValue = ['', ''];
 

@@ -88,18 +88,18 @@ function myStringify (obj) {
 
 'use strict';
 
-import * as Blockly from 'blockly';
-import '../msg';
-import * as WarningHandler from '../warningHandler';
-import {FieldParameterFlydown} from '../fields/field_parameter_flydown';
-import {FieldFlydown} from '../fields/field_flydown';
-import {FieldGlobalFlydown} from '../fields/field_global_flydown';
+import Blockly from 'blockly';
+import '../msg.js';
+import * as WarningHandler from '../warningHandler.js';
+import {FieldParameterFlydown} from '../fields/field_parameter_flydown.js';
+import {FieldFlydown} from '../fields/field_flydown.js';
+import {FieldGlobalFlydown} from '../fields/field_global_flydown.js';
 import {
   FieldLexicalVariable,
   LexicalVariable,
-} from '../fields/field_lexical_variable';
-import * as Utilities from '../utilities';
-import * as Shared from '../shared';
+} from '../fields/field_lexical_variable.js';
+import * as Utilities from '../utilities.js';
+import * as Shared from '../shared.js';
 
 delete Blockly.Blocks['global_declaration'];
 /**

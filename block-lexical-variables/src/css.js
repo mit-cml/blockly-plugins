@@ -1,6 +1,6 @@
 'use strict';
 
-import * as Blockly from 'blockly';
+import Blockly from 'blockly';
 
 /**
  * Array making up the extra CSS content for added Blockly fields.

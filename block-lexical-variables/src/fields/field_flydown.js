@@ -13,8 +13,8 @@
 
 'use strict';
 
-import * as Blockly from 'blockly';
-import * as Utilities from '../utilities';
+import Blockly from 'blockly';
+import * as Utilities from '../utilities.js';
 
 /**
  * Class for a clickable parameter field.

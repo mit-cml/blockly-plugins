@@ -12,10 +12,10 @@
 
 'use strict';
 
-import * as Blockly from 'blockly';
-import '../msg';
-import {FieldFlydown} from './field_flydown';
-import {LexicalVariable} from './field_lexical_variable';
+import Blockly from 'blockly';
+import '../msg.js';
+import {FieldFlydown} from './field_flydown.js';
+import {LexicalVariable} from './field_lexical_variable.js';
 
 /**
  * Class for a parameter declaration field with flyout menu of getter/setter

@@ -77,20 +77,20 @@
  */
 'use strict';
 
-import * as Blockly from 'blockly';
-import '../msg';
-import {FieldProcedureName} from '../fields/field_procedurename';
-import * as WarningHandler from '../warningHandler';
-import * as ProcedureUtils from '../procedure_utils';
-import {FieldParameterFlydown} from '../fields/field_parameter_flydown';
-import {FieldFlydown} from '../fields/field_flydown';
+import Blockly from 'blockly';
+import '../msg.js';
+import {FieldProcedureName} from '../fields/field_procedurename.js';
+import * as WarningHandler from '../warningHandler.js';
+import * as ProcedureUtils from '../procedure_utils.js';
+import {FieldParameterFlydown} from '../fields/field_parameter_flydown.js';
+import {FieldFlydown} from '../fields/field_flydown.js';
 import {
   FieldLexicalVariable,
   LexicalVariable,
-} from '../fields/field_lexical_variable';
-import {FieldNoCheckDropdown} from '../fields/field_nocheck_dropdown';
-import * as Utilities from '../utilities';
-import * as Shared from '../shared';
+} from '../fields/field_lexical_variable.js';
+import {FieldNoCheckDropdown} from '../fields/field_nocheck_dropdown.js';
+import * as Utilities from '../utilities.js';
+import * as Shared from '../shared.js';
 
 Blockly.Blocks['procedures_defnoreturn'] = {
   // Define a procedure with no return value.

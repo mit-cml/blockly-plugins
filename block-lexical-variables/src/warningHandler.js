@@ -11,8 +11,8 @@
 
 'use strict';
 
-import * as Blockly from 'blockly';
-import './msg';
+import Blockly from 'blockly';
+import './msg.js';
 
 /**
  * Takes a block as the context (this), puts the appropriate error or warning

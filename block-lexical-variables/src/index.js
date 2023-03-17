@@ -10,37 +10,37 @@
  * @fileoverview Block overview.
  */
 
-import {registerCss} from '../src/css';
+import {registerCss} from '../src/css.js';
 registerCss();
-import './utilities';
-import './workspace_svg';
-import './procedure_utils';
-import './fields/flydown';
-import './fields/field_flydown';
-import './fields/field_global_flydown';
-import './fields/field_nocheck_dropdown';
-import './fields/field_lexical_variable';
-import './fields/field_parameter_flydown';
-import './fields/field_procedurename';
-import './blocks/lexical-variables';
-import './blocks/controls';
-import './procedure_database';
-import './blocks/procedures';
-import './generators/controls';
-import './generators/procedures';
-import './generators/lexical-variables';
-import * as Blockly from 'blockly';
-import {Flydown} from './fields/flydown';
+import './utilities.js';
+import './workspace_svg.js';
+import './procedure_utils.js';
+import './fields/flydown.js';
+import './fields/field_flydown.js';
+import './fields/field_global_flydown.js';
+import './fields/field_nocheck_dropdown.js';
+import './fields/field_lexical_variable.js';
+import './fields/field_parameter_flydown.js';
+import './fields/field_procedurename.js';
+import './blocks/lexical-variables.js';
+import './blocks/controls.js';
+import './procedure_database.js';
+import './blocks/procedures.js';
+import './generators/controls.js';
+import './generators/procedures.js';
+import './generators/lexical-variables.js';
+import Blockly from 'blockly';
+import {Flydown} from './fields/flydown.js';
 
 // Export Flydown and fields for use by plugin users.
 // Note that we might eb exporting too much here, but let's see how it goes.
-export * from './fields/flydown';
-export * from './fields/field_flydown';
-export * from './fields/field_global_flydown';
-export * from './fields/field_parameter_flydown';
-export * from './fields/field_lexical_variable';
-export * from './fields/field_nocheck_dropdown';
-export * from './fields/field_procedurename';
+export * from './fields/flydown.js';
+export * from './fields/field_flydown.js';
+export * from './fields/field_global_flydown.js';
+export * from './fields/field_parameter_flydown.js';
+export * from './fields/field_lexical_variable.js';
+export * from './fields/field_nocheck_dropdown.js';
+export * from './fields/field_procedurename.js';
 
 /**
  * @param workspace

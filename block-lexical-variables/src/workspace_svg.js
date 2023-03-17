@@ -1,6 +1,6 @@
-import * as Blockly from 'blockly';
-import * as WarningHandler from './warningHandler';
-import {ProcedureDatabase} from './procedure_database';
+import Blockly from 'blockly';
+import * as WarningHandler from './warningHandler.js';
+import {ProcedureDatabase} from './procedure_database.js';
 
 /**
  * Shared flydown for parameters and variables.

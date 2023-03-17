@@ -11,11 +11,11 @@
 
 'use strict';
 
-import * as Blockly from 'blockly';
-import '../msg';
-import '../instrument';
-import * as Shared from '../shared';
-import * as Instrument from '../instrument';
+import Blockly from 'blockly';
+import '../msg.js';
+import '../instrument.js';
+import * as Shared from '../shared.js';
+import * as Instrument from '../instrument.js';
 
 /**
  * Lyn's History:
