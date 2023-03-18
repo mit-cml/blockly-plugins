@@ -1,5 +1,9 @@
 // Copyright © 2020 Massachusetts Institute of Technology. All rights reserved.
 
+// This code is based on the code written by Beka Westberg (BeksOmega) for this pull request to App Inventor:
+// https://github.com/mit-cml/appinventor-sources/pull/2171.  The code for that PR came from this repo/branch:
+// https://github.com/BeksOmega/appinventor-sources/tree/tests/lexical_field
+
 /**
  * @license
  * @fileoverview Field lexical variable behavior tests.
