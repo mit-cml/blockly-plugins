@@ -32,6 +32,8 @@ import chai from 'chai';
 
 suite ('FieldLexical', function() {
   setup(function() {
+    this.workspace = new Blockly.Workspace();
+    Blockly.common.setMainWorkspace(this.workspace);
 
     this.createBlock = function (type) {
       const block = this.workspace.newBlock(type);
