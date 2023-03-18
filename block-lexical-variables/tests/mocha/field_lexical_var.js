@@ -58,6 +58,7 @@ suite ('FieldLexical', function() {
           '  </block>' +
           '</xml>');
       Blockly.Xml.domToWorkspace(xml, this.workspace);
+      const vars = fls.FieldLexicalVariable.getGlobalNames();
       chai.assert.sameOrderedMembers(vars, ['global', 'global2', 'global3']);
     });
     test('Top-Level Local', function() {
