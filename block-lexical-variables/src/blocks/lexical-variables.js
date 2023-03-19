@@ -411,9 +411,9 @@ Blockly.Blocks['local_declaration_statement'] = {
   },
   // Store local names in mutation element of XML for block
   mutationToDom: function() {
-    const container = document.createElement('mutation');
+    const container = Blockly.utils.xml.createElement('mutation');
     for (let i = 0; i < this.localNames_.length; i++) {
-      const parameter = document.createElement('localname');
+      const parameter = Blockly.utils.xml.createElement('localname');
       parameter.setAttribute('name', this.localNames_[i]);
       container.appendChild(parameter);
     }

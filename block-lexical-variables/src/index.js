@@ -13,7 +13,7 @@
 import {registerCss} from '../src/css.js';
 registerCss();
 import './utilities.js';
-import './workspace_svg.js';
+import './workspace.js';
 import './procedure_utils.js';
 import './fields/flydown.js';
 import './fields/field_flydown.js';

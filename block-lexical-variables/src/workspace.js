@@ -7,9 +7,9 @@ import {ProcedureDatabase} from './procedure_database.js';
  * @type {Flydown}
  * @private
  */
-Blockly.WorkspaceSvg.prototype.flydown_ = null;
+Blockly.Workspace.prototype.flydown_ = null;
 
-Blockly.WorkspaceSvg.prototype.getFlydown = function() {
+Blockly.Workspace.prototype.getFlydown = function() {
   return this.flydown_;
 };
 
@@ -17,7 +17,7 @@ Blockly.WorkspaceSvg.prototype.getFlydown = function() {
  * Obtain the {@link Blockly.ProcedureDatabase} associated with the workspace.
  * @return {!Blockly.ProcedureDatabase}
  */
-Blockly.WorkspaceSvg.prototype.getProcedureDatabase = function() {
+Blockly.Workspace.prototype.getProcedureDatabase = function() {
   if (!this.procedureDb_) {
     this.procedureDb_ = new ProcedureDatabase(this);
   }
@@ -26,9 +26,9 @@ Blockly.WorkspaceSvg.prototype.getProcedureDatabase = function() {
 
 /**
  * Get the topmost workspace in the workspace hierarchy.
- * @return {Blockly.WorkspaceSvg}
+ * @return {Blockly.Workspace}
  */
-Blockly.WorkspaceSvg.prototype.getTopWorkspace = function() {
+Blockly.Workspace.prototype.getTopWorkspace = function() {
   let parent = this;
   while (parent.targetWorkspace) {
     parent = parent.targetWorkspace;
@@ -36,6 +36,6 @@ Blockly.WorkspaceSvg.prototype.getTopWorkspace = function() {
   return parent;
 };
 
-Blockly.WorkspaceSvg.prototype.getWarningHandler = function() {
+Blockly.Workspace.prototype.getWarningHandler = function() {
   return WarningHandler;
 };

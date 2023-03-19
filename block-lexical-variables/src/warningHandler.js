@@ -20,7 +20,7 @@ import './msg.js';
  * @param {Blockly.Block} block The block to check for errors.
  */
 export const checkErrors = function(block) {
-  if (!block.getSvgRoot() || block.readOnly) {
+  if ((block.getSvgRoot && !block.getSvgRoot()) || block.readOnly) {
     // remove from error count
     if (block.hasWarning) {
       block.hasWarning = false;
@@ -105,7 +105,7 @@ export const checkIsInDefinition = function(block) {
 
 // Check if the block has an invalid drop down value, if so, create an error
 export const checkDropDownContainsValidValue = function(block, params) {
-  if (block.workspace.isDragging()) {
+  if (block.workspace.isDragging && block.workspace.isDragging()) {
     return false; // wait until the user is done dragging to check validity.
   }
   for (let i=0; i<params.dropDowns.length; i++) {
