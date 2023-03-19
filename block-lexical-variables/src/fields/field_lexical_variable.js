@@ -16,6 +16,7 @@ import '../msg.js';
 import '../instrument.js';
 import * as Shared from '../shared.js';
 import * as Instrument from '../instrument.js';
+import {NameSet} from "../nameSet.js";
 
 /**
  * Lyn's History:
@@ -749,7 +750,7 @@ LexicalVariable.freeVariables = function(block) {
   let result = [];
   if (!block) {
     // input and next block slots might not empty
-    result = new Blockly.NameSet();
+    result = new NameSet();
   } else if (block.freeVariables) {
     // should be defined on every declaration block
     result = block.freeVariables();
@@ -757,7 +758,7 @@ LexicalVariable.freeVariables = function(block) {
     const nameSets = block.getChildren().map(function(blk) {
       return LexicalVariable.freeVariables(blk);
     });
-    result = Blockly.NameSet.unionAll(nameSets);
+    result = NameSet.unionAll(nameSets);
   }
   // console.log("freeVariables(" + (block ? block.type : "*empty-socket*") +
   // ") = " + result.toString());

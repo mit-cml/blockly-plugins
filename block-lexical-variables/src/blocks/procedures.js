@@ -364,7 +364,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     }
   },
   mutationToDom: function() {
-    const container = document.createElement('mutation');
+    const container = Blockly.utils.xml.createElement('mutation');
     if (!this.horizontalParameters) {
       container.setAttribute('vertical_parameters', 'true'); // Only store an
       // element for
@@ -372,7 +372,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
       // The absence of this attribute means horizontal.
     }
     for (let x = 0; x < this.arguments_.length; x++) {
-      const parameter = document.createElement('arg');
+      const parameter = Blockly.utils.xml.createElement('arg');
       parameter.setAttribute('name', this.arguments_[x]);
       container.appendChild(parameter);
     }
@@ -529,7 +529,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     // Should return the empty set: something is wrong if it doesn't!
     const result = LexicalVariable.freeVariables(
         this.getInputTargetBlock(this.bodyInputName));
-    result.subtract(new Blockly.NameSet(this.declaredNames()));
+    result.subtract(new NameSet(this.declaredNames()));
     if (result.isEmpty()) {
       return result;
     } else {
@@ -942,10 +942,10 @@ Blockly.Blocks['procedures_callnoreturn'] = {
   },
   mutationToDom: function() {
     // Save the name and arguments (none of which are editable).
-    const container = document.createElement('mutation');
+    const container = Blockly.utils.xml.createElement('mutation');
     container.setAttribute('name', this.getFieldValue('PROCNAME'));
     for (let x = 0; this.getInput('ARG' + x); x++) {
-      const parameter = document.createElement('arg');
+      const parameter = Blockly.utils.xml.createElement('arg');
       parameter.setAttribute('name',
           this.getInput('ARG' + x).fieldRow[0].getText());
       container.appendChild(parameter);

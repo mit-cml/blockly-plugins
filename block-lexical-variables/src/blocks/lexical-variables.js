@@ -100,6 +100,7 @@ import {
 } from '../fields/field_lexical_variable.js';
 import * as Utilities from '../utilities.js';
 import * as Shared from '../shared.js';
+import {NameSet} from "../nameSet.js";
 
 delete Blockly.Blocks['global_declaration'];
 /**
@@ -247,9 +248,9 @@ Blockly.Blocks['lexical_variable_get'] = {
     // Only return lexical (nonglobal) names
     if (prefix !== Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX) {
       const oldName = prefixPair[1];
-      return new Blockly.NameSet([oldName]);
+      return new NameSet([oldName]);
     } else {
-      return new Blockly.NameSet();
+      return new NameSet();
     }
   },
 };
@@ -312,7 +313,7 @@ Blockly.Blocks['lexical_variable_set'] = {
     const childrenFreeVars = this.getChildren().map(function(blk) {
       return LexicalVariable.freeVariables(blk);
     });
-    const result = Blockly.NameSet.unionAll(childrenFreeVars);
+    const result = NameSet.unionAll(childrenFreeVars);
     const prefixPair = Blockly.unprefixName(this.getFieldValue('VAR'));
     const prefix = prefixPair[0];
     // Only return lexical (nonglobal) names
@@ -705,7 +706,7 @@ Blockly.Blocks['local_declaration_statement'] = {
   renameFree: function(freeSubstitution) {
     // This is LET semantics, not LET* semantics, and needs to change!
     const localNames = this.declaredNames();
-    const localNameSet = new Blockly.NameSet(localNames);
+    const localNameSet = new NameSet(localNames);
     const bodyFreeVars = LexicalVariable.freeVariables(
         this.getInputTargetBlock(this.bodyInputName));
     bodyFreeVars.subtract(localNameSet);
@@ -736,7 +737,7 @@ Blockly.Blocks['local_declaration_statement'] = {
     const result = LexicalVariable.freeVariables(
         this.getInputTargetBlock(this.bodyInputName));
     const localNames = this.declaredNames();
-    result.subtract(new Blockly.NameSet(localNames)); // This is LET semantics,
+    result.subtract(new NameSet(localNames)); // This is LET semantics,
     // not LET* semantics,
     // but should be changed!
     const numDecls = localNames.length;
