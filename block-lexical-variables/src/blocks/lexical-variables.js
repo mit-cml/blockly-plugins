@@ -231,7 +231,7 @@ Blockly.Blocks['lexical_variable_get'] = {
     }
   },
   renameFree: function(freeSubstitution) {
-    const prefixPair = Blockly.unprefixName(this.getFieldValue('VAR'));
+    const prefixPair = Shared.unprefixName(this.getFieldValue('VAR'));
     const prefix = prefixPair[0];
     // Only rename lexical (nonglobal) names
     if (prefix !== Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX) {
@@ -243,7 +243,7 @@ Blockly.Blocks['lexical_variable_get'] = {
     }
   },
   freeVariables: function() { // return the free lexical variables of this block
-    const prefixPair = Blockly.unprefixName(this.getFieldValue('VAR'));
+    const prefixPair = Shared.unprefixName(this.getFieldValue('VAR'));
     const prefix = prefixPair[0];
     // Only return lexical (nonglobal) names
     if (prefix !== Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX) {
@@ -292,7 +292,7 @@ Blockly.Blocks['lexical_variable_set'] = {
   renameLexicalVar: Blockly.Blocks.lexical_variable_get.renameLexicalVar,
   renameFree: function(freeSubstitution) {
     // potentially rename the set variable
-    const prefixPair = Blockly.unprefixName(this.getFieldValue('VAR'));
+    const prefixPair = Shared.unprefixName(this.getFieldValue('VAR'));
     const prefix = prefixPair[0];
     // Only rename lexical (nonglobal) names
     if (prefix !== Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX) {
@@ -314,7 +314,7 @@ Blockly.Blocks['lexical_variable_set'] = {
       return LexicalVariable.freeVariables(blk);
     });
     const result = NameSet.unionAll(childrenFreeVars);
-    const prefixPair = Blockly.unprefixName(this.getFieldValue('VAR'));
+    const prefixPair = Shared.unprefixName(this.getFieldValue('VAR'));
     const prefix = prefixPair[0];
     // Only return lexical (nonglobal) names
     if (prefix !== Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX) {
