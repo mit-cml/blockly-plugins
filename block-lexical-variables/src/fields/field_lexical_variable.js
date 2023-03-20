@@ -17,6 +17,7 @@ import '../instrument.js';
 import * as Shared from '../shared.js';
 import * as Instrument from '../instrument.js';
 import {NameSet} from "../nameSet.js";
+import {Substitution} from '../substitution.js'
 
 /**
  * Lyn's History:
@@ -703,9 +704,9 @@ LexicalVariable.renameParamRenamingCapturables =
               ' is in existing declarations {' + declaredNames.join(',') + '}');
         } else {
           if (sourceBlock.renameBound) {
-            const boundSubstitution = Blockly.Substitution.simpleSubstitution(
+            const boundSubstitution = Substitution.simpleSubstitution(
                 oldName, newName);
-            const freeSubstitution = new Blockly.Substitution(); // an empty
+            const freeSubstitution = new Substitution(); // an empty
             // substitution
             sourceBlock.renameBound(boundSubstitution, freeSubstitution);
           } else {

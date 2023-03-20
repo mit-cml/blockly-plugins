@@ -46,6 +46,7 @@ import {
 } from '../fields/field_lexical_variable.js';
 import * as Utilities from '../utilities.js';
 import * as Shared from '../shared.js';
+import {Substitution} from '../substitution.js'
 
 Blockly.Blocks['controls_forRange'] = {
   // For range.
@@ -143,7 +144,7 @@ Blockly.Blocks['controls_forRange'] = {
     const newIndexVar = boundSubstitution.apply(oldIndexVar);
     if (newIndexVar !== oldIndexVar) {
       this.renameVar(oldIndexVar, newIndexVar);
-      const indexSubstitution = Blockly.Substitution.simpleSubstitution(
+      const indexSubstitution = Substitution.simpleSubstitution(
           oldIndexVar, newIndexVar);
       const extendedFreeSubstitution = freeSubstitution.extend(
           indexSubstitution);
@@ -168,11 +169,11 @@ Blockly.Blocks['controls_forRange'] = {
     if (renamedBodyFreeVars.isMember(indexVar)) { // Variable capture!
       const newIndexVar = FieldLexicalVariable.nameNotIn(indexVar,
           renamedBodyFreeVars.toList());
-      const boundSubstitution = Blockly.Substitution.simpleSubstitution(
+      const boundSubstitution = Substitution.simpleSubstitution(
           indexVar, newIndexVar);
       this.renameBound(boundSubstitution, freeSubstitution);
     } else {
-      this.renameBound(new Blockly.Substitution(), freeSubstitution);
+      this.renameBound(new Substitution(), freeSubstitution);
     }
   },
   freeVariables: function() { // return the free variables of this block
@@ -272,7 +273,7 @@ Blockly.Blocks['controls_forEach'] = {
     const newIndexVar = boundSubstitution.apply(oldIndexVar);
     if (newIndexVar !== oldIndexVar) {
       this.renameVar(oldIndexVar, newIndexVar);
-      const indexSubstitution = Blockly.Substitution.simpleSubstitution(
+      const indexSubstitution = Substitution.simpleSubstitution(
           oldIndexVar, newIndexVar);
       const extendedFreeSubstitution = freeSubstitution.extend(
           indexSubstitution);
@@ -297,11 +298,11 @@ Blockly.Blocks['controls_forEach'] = {
     if (renamedBodyFreeVars.isMember(indexVar)) { // Variable capture!
       const newIndexVar = FieldLexicalVariable.nameNotIn(indexVar,
           renamedBodyFreeVars.toList());
-      const boundSubstitution = Blockly.Substitution.simpleSubstitution(
+      const boundSubstitution = Substitution.simpleSubstitution(
           indexVar, newIndexVar);
       this.renameBound(boundSubstitution, freeSubstitution);
     } else {
-      this.renameBound(new Blockly.Substitution(), freeSubstitution);
+      this.renameBound(new Substitution(), freeSubstitution);
     }
   },
   freeVariables: function() { // return the free variables of this block

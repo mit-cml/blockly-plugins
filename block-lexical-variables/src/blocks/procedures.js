@@ -91,6 +91,7 @@ import {
 import {FieldNoCheckDropdown} from '../fields/field_nocheck_dropdown.js';
 import * as Utilities from '../utilities.js';
 import * as Shared from '../shared.js';
+import {Substitution} from '../substitution.js'
 
 Blockly.Blocks['procedures_defnoreturn'] = {
   // Define a procedure with no return value.
@@ -485,7 +486,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     return this.getVars();
   },
   renameVar: function(oldName, newName) {
-    this.renameVars(Blockly.Substitution.simpleSubstitution(oldName, newName));
+    this.renameVars(Substitution.simpleSubstitution(oldName, newName));
   },
   renameVars: function(substitution) {
     // renaming is a dict (i.e., object) mapping old names to new ones

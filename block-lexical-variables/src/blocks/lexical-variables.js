@@ -101,6 +101,7 @@ import {
 import * as Utilities from '../utilities.js';
 import * as Shared from '../shared.js';
 import {NameSet} from "../nameSet.js";
+import {Substitution} from '../substitution.js'
 
 delete Blockly.Blocks['global_declaration'];
 /**
@@ -653,7 +654,7 @@ Blockly.Blocks['local_declaration_statement'] = {
     return doBodyList; // List of non-null body elements.
   },
   renameVar: function(oldName, newName) {
-    this.renameVars(Blockly.Substitution.simpleSubstitution(oldName, newName));
+    this.renameVars(Substitution.simpleSubstitution(oldName, newName));
   },
   // substitution is a dict (i.e., object) mapping old names to new ones
   renameVars: function(substitution) {
@@ -727,10 +728,10 @@ Blockly.Blocks['local_declaration_statement'] = {
         boundBindings[capturedVar] = newCapturedVar;
         forbiddenNames.push(newCapturedVar);
       }
-      this.renameBound(new Blockly.Substitution(boundBindings),
+      this.renameBound(new Substitution(boundBindings),
           freeSubstitution);
     } else {
-      this.renameBound(new Blockly.Substitution(), freeSubstitution);
+      this.renameBound(new Substitution(), freeSubstitution);
     }
   },
   freeVariables: function() { // return the free lexical variables of this block
