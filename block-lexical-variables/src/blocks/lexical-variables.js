@@ -666,6 +666,7 @@ Blockly.Blocks['local_declaration_statement'] = {
       this.updateDeclarationInputs_(renamedLocalNames, initializerConnections);
       // Update the mutator's variables if the mutator is open.
       if (this.mutator.isVisible()) {
+      if (this.mutator && this.mutator.isVisible()) {
         const blocks = this.mutator.workspace_.getAllBlocks();
         for (let x = 0, block; block = blocks[x]; x++) {
           if (block.type == 'procedures_mutatorarg') {
