@@ -665,7 +665,6 @@ Blockly.Blocks['local_declaration_statement'] = {
       const initializerConnections = this.initializerConnections();
       this.updateDeclarationInputs_(renamedLocalNames, initializerConnections);
       // Update the mutator's variables if the mutator is open.
-      if (this.mutator.isVisible()) {
       if (this.mutator && this.mutator.isVisible()) {
         const blocks = this.mutator.workspace_.getAllBlocks();
         for (let x = 0, block; block = blocks[x]; x++) {
@@ -744,7 +743,7 @@ Blockly.Blocks['local_declaration_statement'] = {
     // but should be changed!
     const numDecls = localNames.length;
     for (let i = 0; i < numDecls; i++) {
-      result.union(LexicalVariable.freeVariables(
+      result.unite(LexicalVariable.freeVariables(
           this.getInputTargetBlock('DECL' + i)));
     }
     if (this.nextConnection) {
