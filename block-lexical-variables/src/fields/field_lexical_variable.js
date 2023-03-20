@@ -96,23 +96,23 @@ export class FieldLexicalVariable extends Blockly.FieldDropdown {
    * Set the variable name.
    * @param {string} text New text.
    */
-  setValue(text) {
-    // Fix for issue #1901. If the variable name contains a space separating two
-    // words, and the first isn't "global", then replace the first word with
-    // global. This fixes an issue where the translated "global" keyword was
-    // being stored instead of the English keyword, resulting in errors when
-    // moving between languages in the App Inventor UI. NB: This makes an
-    // assumption that we won't allow for multi-word variables in the future.
-    // Right now variables identifiers still need to be a sequence of
-    // non-whitespace characters, so only global variables will split on a space.
-    if (text && text !== ' ') {
-      const parts = text.split(' ');
-      if (parts.length == 2 && parts[0] !== 'global') {
-        text = 'global ' + parts[1];
-      }
-    }
-    super.setValue(text);
-  };
+  // setValue(text) {
+  //   // Fix for issue #1901. If the variable name contains a space separating two
+  //   // words, and the first isn't "global", then replace the first word with
+  //   // global. This fixes an issue where the translated "global" keyword was
+  //   // being stored instead of the English keyword, resulting in errors when
+  //   // moving between languages in the App Inventor UI. NB: This makes an
+  //   // assumption that we won't allow for multi-word variables in the future.
+  //   // Right now variables identifiers still need to be a sequence of
+  //   // non-whitespace characters, so only global variables will split on a space.
+  //   if (text && text !== ' ') {
+  //     const parts = text.split(' ');
+  //     if (parts.length == 2 && parts[0] !== 'global') {
+  //       text = 'global ' + parts[1];
+  //     }
+  //   }
+  //   super.setValue(text);
+  // };
 }
 
 FieldLexicalVariable.prototype.doClassValidation_ = function(
@@ -325,6 +325,22 @@ FieldLexicalVariable.prototype.doValueUpdate_ = function(newValue) {
         : value;
   }
 
+  // Fix for issue #1901. If the variable name contains a space separating two
+  // words, and the first isn't "global", then replace the first word with
+  // global. This fixes an issue where the translated "global" keyword was
+  // being stored instead of the English keyword, resulting in errors when
+  // moving between languages in the App Inventor UI. NB: This makes an
+  // assumption that we won't allow for multi-word variables in the future.
+  // Right now variables identifiers still need to be a sequence of
+  // non-whitespace characters, so only global variables will split on a space.
+  if (newValue && newValue !== ' ') {
+    const parts = newValue.split(' ');
+    if (parts.length == 2 && parts[0] !== 'global') {
+      newValue = 'global ' + parts[1];
+    }
+  }
+
+  this.value_ = newValue;
   // Note that we are asking getOptions to add newValue to the list of available
   // options.  We do that essentially to force callers up the chain to accept
   // newValue as an option.  This could potentially cause trouble, but it seems
