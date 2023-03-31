@@ -50,18 +50,23 @@ javascriptGenerator['global_declaration'] = function(block) {
   return 'var ' + genBasicSetterCode(block, 'NAME');
 };
 
-javascriptGenerator['local_declaration_statement'] = function() {
+function generateDeclarations(block) {
   let code = '{\n  let ';
-  for (let i=0; this.getFieldValue('VAR' + i); i++) {
+  for (let i = 0; block.getFieldValue('VAR' + i); i++) {
     code += (Shared.usePrefixInCode ? 'local_' : '') +
-        this.getFieldValue('VAR' + i);
-    code += ' = ' + ( javascriptGenerator.valueToCode(this,
-        'DECL' + i, javascriptGenerator.ORDER_NONE) || '0' );
+        block.getFieldValue('VAR' + i);
+    code += ' = ' + (javascriptGenerator.valueToCode(block,
+        'DECL' + i, javascriptGenerator.ORDER_NONE) || '0');
     code += ', ';
   }
   // Get rid of the last comma
   code = code.slice(0, -2);
   code += ';\n';
+  return code;
+}
+
+javascriptGenerator['local_declaration_statement'] = function() {
+  let code = generateDeclarations(this);
   code += javascriptGenerator.statementToCode(this, 'STACK',
       javascriptGenerator.ORDER_NONE);
   code += '}\n';
@@ -69,6 +74,12 @@ javascriptGenerator['local_declaration_statement'] = function() {
 };
 
 javascriptGenerator['local_declaration_expression'] = function() {
-  // TODO
-  return 'NOT IMPLEMENTED YET';
+  // TODO: This can probably be redone to use the variables as parameters to the generated function
+  // and then call the function with the generated variable values.
+  let code = '(function() {\n'
+  code += generateDeclarations(this);
+  code += 'return ' + ( javascriptGenerator.valueToCode(this,
+      'RETURN', javascriptGenerator.ORDER_NONE) || 'null' );
+  code += '}})()\n';
+  return [code, javascriptGenerator.ORDER_NONE];
 };
