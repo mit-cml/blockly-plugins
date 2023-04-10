@@ -13,8 +13,7 @@
 
 'use strict';
 
-goog.provide('Blockly.Blocks.Utilities');
-goog.require('AI.Blockly.Msg');
+import Blockly from 'blockly';
 
 /**
  * Checks that the given otherConnection is compatible with an InstantInTime
@@ -23,7 +22,7 @@ goog.require('AI.Blockly.Msg');
  * @param {!Blockly.Connection} myConn The parent connection.
  * @param {!Blockly.Connection} otherConn The child connection.
  */
-Blockly.Blocks.Utilities.InstantInTime = function (myConn, otherConn) {
+export const InstantInTime = function (myConn, otherConn) {
     if (!myConn.sourceBlock_.rendered ||
         !otherConn.sourceBlock_.rendered) {
         if (otherConn.check_ && !otherConn.check_.includes('InstantInTime')) {
@@ -41,7 +40,7 @@ Blockly.Blocks.Utilities.InstantInTime = function (myConn, otherConn) {
 // and by the string "COMPONENT"
 // The Yail type 'any' is repsented by Javascript null, to match
 // Blockly's convention
-Blockly.Blocks.Utilities.YailTypeToBlocklyTypeMap = {
+export const YailTypeToBlocklyTypeMap = {
     'number': {
         'input': ['Number'],
         'output': ['Number', 'String', 'Key']
@@ -63,8 +62,8 @@ Blockly.Blocks.Utilities.YailTypeToBlocklyTypeMap = {
         'output': ['COMPONENT', 'Key']
     },
     'InstantInTime': {
-        'input': ['InstantInTime', Blockly.Blocks.Utilities.InstantInTime],
-        'output': ['InstantInTime', Blockly.Blocks.Utilities.InstantInTime],
+        'input': ['InstantInTime', InstantInTime],
+        'output': ['InstantInTime', InstantInTime],
     },
     'any': {
         'input': null,
@@ -88,8 +87,8 @@ Blockly.Blocks.Utilities.YailTypeToBlocklyTypeMap = {
     }
 };
 
-Blockly.Blocks.Utilities.OUTPUT = 'output';
-Blockly.Blocks.Utilities.INPUT = 'input';
+export const OUTPUT = 'output';
+export const INPUT = 'input';
 
 /**
  * Gets the equivalent Blockly type for a given Yail type.
@@ -97,7 +96,7 @@ Blockly.Blocks.Utilities.INPUT = 'input';
  * @param {!string} inputOrOutput Either Utilities.OUTPUT or Utilities.INPUT.
  * @param {Array<string>=} opt_currentType A type array to append, or null.
  */
-Blockly.Blocks.Utilities.YailTypeToBlocklyType = function(yail, inputOrOutput) {
+export const YailTypeToBlocklyType = function(yail, inputOrOutput) {
     if (yail.indexOf('Enum') != -1) {
         return yail;
     }
@@ -119,7 +118,7 @@ Blockly.Blocks.Utilities.YailTypeToBlocklyType = function(yail, inputOrOutput) {
  *     to access the component database etc.
  * @return {*} Something to add to the components array, or null/undefined.
  */
-Blockly.Blocks.Utilities.helperKeyToBlocklyType = function(helperKey, block) {
+export const helperKeyToBlocklyType = function(helperKey, block) {
     if (!helperKey) {
         return null;
     }
@@ -140,7 +139,7 @@ Blockly.Blocks.Utilities.helperKeyToBlocklyType = function(helperKey, block) {
  *     to access the component database etc.
  * @return {!string} The correct string representation of the type.
  */
-Blockly.Blocks.Utilities.optionListKeyToBlocklyType = function(key, block) {
+export const optionListKeyToBlocklyType = function(key, block) {
     var optionList = block.getTopWorkspace().getComponentDatabase()
         .getOptionList(key);
     return optionList.className + 'Enum';
@@ -155,7 +154,7 @@ Blockly.Blocks.Utilities.optionListKeyToBlocklyType = function(key, block) {
  * @return {Array<!string>=} An array of filters for use in filtering an
  *     attached assets block.
  */
-Blockly.Blocks.Utilities.assetKeyToBlocklyType = function(key, block) {
+export const assetKeyToBlocklyType = function(key, block) {
     return block.getTopWorkspace().getComponentDatabase().getFilter(key);
 }
 
@@ -163,32 +162,32 @@ Blockly.Blocks.Utilities.assetKeyToBlocklyType = function(key, block) {
 // Blockly doesn't wrap tooltips, so these can get too wide.  We'll create our own tooltip setter
 // that wraps to length 60.
 
-Blockly.Blocks.Utilities.setTooltip = function(block, tooltip) {
-    block.setTooltip(Blockly.Blocks.Utilities.wrapSentence(tooltip, 60));
+export const setTooltip = function(block, tooltip) {
+    block.setTooltip(wrapSentence(tooltip, 60));
 };
 
 // Wrap a string by splitting at spaces. Permit long chunks if there
 // are no spaces.
 
-Blockly.Blocks.Utilities.wrapSentence = function(str, len) {
+export const wrapSentence = function(str, len) {
     str = str.trim();
     if (str.length < len) return str;
     var place = (str.lastIndexOf(" ", len));
     if (place == -1) {
-        return str.substring(0, len).trim() + Blockly.Blocks.Utilities.wrapSentence(str.substring(len), len);
+        return str.substring(0, len).trim() + wrapSentence(str.substring(len), len);
     } else {
         return str.substring(0, place).trim() + "\n" +
-            Blockly.Blocks.Utilities.wrapSentence(str.substring(place), len);
+            wrapSentence(str.substring(place), len);
     }
 };
 
 // Change the text of collapsed blocks on rename
 // Recurse to fix collapsed parents
 
-Blockly.Blocks.Utilities.MAX_COLLAPSE = 4;
+export const MAX_COLLAPSE = 4;
 
 // unicode multiplication symbol
-Blockly.Blocks.Utilities.times_symbol = '\u00D7';
+export const times_symbol = '\u00D7';
 
 /**
  * Regular expression for floating point numbers.
@@ -196,6 +195,6 @@ Blockly.Blocks.Utilities.times_symbol = '\u00D7';
  * @type {!RegExp}
  * @const
  */
-Blockly.Blocks.Utilities.NUMBER_REGEX =
+export const NUMBER_REGEX =
     new RegExp("^([-+]?[0-9]+)?(\\.[0-9]+)?([eE][-+]?[0-9]+)?$|" +
         "^[-+]?[0-9]+(\\.[0-9]*)?([eE][-+]?[0-9]+)?$");
