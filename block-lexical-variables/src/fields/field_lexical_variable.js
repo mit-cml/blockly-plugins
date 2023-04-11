@@ -354,7 +354,44 @@ FieldLexicalVariable.prototype.doValueUpdate_ = function(newValue) {
       break;
     }
   }
+  this.updateMutation();
   this.forceRerender();
+};
+
+/**
+ * Update the eventparam mutation associated with the field's source block.
+ */
+FieldLexicalVariable.prototype.updateMutation = function() {
+  const text = this.getText();
+  if (this.sourceBlock_ && this.sourceBlock_.getParent()) {
+    this.sourceBlock_.eventparam = undefined;
+    if (text.indexOf(Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + ' ') === 0) {
+      this.sourceBlock_.eventparam = null;
+      return;
+    }
+    let i, parent = this.sourceBlock_.getParent();
+    while (parent) {
+      const variables = parent.declaredVariables ? parent.declaredVariables() : [];
+      if (parent.type != 'component_event') {
+        for (i = 0; i < variables.length; i++) {
+          if (variables[i] == text) {
+            // Innermost scope is not an event block, so eventparam can be nulled.
+            this.sourceBlock_.eventparam = null;
+            return;
+          }
+        }
+      } else {
+        for (i = 0; i < variables.length; i++) {
+          if (variables[i] == text) {
+            // text is an event parameter so compute the eventparam value
+            this.sourceBlock_.eventparam = parent.getParameters()[i].name;
+            return;
+          }
+        }
+      }
+      parent = parent.getParent();
+    }
+  }
 };
 
 /**
