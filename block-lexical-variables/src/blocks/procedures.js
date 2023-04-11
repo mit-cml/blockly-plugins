@@ -453,7 +453,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     }
 
     // Call parent's destructor.
-    Blockly.BlockSvg.prototype.dispose.apply(this, args);
+    Object.getPrototypeOf(this).dispose.apply(this, args)
 
     const procDb = workspace.getProcedureDatabase();
     if (editable && procDb) {
