@@ -1671,14 +1671,14 @@ suite ('FieldLexical', function() {
       '  <block type="component_event">' +
       '    <statement name="DO">' +
       '      <block type="local_declaration_statement">' +
-      '      <mutation>' +
-      '        <localname name="test"></localname>' +
-      '      </mutation>' +
-      '      <statement name="STACK">' +
-      '        <block type="lexical_variable_set" id="target">' +
-      '          <field name="VAR">test</field>' +
-      '        </block>' +
-      '      </statement>' +
+      '        <mutation>' +
+      '          <localname name="test"></localname>' +
+      '        </mutation>' +
+      '        <statement name="STACK">' +
+      '          <block type="lexical_variable_set" id="target">' +
+      '            <field name="VAR">test</field>' +
+      '          </block>' +
+      '        </statement>' +
       '      </block>' +
       '    </statement>' +
       '  </block>' +
