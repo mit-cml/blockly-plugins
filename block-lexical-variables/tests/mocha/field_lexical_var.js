@@ -1607,98 +1607,100 @@ suite ('FieldLexical', function() {
   // they test for null values or test that an eventparams property that is explicitly set be the test
   // is unchanged by some call in the test.
 
-  // suite('updateMutation', function() {
-  //   setup(function() {
-  //     Blockly.Events.disable();
-  //     this.oldDef = {};
-  //     Object.assign(this.oldDef, Blockly.Blocks['component_event']);
-  //
-  //     // Mock the component event block for testing.
-  //     Blockly.Blocks['component_event'] = {
-  //       init: function() {
-  //         this.appendStatementInput('DO');
-  //       },
-  //
-  //       declaredVariables: function() {
-  //         return ['test'];
-  //       },
-  //
-  //       getParameters: function() {
-  //         return [{name: 'test'}];
-  //       }
-  //     }
-  //   });
-  //   teardown(function() {
-  //     this.workspace.clear();
-  //     Blockly.Blocks['component_event'] = this.oldDef;
-  //     Blockly.Events.enable();
-  //   });
-  //   test('Is Event Param', function() {
-  //     // Component mutator is emitted for simplicity.
-  //     const xml = Blockly.Xml.textToDom('<xml>' +
-  //     '  <block type="component_event">' +
-  //     '    <statement name="DO">' +
-  //     '      <block type="lexical_variable_set" id="target">' +
-  //     '        <field name="VAR">test</field>' +
-  //     '      </block>' +
-  //     '    </statement>' +
-  //     '  </block>' +
-  //     '</xml>');
-  //     Blockly.Xml.domToWorkspace(xml, this.workspace);
-  //     const block = this.workspace.getBlockById('target');
-  //     // Calling setFieldValue triggers updateMutation.
-  //     block.setFieldValue('test', 'VAR');
-  //     chai.assert.equal(block.eventparam, 'test');
-  //   });
-  //   test('References Global', function() {
-  //     const xml = Blockly.Xml.textToDom('<xml>' +
-  //     '  <block type="component_event">' +
-  //     '    <statement name="DO">' +
-  //     '      <block type="lexical_variable_set" id="target">' +
-  //     '        <field name="VAR">global test</field>' +
-  //     '      </block>' +
-  //     '    </statement>' +
-  //     '  </block>' +
-  //     '</xml>');
-  //     Blockly.Xml.domToWorkspace(xml, this.workspace);
-  //     const block = this.workspace.getBlockById('target');
-  //     block.setFieldValue('global test', 'VAR');
-  //     chai.assert.equal(block.eventparam, null);
-  //   });
-  //   test('References Lexical', function() {
-  //     const xml = Blockly.Xml.textToDom('<xml>' +
-  //     '  <block type="component_event">' +
-  //     '    <statement name="DO">' +
-  //     '      <block type="local_declaration_statement">' +
-  //     '      <mutation>' +
-  //     '        <localname name="test"></localname>' +
-  //     '      </mutation>' +
-  //     '      <statement name="STACK">' +
-  //     '        <block type="lexical_variable_set" id="target">' +
-  //     '          <field name="VAR">test</field>' +
-  //     '        </block>' +
-  //     '      </statement>'+
-  //     '    </statement>' +
-  //     '  </block>' +
-  //     '</xml>');
-  //     Blockly.Xml.domToWorkspace(xml, this.workspace);
-  //     const block = this.workspace.getBlockById('target');
-  //     block.setFieldValue('test', 'VAR');
-  //     chai.assert.equal(block.eventparam, null);
-  //   });
-  //   test('No Parent', function() {
-  //     const xml = Blockly.Xml.textToDom('<xml>' +
-  //     '  <block type="lexical_variable_set" id="target">' +
-  //     '    <field name="VAR">test</field>' +
-  //     '  </block>' +
-  //     '</xml>');
-  //     Blockly.Xml.domToWorkspace(xml, this.workspace);
-  //     const block = this.workspace.getBlockById('target');
-  //     block.eventparam = 'someValue';
-  //     block.setFieldValue('test', 'VAR');
-  //     chai.assert.equal(block.eventparam, 'someValue');
-  //   });
-  // });
+  suite('updateMutation', function() {
+    setup(function() {
+      Blockly.Events.disable();
+      this.oldDef = {};
+      Object.assign(this.oldDef, Blockly.Blocks['component_event']);
+
+      // Mock the component event block for testing.
+      Blockly.Blocks['component_event'] = {
+        init: function() {
+          this.appendStatementInput('DO');
+        },
+
+        declaredVariables: function() {
+          return ['test'];
+        },
+
+        getParameters: function() {
+          return [{name: 'test'}];
+        }
+      }
+    });
+    teardown(function() {
+      this.workspace.clear();
+      Blockly.Blocks['component_event'] = this.oldDef;
+      Blockly.Events.enable();
+    });
+    test('Is Event Param', function() {
+      // Component mutator is emitted for simplicity.
+      const xml = Blockly.Xml.textToDom('<xml>' +
+      '  <block type="component_event">' +
+      '    <statement name="DO">' +
+      '      <block type="lexical_variable_set" id="target">' +
+      '        <field name="VAR">test</field>' +
+      '      </block>' +
+      '    </statement>' +
+      '  </block>' +
+      '</xml>');
+      Blockly.Xml.domToWorkspace(xml, this.workspace);
+      const block = this.workspace.getBlockById('target');
+      // Calling setFieldValue triggers updateMutation.
+      block.setFieldValue('test', 'VAR');
+      chai.assert.equal(block.eventparam, 'test');
+    });
+    test('References Global', function() {
+      const xml = Blockly.Xml.textToDom('<xml>' +
+      '  <block type="component_event">' +
+      '    <statement name="DO">' +
+      '      <block type="lexical_variable_set" id="target">' +
+      '        <field name="VAR">global test</field>' +
+      '      </block>' +
+      '    </statement>' +
+      '  </block>' +
+      '</xml>');
+      Blockly.Xml.domToWorkspace(xml, this.workspace);
+      const block = this.workspace.getBlockById('target');
+      block.setFieldValue('global test', 'VAR');
+      chai.assert.equal(block.eventparam, null);
+    });
+    // TODO: The following XML doesn't parse.  It's missing an </block> somewhere.
+    test('References Lexical', function() {
+      const xml = Blockly.Xml.textToDom('<xml>' +
+      '  <block type="component_event">' +
+      '    <statement name="DO">' +
+      '      <block type="local_declaration_statement">' +
+      '      <mutation>' +
+      '        <localname name="test"></localname>' +
+      '      </mutation>' +
+      '      <statement name="STACK">' +
+      '        <block type="lexical_variable_set" id="target">' +
+      '          <field name="VAR">test</field>' +
+      '        </block>' +
+      '      </statement>' +
+      '      </block>' +
+      '    </statement>' +
+      '  </block>' +
+      '</xml>');
+      Blockly.Xml.domToWorkspace(xml, this.workspace);
+      const block = this.workspace.getBlockById('target');
+      block.setFieldValue('test', 'VAR');
+      chai.assert.equal(block.eventparam, null);
+    });
+    test('No Parent', function() {
+      const xml = Blockly.Xml.textToDom('<xml>' +
+      '  <block type="lexical_variable_set" id="target">' +
+      '    <field name="VAR">test</field>' +
+      '  </block>' +
+      '</xml>');
+      Blockly.Xml.domToWorkspace(xml, this.workspace);
+      const block = this.workspace.getBlockById('target');
+      block.eventparam = 'someValue';
+      block.setFieldValue('test', 'VAR');
+      chai.assert.equal(block.eventparam, 'someValue');
+    });
+  });
   suite('freeVariables', function() {
     setup(function() {
       Blockly.Events.disable();
