@@ -60,12 +60,12 @@ ComponentBlock.addGenericOption = function(block, options) {
      * be inferred.
      */
     function makeGeneric(block, opt_replacementDom) {
-        var instanceName = block.instanceName;
-        var mutation = block.mutationToDom();
-        var oldMutation = Blockly.Xml.domToText(mutation);
+        const instanceName = block.instanceName;
+        const mutation = block.mutationToDom();
+        const oldMutation = Blockly.Xml.domToText(mutation);
         mutation.setAttribute('is_generic', 'true');
         mutation.removeAttribute('instance_name');
-        var newMutation = Blockly.Xml.domToText(mutation);
+        const newMutation = Blockly.Xml.domToText(mutation);
         block.domToMutation(mutation);
         block.initSvg();  // block shape may have changed
         block.render();
@@ -74,17 +74,17 @@ ComponentBlock.addGenericOption = function(block, options) {
         if (block.type === 'component_event') opt_replacementDom = false;
         if (opt_replacementDom !== false) {
             if (opt_replacementDom === undefined) {
-                var compBlockXml = '<xml><block type="component_component_block">' +
+                const compBlockXml = '<xml><block type="component_component_block">' +
                     '<mutation component_type="' + block.typeName + '" instance_name="' + instanceName + '"></mutation>' +
                     '<field name="COMPONENT_SELECTOR">' + instanceName + '</field>' +
                     '</block></xml>';
                 opt_replacementDom = Blockly.Xml.textToDom(compBlockXml).firstElementChild;
             }
-            var replacement = Blockly.Xml.domToBlock(opt_replacementDom, block.workspace);
+            const replacement = Blockly.Xml.domToBlock(opt_replacementDom, block.workspace);
             replacement.initSvg();
             block.getInput('COMPONENT').connection.connect(replacement.outputConnection);
         }
-        var group = Blockly.Events.getGroup();
+        const group = Blockly.Events.getGroup();
         setTimeout(function() {
             Blockly.Events.setGroup(group);
             // noinspection JSAccessibilityCheck
@@ -93,28 +93,28 @@ ComponentBlock.addGenericOption = function(block, options) {
         }, Blockly.BUMP_DELAY);
     }
 
-    var item = { enabled: false };
+    const item = {enabled: false};
     if (block.isGeneric) {
-        var compBlock = block.getInputTargetBlock('COMPONENT');
+        const compBlock = block.getInputTargetBlock('COMPONENT');
         item.enabled = compBlock && compBlock.type === 'component_component_block';
         item.text = Blockly.BlocklyEditor.makeMenuItemWithHelp(Blockly.Msg.UNGENERICIZE_BLOCK,
             '/reference/other/any-component-blocks.html');
         item.callback = function () {
             try {
                 Blockly.Events.setGroup(true);
-                var instanceName = compBlock.instanceName;
+                const instanceName = compBlock.instanceName;
                 compBlock.dispose(true);
-                var mutation = block.mutationToDom();
-                var oldMutation = Blockly.Xml.domToText(mutation);
+                const mutation = block.mutationToDom();
+                const oldMutation = Blockly.Xml.domToText(mutation);
                 mutation.setAttribute('instance_name', instanceName);
                 mutation.setAttribute('is_generic', 'false');
-                var newMutation = Blockly.Xml.domToText(mutation);
+                const newMutation = Blockly.Xml.domToText(mutation);
                 block.domToMutation(mutation);
                 block.initSvg();  // block shape may have changed
                 block.render();
                 Blockly.Events.fire(new Blockly.Events.Change(
                     block, 'mutation', null, oldMutation, newMutation));
-                var group = Blockly.Events.getGroup();
+                const group = Blockly.Events.getGroup();
                 setTimeout(function () {
                     Blockly.Events.setGroup(group);
                     // noinspection JSAccessibilityCheck
@@ -132,21 +132,22 @@ ComponentBlock.addGenericOption = function(block, options) {
         item.callback = function() {
             try {
                 Blockly.Events.setGroup(true);
-                var instanceName = block.instanceName;
-                var intlName = block.workspace.getComponentDatabase()
+                const instanceName = block.instanceName;
+                const intlName = block.workspace.getComponentDatabase()
                     .getInternationalizedParameterName('component');
 
                 // Aggregate variables in scope
-                var namesInScope = {}, maxNum = 0;
-                var regex = new RegExp('^' + intlName + '([0-9]+)$');
-                var varDeclsWithIntlName = [];
+                const namesInScope = {};
+                let maxNum = 0;
+                const regex = new RegExp('^' + intlName + '([0-9]+)$');
+                const varDeclsWithIntlName = [];
                 block.walk(function(block) {
                     if (block.type === 'local_declaration_statement' ||
                         block.type === 'local_declaration_expression') {
-                        var localNames = block.getVars();
+                        const localNames = block.getVars();
                         localNames.forEach(function(varname) {
                             namesInScope[varname] = true;
-                            var match = varname.match(regex);
+                            const match = varname.match(regex);
                             if (match) {
                                 maxNum = Math.max(maxNum, parseInt(match[1]));
                             }
@@ -166,10 +167,10 @@ ComponentBlock.addGenericOption = function(block, options) {
                 }
 
                 // Make generic the block and any descendants of the same component instance
-                var varBlockXml = '<xml><block type="lexical_variable_get">' +
+                const varBlockXml = '<xml><block type="lexical_variable_get">' +
                     '<mutation><eventparam name="component"></eventparam></mutation>' +
                     '<field name="VAR">' + intlName + '</field></block></xml>';
-                var varBlockDom = Blockly.Xml.textToDom(varBlockXml).firstElementChild;
+                const varBlockDom = Blockly.Xml.textToDom(varBlockXml).firstElementChild;
                 makeGeneric(block);  // Do this first so 'component' is defined.
                 block.walk(function(block) {
                     if ((block.type === 'component_method' || block.type === 'component_set_get') &&
@@ -227,7 +228,7 @@ Blockly.Blocks.component_event = {
 
     mutationToDom : function() {
 
-        var container = document.createElement('mutation');
+        const container = document.createElement('mutation');
         container.setAttribute('component_type', this.typeName);
         container.setAttribute('is_generic', this.isGeneric ? "true" : "false");
         if (!this.isGeneric) {
@@ -243,7 +244,7 @@ Blockly.Blocks.component_event = {
         // Note that this.parameterNames only contains parameter names that have
         // overridden the default event parameter names specified in the component
         // DB
-        for (var i = 0; i < this.parameterNames.length; i++) {
+        for (let i = 0; i < this.parameterNames.length; i++) {
             container.setAttribute('param_name' + i, this.parameterNames[i]);
         }
 
@@ -251,15 +252,15 @@ Blockly.Blocks.component_event = {
     },
 
     domToMutation : function(xmlElement) {
-        var oldRendered = this.rendered;
+        const oldRendered = this.rendered;
         this.rendered = false;
-        var oldDo = null;
+        let oldDo = null;
         for (var i = 0, input; input = this.inputList[i]; i++) {
             if (input.connection) {
                 if (input.name === 'DO') {
                     oldDo = input.connection.targetBlock();
                 }
-                var block = input.connection.targetBlock();
+                const block = input.connection.targetBlock();
                 if (block) {
                     block.unplug();
                 }
@@ -281,9 +282,9 @@ Blockly.Blocks.component_event = {
         // default names specified in the component DB. Note that some parameter
         // names may be overridden while others may remain their defaults
         this.parameterNames = [];
-        var numParams = this.getDefaultParameters_().length
+        const numParams = this.getDefaultParameters_().length;
         for (var i = 0; i < numParams; i++) {
-            var paramName = xmlElement.getAttribute('param_name' + i);
+            const paramName = xmlElement.getAttribute('param_name' + i);
             // For now, we only allow explicit parameter names starting at the beginning
             // of the parameter list.  Some day we may allow an arbitrary subset of the
             // event params to be explicitly specified.
@@ -292,13 +293,13 @@ Blockly.Blocks.component_event = {
         }
 
         // Orient parameters horizontally by default
-        var horizParams = xmlElement.getAttribute('vertical_parameters') !== "true";
+        const horizParams = xmlElement.getAttribute('vertical_parameters') !== "true";
 
         this.setColour(ComponentBlock.COLOUR_EVENT);
 
-        var localizedEventName;
-        var eventType = this.getEventTypeObject();
-        var componentDb = this.getTopWorkspace().getComponentDatabase();
+        let localizedEventName;
+        const eventType = this.getEventTypeObject();
+        const componentDb = this.getTopWorkspace().getComponentDatabase();
         if (eventType) {
             localizedEventName = componentDb.getInternationalizedEventName(eventType.name);
         }
@@ -316,7 +317,7 @@ Blockly.Blocks.component_event = {
                 + componentDb.getInternationalizedComponentType(this.typeName) + '.' + localizedEventName);
         }
         this.setParameterOrientation(horizParams);
-        var tooltipDescription;
+        let tooltipDescription;
         if (eventType) {
             tooltipDescription = componentDb.getInternationalizedEventDescription(this.getTypeName(), eventType.name,
                 eventType.description);
@@ -353,16 +354,16 @@ Blockly.Blocks.component_event = {
     // TODO: consider using top.BlocklyPanel... instead of window.parent.BlocklyPanel
 
     setParameterOrientation: function(isHorizontal) {
-        var params = this.getParameters();
+        let params = this.getParameters();
         if (!params)  {
             params = [];
         }
-        var componentDb = this.getTopWorkspace().getComponentDatabase();
-        var oldDoInput = this.getInput("DO");
+        const componentDb = this.getTopWorkspace().getComponentDatabase();
+        const oldDoInput = this.getInput("DO");
         if (!oldDoInput || (isHorizontal !== this.horizontalParameters && params.length > 0)) {
             this.horizontalParameters = isHorizontal;
 
-            var bodyConnection = null, i, param, newDoInput;
+            let bodyConnection = null, i, param, newDoInput;
             if (oldDoInput) {
                 bodyConnection = oldDoInput.connection.targetConnection; // Remember any body connection
             }
@@ -378,7 +379,7 @@ Blockly.Blocks.component_event = {
 
                 // ... and insert new ones:
                 if (params.length > 0) {
-                    var paramInput = this.appendDummyInput('PARAMETERS')
+                    const paramInput = this.appendDummyInput('PARAMETERS')
                         .appendField(" ")
                         .setAlign(Blockly.ALIGN_LEFT);
                     for (i = 0; param = params[i]; i++) {
@@ -428,17 +429,17 @@ Blockly.Blocks.component_event = {
     // Return a list of parameter names
     getParameters: function () {
         /** @type {EventDescriptor} */
-        var defaultParameters = this.getDefaultParameters_();
-        var explicitParameterNames = this.getExplicitParameterNames_();
-        var params = [];
-        for (var i = 0; i < defaultParameters.length; i++) {
-            var paramName = explicitParameterNames[i] || defaultParameters[i].name;
+        const defaultParameters = this.getDefaultParameters_();
+        const explicitParameterNames = this.getExplicitParameterNames_();
+        const params = [];
+        for (let i = 0; i < defaultParameters.length; i++) {
+            const paramName = explicitParameterNames[i] || defaultParameters[i].name;
             params.push({name: paramName, type: defaultParameters[i].type});
         }
         return params;
     },
     getDefaultParameters_: function () {
-        var eventType = this.getEventTypeObject();
+        const eventType = this.getEventTypeObject();
         if (this.isGeneric) {
             return [
                 {name:'component', type:'component'},
@@ -460,7 +461,8 @@ Blockly.Blocks.component_event = {
         return false;
     },
     renameVar: function(oldName, newName) {
-        for (var i = 0, param = 'VAR' + i, input
+        let i = 0, param = 'VAR' + i, input;
+        for (
             ; input = this.getFieldValue(param)
             ; i++, param = 'VAR' + i) {
             if (Blockly.Names.equals(oldName, input)) {
@@ -469,9 +471,9 @@ Blockly.Blocks.component_event = {
         }
     },
     helpUrl : function() {
-        var url = ComponentBlock.EVENTS_HELPURLS[this.getTypeName()];
+        let url = ComponentBlock.EVENTS_HELPURLS[this.getTypeName()];
         if (url && url[0] == '/') {
-            var parts = url.split('#');
+            const parts = url.split('#');
             parts[1] = this.getTypeName() + '.' + this.eventName;
             url = parts.join('#');
         }
@@ -479,16 +481,18 @@ Blockly.Blocks.component_event = {
     },
 
     getVars: function() {
-        var varList = [];
-        for (var i = 0, input; input = this.getFieldValue('VAR' + i); i++) {
+        const varList = [];
+        let i = 0, input;
+        for (; input = this.getFieldValue('VAR' + i); i++) {
             varList.push(input);
         }
         return varList;
     },
 
     getVarString: function() {
-        var varString = "";
-        for (var i = 0, param; param = this.getFieldValue('VAR' + i); i++) {
+        let varString = "";
+        let i = 0, param;
+        for (; param = this.getFieldValue('VAR' + i); i++) {
             // [lyn, 10/13/13] get current name from block, not from underlying event (may have changed)
             if(i != 0){
                 varString += " ";
@@ -499,8 +503,9 @@ Blockly.Blocks.component_event = {
     },
 
     declaredNames: function() { // [lyn, 10/13/13] Interface with Blockly.LexicalVariable.renameParam
-        var names = [];
-        for (var i = 0, param; param = this.getField('VAR' + i); i++) {
+        const names = [];
+        let i = 0, param;
+        for (; param = this.getField('VAR' + i); i++) {
             names.push(param.getText());
             if (param.eventparam && param.eventparam != param.getText()) {
                 names.push(param.eventparam);
@@ -510,15 +515,16 @@ Blockly.Blocks.component_event = {
     },
 
     declaredVariables: function() {
-        var names = [];
-        for (var i = 0, param; param = this.getField('VAR' + i); i++) {
+        const names = [];
+        let i = 0, param;
+        for (; param = this.getField('VAR' + i); i++) {
             names.push(param.getText());
         }
         return names;
     },
 
     blocksInScope: function() { // [lyn, 10/13/13] Interface with Blockly.LexicalVariable.renameParam
-        var doBlock = this.getInputTargetBlock('DO');
+        const doBlock = this.getInputTargetBlock('DO');
         if (doBlock) {
             return [doBlock];
         } else {
@@ -535,9 +541,9 @@ Blockly.Blocks.component_event = {
     },
 
     typeblock : function(){
-        var componentDb = Blockly.mainWorkspace.getComponentDatabase();
-        var tb = [];
-        var types = {};
+        const componentDb = Blockly.mainWorkspace.getComponentDatabase();
+        const tb = [];
+        const types = {};
 
         componentDb.forEachInstance(function(instance) {
             types[instance.typeName] = true;
@@ -583,23 +589,23 @@ Blockly.Blocks.component_event = {
     // check if the block corresponds to an event inside componentTypes[typeName].eventDictionary
     verify : function () {
 
-        var validate = function() {
+        const validate = function () {
             // check component type
-            var componentDb = this.getTopWorkspace().getComponentDatabase();
-            var componentType = componentDb.getType(this.typeName);
+            const componentDb = this.getTopWorkspace().getComponentDatabase();
+            const componentType = componentDb.getType(this.typeName);
             if (!componentType) {
                 return false; // component does NOT exist! should not happen!
             }
-            var eventDictionary = componentType.eventDictionary;
+            const eventDictionary = componentType.eventDictionary;
             /** @type {EventDescriptor} */
-            var event = eventDictionary[this.eventName];
+            const event = eventDictionary[this.eventName];
             // check event name
             if (!event) {
                 return false; // no such event : this event was for another version!  block is undefined!
             }
             // check parameters
-            var varList = this.getVars();
-            var params = event.parameters;
+            const varList = this.getVars();
+            const params = event.parameters;
             if (this.isGeneric) {
                 varList.splice(0, 2);  // remove component and wasDefined parameters
                                        // since we know they are well-defined
@@ -608,15 +614,16 @@ Blockly.Blocks.component_event = {
                 return false; // parameters have changed
             }
             if ("true" === componentType.external) {
-                for (var x = 0; x < varList.length; ++x) {
-                    var found = false;
-                    for (var i = 0, param; param = params[i]; ++i) {
+                for (let x = 0; x < varList.length; ++x) {
+                    let found = false;
+                    let i = 0, param;
+                    for (; param = params[i]; ++i) {
                         if (componentDb.getInternationalizedParameterName(param.name) == varList[x]) {
                             found = true;
                             break;
                         }
                     }
-                    if (!found)  {
+                    if (!found) {
                         return false; // parameter name changed
                     }
                 }
@@ -624,7 +631,7 @@ Blockly.Blocks.component_event = {
             // No need to check event return type, events do not return.
             return true; // passed all our tests! block is defined!
         };
-        var isDefined = validate.call(this);
+        const isDefined = validate.call(this);
 
         if (isDefined) {
             this.notBadBlock();
