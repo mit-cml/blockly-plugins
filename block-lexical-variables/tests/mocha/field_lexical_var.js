@@ -9,7 +9,7 @@
  * @fileoverview Field lexical variable behavior tests.
  */
 
-import Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 import '../../src/utilities.js';
 import '../../src/workspace.js';
 import '../../src/procedure_utils.js';

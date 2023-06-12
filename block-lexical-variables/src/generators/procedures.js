@@ -1,7 +1,7 @@
 'use strict';
 
-import Blockly from 'blockly';
-import pkg from 'blockly/javascript.js';
+import * as Blockly from 'blockly/core';
+import pkg from 'blockly/javascript';
 const {javascriptGenerator} = pkg;
 
 /**

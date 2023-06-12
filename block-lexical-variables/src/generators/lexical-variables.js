@@ -1,8 +1,8 @@
 'use strict';
 
 import * as Shared from '../shared.js';
-import Blockly from 'blockly';
-import pkg from 'blockly/javascript.js';
+import * as Blockly from 'blockly/core';
+import pkg from 'blockly/javascript';
 const {javascriptGenerator} = pkg;
 
 javascriptGenerator['lexical_variable_get'] = function(block) {
