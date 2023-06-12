@@ -13,7 +13,7 @@
  */
 'use strict';
 
-import Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 import {FieldFlydown} from './field_flydown.js';
 
 /**

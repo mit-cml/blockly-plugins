@@ -1,4 +1,4 @@
-import Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 import './msg.js';
 
 /* [Added by paulmw in patch 15]
