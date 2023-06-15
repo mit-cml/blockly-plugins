@@ -3,10 +3,10 @@
 import * as Shared from '../shared.js';
 import * as Blockly from 'blockly/core';
 import pkg from 'blockly/javascript';
-const {javascriptGenerator} = pkg;
 
+if (pkg) {
 // We might be loaded into an environment that doesn't have Blockly's JavaScript generator.
-if (javascriptGenerator) {
+  const {javascriptGenerator} = pkg;
   javascriptGenerator['lexical_variable_get'] = function (block) {
     const code = getVariableName(block.getFieldValue('VAR'));
     return [code, javascriptGenerator.ORDER_ATOMIC];

@@ -2,10 +2,10 @@
 
 import * as Blockly from 'blockly/core';
 import pkg from 'blockly/javascript';
-const {javascriptGenerator} = pkg;
 
+if (pkg) {
 // We might be loaded into an environment that doesn't have Blockly's JavaScript generator.
-if (javascriptGenerator) {
+  const {javascriptGenerator} = pkg;
   /**
    * This code is copied from Blockly but the 'var' keyword is replaced by 'let'
    * in the generated code.
