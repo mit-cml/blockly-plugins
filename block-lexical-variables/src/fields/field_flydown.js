@@ -182,7 +182,7 @@ FieldFlydown.prototype.showFlydown_ = function() {
   flydown.setCSSClass(this.flyoutCSSClassName);
 
   const blocksXMLText = this.flydownBlocksXML_();
-  const blocksDom = Blockly.Xml.textToDom(blocksXMLText);
+  const blocksDom = Blockly.utils.xml.textToDom(blocksXMLText);
   // [lyn, 11/10/13] Use goog.dom.getChildren rather than .children or
   //    .childNodes to make this code work across browsers.
   const blocksXMLList = Utilities.getChildren(blocksDom);
