@@ -80,6 +80,8 @@ Blockly.Msg['LANG_PROCEDURES_CALLNORETURN_COLLAPSED_PREFIX'] = 'call ';
 Blockly.Msg['LANG_PROCEDURES_CALLNORETURN_TOOLTIP'] =
     'Call a procedure with no return value.';
 Blockly.Msg['LANG_PROCEDURES_CALLNORETURN_TRANSLATED_NAME'] = 'call no return';
+Blockly.Msg['LANG_PROCEDURES_CALLRETURN_CALL'] = 'call ';
+Blockly.Msg['LANG_PROCEDURES_CALLRETURN_PROCEDURE'] = 'procedure';
 Blockly.Msg['LANG_PROCEDURES_CALLRETURN_COLLAPSED_PREFIX'] = 'call ';
 Blockly.Msg['LANG_PROCEDURES_CALLRETURN_TOOLTIP'] =
     'Call a procedure with a return value.';
@@ -144,3 +146,5 @@ Blockly.Msg['LANG_CONTROLS_DO_THEN_RETURN_TOOLTIP'] =
     ' run a procedure before returning a value to a variable.';
 Blockly.Msg['LANG_CONTROLS_DO_THEN_RETURN_COLLAPSED_TEXT'] = 'do/result';
 Blockly.Msg['LANG_CONTROLS_DO_THEN_RETURN_TITLE'] = 'do result';
+Blockly.Msg['PROCEDURES_DEFNORETURN_PROCEDURE'] = Blockly.Msg['LANG_PROCEDURES_DEFNORETURN_PROCEDURE'];
+Blockly.Msg['PROCEDURES_DEFRETURN_PROCEDURE'] = Blockly.Msg['LANG_PROCEDURES_DEFRETURN_PROCEDURE'];

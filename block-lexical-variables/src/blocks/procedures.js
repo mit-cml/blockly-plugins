@@ -77,8 +77,7 @@
  */
 'use strict';
 
-import Blockly from 'blockly';
-import '../msg.js';
+import * as Blockly from 'blockly/core';
 import {FieldProcedureName} from '../fields/field_procedurename.js';
 import * as WarningHandler from '../warningHandler.js';
 import * as ProcedureUtils from '../procedure_utils.js';
@@ -92,24 +91,25 @@ import {FieldNoCheckDropdown} from '../fields/field_nocheck_dropdown.js';
 import * as Utilities from '../utilities.js';
 import * as Shared from '../shared.js';
 import {Substitution} from '../substitution.js'
+import '../msg.js';
 
 Blockly.Blocks['procedures_defnoreturn'] = {
   // Define a procedure with no return value.
   category: 'Procedures', // Procedures are handled specially.
-  helpUrl: Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_HELPURL,
+  helpUrl: Blockly.Msg['LANG_PROCEDURES_DEFNORETURN_HELPURL'],
   bodyInputName: 'STACK',
   init: function() {
     // Let the theme determine the color.
     // this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
     this.setStyle('procedure_blocks');
     const legalName = Blockly.Procedures.findLegalName(
-        Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_PROCEDURE, this);
+        Blockly.Msg['LANG_PROCEDURES_DEFNORETURN_PROCEDURE'], this);
     this.createHeader(legalName);
     this.horizontalParameters = true; // horizontal by default
     this.appendStatementInput('STACK')
-        .appendField(Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_DO);
+        .appendField(Blockly.Msg['LANG_PROCEDURES_DEFNORETURN_DO']);
     this.setMutator(new Blockly.icons.MutatorIcon(['procedures_mutatorarg'], this));
-    this.setTooltip(Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_TOOLTIP);
+    this.setTooltip(Blockly.Msg['LANG_PROCEDURES_DEFNORETURN_TOOLTIP']);
     // List of declared local variable names; has one
     // ("name") initially
     this.arguments_ = [];
@@ -120,7 +120,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
   },
   createHeader: function(procName) {
     return this.appendDummyInput('HEADER')
-        .appendField(Blockly.Msg.LANG_PROCEDURES_DEFNORETURN_DEFINE)
+        .appendField(Blockly.Msg['LANG_PROCEDURES_DEFNORETURN_DEFINE'])
         .appendField(new FieldProcedureName(procName), 'NAME');
   },
   withLexicalVarsAndPrefix: function(_, proc) {
@@ -160,7 +160,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
       hash['arg_' + this.arguments_[x].toLowerCase()] = true;
     }
     if (badArg) {
-      this.setWarningText(Blockly.Msg.LANG_PROCEDURES_DEF_DUPLICATE_WARNING);
+      this.setWarningText(Blockly.Msg['LANG_PROCEDURES_DEF_DUPLICATE_WARNING']);
     } else {
       this.setWarningText(null);
     }
@@ -560,7 +560,7 @@ Blockly.Blocks['procedures_defreturn'] = {
   // Define a procedure with a return value.
   category: 'Procedures', // Procedures are handled specially.
   // helpUrl: Blockly.Msg.LANG_PROCEDURES_DEFRETURN_HELPURL,
-  helpUrl: Blockly.Msg.PROCEDURES_DEFRETURN_HELPURL,
+  helpUrl: Blockly.Msg['PROCEDURES_DEFRETURN_HELPURL'],
   bodyInputName: 'RETURN',
   init: function() {
     // Let the theme determine the color.
@@ -572,22 +572,22 @@ Blockly.Blocks['procedures_defreturn'] = {
     //     .appendField(Blockly.Msg.LANG_PROCEDURES_DEFRETURN_DEFINE)
     //     .appendField(new FieldProcedureName(name), 'NAME');
     const legalName = Blockly.Procedures.findLegalName(
-        Blockly.Msg.LANG_PROCEDURES_DEFRETURN_PROCEDURE, this);
+        Blockly.Msg['LANG_PROCEDURES_DEFRETURN_PROCEDURE'], this);
     this.createHeader(legalName);
     this.horizontalParameters = true; // horizontal by default
     // this.appendIndentedValueInput('RETURN')
     //     .appendField(Blockly.Msg.LANG_PROCEDURES_DEFRETURN_RETURN);
     this.appendValueInput('RETURN')
         .setAlign(Blockly.inputs.Align.RIGHT)
-        .appendField(Blockly.Msg.LANG_PROCEDURES_DEFRETURN_RETURN);
+        .appendField(Blockly.Msg['LANG_PROCEDURES_DEFRETURN_RETURN']);
     this.setMutator(new Blockly.icons.MutatorIcon(['procedures_mutatorarg'], this));
-    this.setTooltip(Blockly.Msg.LANG_PROCEDURES_DEFRETURN_TOOLTIP);
+    this.setTooltip(Blockly.Msg['LANG_PROCEDURES_DEFRETURN_TOOLTIP']);
     this.arguments_ = [];
     this.warnings = [{name: 'checkEmptySockets', sockets: ['RETURN']}];
   },
   createHeader: function(procName) {
     return this.appendDummyInput('HEADER')
-        .appendField(Blockly.Msg.LANG_PROCEDURES_DEFRETURN_DEFINE)
+        .appendField(Blockly.Msg['LANG_PROCEDURES_DEFRETURN_DEFINE'])
         .appendField(new FieldProcedureName(procName), 'NAME');
   },
   withLexicalVarsAndPrefix:
@@ -624,9 +624,9 @@ Blockly.Blocks['procedures_mutatorcontainer'] = {
     // this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
     this.setStyle('procedure_blocks');
     this.appendDummyInput()
-        .appendField(Blockly.Msg.LANG_PROCEDURES_MUTATORCONTAINER_TITLE);
+        .appendField(Blockly.Msg['LANG_PROCEDURES_MUTATORCONTAINER_TITLE']);
     this.appendStatementInput('STACK');
-    this.setTooltip(Blockly.Msg.LANG_PROCEDURES_MUTATORCONTAINER_TOOLTIP);
+    this.setTooltip(Blockly.Msg['LANG_PROCEDURES_MUTATORCONTAINER_TOOLTIP']);
     this.contextMenu = false;
     this.mustNotRenameCapturables = true;
   },
@@ -682,11 +682,11 @@ Blockly.Blocks['procedures_mutatorarg'] = {
       }
     };
     this.appendDummyInput()
-        .appendField(Blockly.Msg.LANG_PROCEDURES_MUTATORARG_TITLE)
+        .appendField(Blockly.Msg['LANG_PROCEDURES_MUTATORARG_TITLE'])
         .appendField(editor, 'NAME');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setTooltip(Blockly.Msg.LANG_PROCEDURES_MUTATORARG_TOOLTIP);
+    this.setTooltip(Blockly.Msg['LANG_PROCEDURES_MUTATORARG_TOOLTIP']);
     this.contextMenu = false;
     this.lexicalVarPrefix = Shared.procedureParameterPrefix;
     this.mustNotRenameCapturables = true;
@@ -776,7 +776,7 @@ Blockly.Blocks.procedures_mutatorarg.validator = function(newVar) {
 Blockly.Blocks['procedures_callnoreturn'] = {
   // Call a procedure with no return value.
   category: 'Procedures', // Procedures are handled specially.
-  helpUrl: Blockly.Msg.LANG_PROCEDURES_CALLNORETURN_HELPURL,
+  helpUrl: Blockly.Msg['LANG_PROCEDURES_CALLNORETURN_HELPURL'],
   init: function() {
     // Let the theme determine the color.
     // this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
@@ -791,11 +791,11 @@ Blockly.Blocks['procedures_callnoreturn'] = {
         ProcedureUtils.onChange);
     this.procDropDown.block = this;
     this.appendDummyInput()
-        .appendField(Blockly.Msg.LANG_PROCEDURES_CALLNORETURN_CALL)
+        .appendField(Blockly.Msg['LANG_PROCEDURES_CALLNORETURN_CALL'])
         .appendField(this.procDropDown, 'PROCNAME');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setTooltip(Blockly.Msg.LANG_PROCEDURES_CALLNORETURN_TOOLTIP);
+    this.setTooltip(Blockly.Msg['LANG_PROCEDURES_CALLNORETURN_TOOLTIP']);
     this.arguments_ = [];
     this.quarkConnections_ = null;
     this.quarkArguments_ = null;
@@ -981,7 +981,7 @@ Blockly.Blocks['procedures_callnoreturn'] = {
   procCustomContextMenu: function(options) {
     // Add option to find caller.
     const option = {enabled: true};
-    option.text = Blockly.Msg.LANG_PROCEDURES_HIGHLIGHT_DEF;
+    option.text = Blockly.Msg['LANG_PROCEDURES_HIGHLIGHT_DEF'];
     const name = this.getFieldValue('PROCNAME');
     const workspace = this.workspace;
     option.callback = function() {
@@ -1008,7 +1008,7 @@ Blockly.Blocks['procedures_callnoreturn'] = {
 Blockly.Blocks['procedures_callreturn'] = {
   // Call a procedure with a return value.
   category: 'Procedures', // Procedures are handled specially.
-  helpUrl: Blockly.Msg.LANG_PROCEDURES_CALLRETURN_HELPURL,
+  helpUrl: Blockly.Msg['LANG_PROCEDURES_CALLRETURN_HELPURL'],
   init: function() {
     // Let the theme determine the color.
     // this.setColour(Blockly.PROCEDURE_CATEGORY_HUE);
@@ -1023,10 +1023,10 @@ Blockly.Blocks['procedures_callreturn'] = {
         ProcedureUtils.onChange);
     this.procDropDown.block = this;
     this.appendDummyInput()
-        .appendField(Blockly.Msg.LANG_PROCEDURES_CALLRETURN_CALL)
+        .appendField(Blockly.Msg['LANG_PROCEDURES_CALLRETURN_CALL'])
         .appendField(this.procDropDown, 'PROCNAME');
     this.setOutput(true, null);
-    this.setTooltip(Blockly.Msg.LANG_PROCEDURES_CALLRETURN_TOOLTIP);
+    this.setTooltip(Blockly.Msg['LANG_PROCEDURES_CALLRETURN_TOOLTIP']);
     this.arguments_ = [];
     this.quarkConnections_ = null;
     this.quarkArguments_ = null;
