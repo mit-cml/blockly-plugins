@@ -10,7 +10,7 @@
     "lint": "blockly-scripts lint",
     "predeploy": "blockly-scripts predeploy",
     "prepublishOnly": "npm run clean && npm run build-nolint",
-    "start": "blockly-scripts start",
+    "start": "blockly-scripts start --skip-lint",
     "test": "blockly-scripts test"
   },
   "main": "./dist/index.js",
