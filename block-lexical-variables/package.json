@@ -44,9 +44,9 @@
   ],
   "type": "module",
   "devDependencies": {
-    "@blockly/dev-scripts": "^1.2.32",
-    "@blockly/dev-tools": "^5.2.4",
-    "blockly": "^9.0.0",
+    "@blockly/dev-scripts": "^2.0.1",
+    "@blockly/dev-tools": "^7.0.2",
+    "blockly": "^10.0.0",
     "chai": "^4.3.7",
     "mocha": "^10.2.0"
   },
