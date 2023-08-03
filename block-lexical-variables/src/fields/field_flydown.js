@@ -13,7 +13,7 @@
 
 'use strict';
 
-import * as Blockly from 'blockly/core';
+import Blockly from 'blockly';
 import * as Utilities from '../utilities.js';
 
 /**

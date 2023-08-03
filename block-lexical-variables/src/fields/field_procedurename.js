@@ -10,7 +10,7 @@
  */
 'use strict';
 
-import * as Blockly from 'blockly/core';
+import Blockly from 'blockly';
 import '../msg.js';
 import * as ProcedureUtils from '../procedure_utils.js';
 

@@ -77,7 +77,7 @@
  */
 'use strict';
 
-import * as Blockly from 'blockly/core';
+import Blockly from 'blockly';
 import '../msg.js';
 import {FieldProcedureName} from '../fields/field_procedurename.js';
 import * as WarningHandler from '../warningHandler.js';

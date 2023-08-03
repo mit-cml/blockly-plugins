@@ -29,7 +29,7 @@ import './blocks/procedures.js';
 import './generators/controls.js';
 import './generators/procedures.js';
 import './generators/lexical-variables.js';
-import * as Blockly from 'blockly/core';
+import Blockly from 'blockly';
 import {Flydown} from './fields/flydown.js';
 
 // Export Flydown and fields for use by plugin users.

@@ -36,7 +36,7 @@
 
 'use strict';
 
-import * as Blockly from 'blockly/core';
+import Blockly from 'blockly';
 import '../msg.js';
 import {FieldParameterFlydown} from '../fields/field_parameter_flydown.js';
 import {FieldFlydown} from '../fields/field_flydown.js';

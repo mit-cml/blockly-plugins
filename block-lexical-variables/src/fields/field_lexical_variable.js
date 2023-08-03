@@ -11,7 +11,7 @@
 
 'use strict';
 
-import * as Blockly from 'blockly/core';
+import Blockly from 'blockly';
 import '../msg.js';
 import '../instrument.js';
 import * as Shared from '../shared.js';

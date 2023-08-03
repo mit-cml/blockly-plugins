@@ -8,7 +8,7 @@
  * @fileoverview Block test.
  */
 
-import * as Blockly from 'blockly/core';
+import Blockly from 'blockly';
 import {createPlayground} from '@blockly/dev-tools';
 import {init} from '../src/index.js';
 

@@ -88,7 +88,7 @@ function myStringify (obj) {
 
 'use strict';
 
-import * as Blockly from 'blockly/core';
+import Blockly from 'blockly';
 import '../msg.js';
 import * as WarningHandler from '../warningHandler.js';
 import {FieldParameterFlydown} from '../fields/field_parameter_flydown.js';

@@ -1,8 +1,8 @@
 'use strict';
 
 import * as Shared from '../shared.js';
-import * as Blockly from 'blockly/core';
-import pkg from 'blockly/javascript';
+import Blockly from 'blockly';
+import pkg from 'blockly/javascript.js';
 
 if (pkg) {
 // We might be loaded into an environment that doesn't have Blockly's JavaScript generator.
