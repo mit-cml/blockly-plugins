@@ -595,14 +595,6 @@ Blockly.Blocks['local_declaration_statement'] = {
       // }
     }
   },
-  dispose: function(...args) {
-    // *** [lyn, 11/07/12] Dunno if anything needs to be done here.
-    // Call parent's destructor.
-    Blockly.BlockSvg.prototype.dispose.apply(this, args);
-    // [lyn, 11/07/12] In above line, don't know where "arguments" param comes
-    // from, but if it's remove, there's no clicking sound upon deleting the
-    // block!
-  },
   saveConnections: function(containerBlock) {
     // Store child initializer blocks for local name declarations with name
     // blocks in mutator editor
@@ -817,7 +809,6 @@ Blockly.Blocks['local_declaration_expression'] = {
   blocksInScope: Blockly.Blocks.local_declaration_statement.blocksInScope,
   decompose: Blockly.Blocks.local_declaration_statement.decompose,
   compose: Blockly.Blocks.local_declaration_statement.compose,
-  dispose: Blockly.Blocks.local_declaration_statement.dispose,
   saveConnections: Blockly.Blocks.local_declaration_statement.saveConnections,
   getVars: Blockly.Blocks.local_declaration_statement.getVars,
   declaredNames: Blockly.Blocks.local_declaration_statement.declaredNames,
