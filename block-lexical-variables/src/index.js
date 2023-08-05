@@ -54,6 +54,7 @@ export function init(workspace) {
         rtl: workspace.RTL,
         renderer: workspace.options.renderer,
         rendererOverrides: workspace.options.rendererOverrides,
+        parentWorkspace: workspace,
       })
   );
   // ***** [lyn, 10/05/2013] NEED TO WORRY ABOUT MULTIPLE BLOCKLIES! *****

@@ -84,7 +84,7 @@ import {Substitution} from '../substitution.js'
 export class FieldLexicalVariable extends Blockly.FieldDropdown {
   constructor(varname) {
     // Call parent's constructor.
-    super(FieldLexicalVariable.dropdownCreate, FieldLexicalVariable.dropdownChange);
+    super(FieldLexicalVariable.dropdownCreate);
     if (varname) {
       this.doValueUpdate_(varname);
     } else {
@@ -142,20 +142,22 @@ FieldLexicalVariable.prototype.setBlock = function(block) {
 // Neil's code to avoid global declaration being created
 FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
   // TODO: Maybe switch to injectable warning/error handling
-  if (Instrument.useLynCacheGlobalNames && Blockly.common.getMainWorkspace() &&
-      Blockly.common.getMainWorkspace().getWarningHandler &&
-      Blockly.common.getMainWorkspace().getWarningHandler().cacheGlobalNames) {
-    return Blockly.common.getMainWorkspace().getWarningHandler().cachedGlobalNames;
+  const mainWorkspace = Blockly.common.getMainWorkspace();
+  const rootWorkspace = mainWorkspace.getRootWorkspace() || mainWorkspace;
+  if (Instrument.useLynCacheGlobalNames && rootWorkspace &&
+      rootWorkspace.getWarningHandler &&
+      rootWorkspace.getWarningHandler().cacheGlobalNames) {
+    return rootWorkspace.getWarningHandler().cachedGlobalNames;
   }
   const globals = [];
-  if (Blockly.common.getMainWorkspace()) {
+  if (rootWorkspace && !rootWorkspace.isFlyout) {
     let blocks = [];
     if (Instrument.useLynGetGlobalNamesFix) {
       // [lyn, 04/13/14] Only need top blocks, not all blocks!
-      blocks = Blockly.common.getMainWorkspace().getTopBlocks();
+      blocks = rootWorkspace.getTopBlocks();
     } else {
       // [lyn, 11/10/12] Is there a better way to get workspace?
-      blocks = Blockly.common.getMainWorkspace().getAllBlocks();
+      blocks = rootWorkspace.getAllBlocks();
     }
     for (let i = 0; i < blocks.length; i++) {
       const block = blocks[i];
@@ -350,7 +352,7 @@ FieldLexicalVariable.prototype.doValueUpdate_ = function(newValue) {
       this.getOptions(true, [[genLocalizedValue(newValue), newValue]]);
   for (let i = 0, option; (option = options[i]); i++) {
     if (option[1] == this.value_) {
-      this.selectedOption_ = option;
+      this.selectedOption = option;
       break;
     }
   }
