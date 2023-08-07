@@ -8,7 +8,7 @@
  * @fileoverview Block test.
  */
 
-import Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 import {createPlayground} from '@blockly/dev-tools';
 import {init} from '../src/index.js';
 
@@ -18,7 +18,7 @@ const allBlocks = [
   'controls_for',
   'controls_forRange',
   'controls_forEach',
-  'controls_flow_statements',
+  // 'controls_flow_statements',
   'local_declaration_statement',
   'local_declaration_expression',
   'controls_do_then_return',

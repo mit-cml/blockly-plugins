@@ -15,7 +15,7 @@
 
 'use strict';
 
-import Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 import '../msg.js';
 
 export class FieldNoCheckDropdown extends Blockly.FieldDropdown {

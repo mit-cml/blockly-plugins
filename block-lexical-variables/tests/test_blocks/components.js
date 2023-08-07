@@ -12,7 +12,7 @@
 
 'use strict';
 
-import Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 import * as BlockUtilities from './utilities.js';
 
 const components = {};

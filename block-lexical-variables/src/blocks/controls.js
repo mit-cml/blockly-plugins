@@ -36,7 +36,7 @@
 
 'use strict';
 
-import Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 import '../msg.js';
 import {FieldParameterFlydown} from '../fields/field_parameter_flydown.js';
 import {FieldFlydown} from '../fields/field_flydown.js';
@@ -68,20 +68,20 @@ Blockly.Blocks['controls_forRange'] = {
             Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_VAR, true,
             FieldFlydown.DISPLAY_BELOW), 'VAR')
         .appendField(Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_START)
-        .setAlign(Blockly.ALIGN_RIGHT);
+        .setAlign(Blockly.inputs.Align.RIGHT);
     this.appendValueInput('END')
         .setCheck(Utilities.yailTypeToBlocklyType('number',
             Utilities.INPUT))
         .appendField(Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_END)
-        .setAlign(Blockly.ALIGN_RIGHT);
+        .setAlign(Blockly.inputs.Align.RIGHT);
     this.appendValueInput('STEP')
         .setCheck(Utilities.yailTypeToBlocklyType('number',
             Utilities.INPUT))
         .appendField(Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_STEP)
-        .setAlign(Blockly.ALIGN_RIGHT);
+        .setAlign(Blockly.inputs.Align.RIGHT);
     this.appendStatementInput('DO')
         .appendField(Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_DO)
-        .setAlign(Blockly.ALIGN_RIGHT);
+        .setAlign(Blockly.inputs.Align.RIGHT);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setTooltip(Blockly.Msg.LANG_CONTROLS_FORRANGE_TOOLTIP);
@@ -221,7 +221,7 @@ Blockly.Blocks['controls_forEach'] = {
             Blockly.Msg.LANG_CONTROLS_FOREACH_INPUT_VAR,
             true, FieldFlydown.DISPLAY_BELOW), 'VAR')
         .appendField(Blockly.Msg.LANG_CONTROLS_FOREACH_INPUT_INLIST)
-        .setAlign(Blockly.ALIGN_RIGHT);
+        .setAlign(Blockly.inputs.Align.RIGHT);
     this.appendStatementInput('DO')
         .appendField(Blockly.Msg.LANG_CONTROLS_FOREACH_INPUT_DO);
     this.setPreviousStatement(true);
@@ -331,7 +331,7 @@ Blockly.Blocks['controls_do_then_return'] = {
         .appendField(Blockly.Msg.LANG_CONTROLS_DO_THEN_RETURN_INPUT_DO);
     this.appendValueInput('VALUE')
         .appendField(Blockly.Msg.LANG_CONTROLS_DO_THEN_RETURN_INPUT_RETURN)
-        .setAlign(Blockly.ALIGN_RIGHT);
+        .setAlign(Blockly.inputs.Align.RIGHT);
     this.setOutput(true, null);
     this.setTooltip(Blockly.Msg.LANG_CONTROLS_DO_THEN_RETURN_TOOLTIP);
   },

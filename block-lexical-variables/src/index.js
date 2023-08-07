@@ -29,7 +29,7 @@ import './blocks/procedures.js';
 import './generators/controls.js';
 import './generators/procedures.js';
 import './generators/lexical-variables.js';
-import Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 import {Flydown} from './fields/flydown.js';
 
 // Export Flydown and fields for use by plugin users.
@@ -54,6 +54,7 @@ export function init(workspace) {
         rtl: workspace.RTL,
         renderer: workspace.options.renderer,
         rendererOverrides: workspace.options.rendererOverrides,
+        parentWorkspace: workspace,
       })
   );
   // ***** [lyn, 10/05/2013] NEED TO WORRY ABOUT MULTIPLE BLOCKLIES! *****

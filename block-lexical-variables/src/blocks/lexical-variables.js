@@ -88,7 +88,7 @@ function myStringify (obj) {
 
 'use strict';
 
-import Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 import '../msg.js';
 import * as WarningHandler from '../warningHandler.js';
 import {FieldParameterFlydown} from '../fields/field_parameter_flydown.js';
@@ -401,10 +401,10 @@ Blockly.Blocks['local_declaration_statement'] = {
         Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_TITLE_INIT)
         .appendField(this.parameterFlydown(0), 'VAR0')
         .appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_INPUT_TO)
-        .setAlign(Blockly.ALIGN_RIGHT);
+        .setAlign(Blockly.inputs.Align.RIGHT);
 
     // Add mutator for editing local variable names
-    this.setMutator(new Blockly.Mutator(['local_mutatorarg']));
+    this.setMutator(new Blockly.icons.MutatorIcon(['local_mutatorarg'], this));
   },
   onchange: function() {
     this.localNames_ = this.declaredNames(); // ensure localNames_ is in sync
@@ -476,7 +476,7 @@ Blockly.Blocks['local_declaration_statement'] = {
       // [lyn, 11/06/12]
       //   This was for case where tried to put "local" keyword on same line
       // with first local name. But even though alignment set to
-      // Blockly.ALIGN_RIGHT, the input was left justified and covered the plus
+      // Blockly.inputs.Align.RIGHT, the input was left justified and covered the plus
       // sign for popping up the mutator. So I put the "local" keyword on it's
       // own line even though this wastes vertical space. This should be fixed
       // in the future. if (i == 0) { declInput.appendField("local"); // Only
@@ -485,7 +485,7 @@ Blockly.Blocks['local_declaration_statement'] = {
           Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_TITLE_INIT)
           .appendField(this.parameterFlydown(i), 'VAR' + i)
           .appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_INPUT_TO)
-          .setAlign(Blockly.ALIGN_RIGHT);
+          .setAlign(Blockly.inputs.Align.RIGHT);
       if (inits && inits[i]) { // If there is an initializer, connect it
         declInput.connection.connect(inits[i]);
       }

@@ -9,27 +9,29 @@
  * @fileoverview Field lexical variable behavior tests.
  */
 
-import Blockly from 'blockly';
-import '../../src/utilities.js';
-import '../../src/workspace.js';
-import '../../src/procedure_utils.js';
-import '../../src/fields/flydown.js';
-import '../../src/fields/field_flydown.js';
-import '../../src/fields/field_global_flydown.js';
-import '../../src/fields/field_nocheck_dropdown.js';
-import {FieldLexicalVariable, LexicalVariable} from '../../src/fields/field_lexical_variable.js';
-import '../../src/fields/field_parameter_flydown.js';
-import '../../src/fields/field_procedurename.js';
-import '../../src/blocks/lexical-variables.js';
-import '../../src/blocks/controls.js';
-import '../../src/procedure_database.js';
-import '../../src/blocks/procedures.js';
-import '../../src/generators/controls.js';
-import '../../src/generators/procedures.js';
-import '../../src/generators/lexical-variables.js';
+import * as Blockly from 'blockly/core';
+
+import '../../src/msg';
+import '../../src/utilities';
+import '../../src/workspace';
+import '../../src/procedure_utils';
+import '../../src/fields/flydown';
+import '../../src/fields/field_flydown';
+import '../../src/fields/field_global_flydown';
+import '../../src/fields/field_nocheck_dropdown';
+import {FieldLexicalVariable, LexicalVariable} from '../../src/fields/field_lexical_variable';
+import '../../src/fields/field_parameter_flydown';
+import '../../src/fields/field_procedurename';
+import '../../src/blocks/lexical-variables';
+import '../../src/blocks/controls';
+import '../../src/procedure_database';
+import '../../src/blocks/procedures';
+import '../../src/generators/controls';
+import '../../src/generators/procedures';
+import '../../src/generators/lexical-variables';
 
 import chai from 'chai';
-import {NameSet} from "../../src/nameSet.js";
+import {NameSet} from "../../src/nameSet";
 
 suite ('FieldLexical', function() {
   setup(function() {
@@ -51,7 +53,7 @@ suite ('FieldLexical', function() {
   suite('getGlobalNames', function() {
     test('Simple', function() {
       // Uses XML so that names don't overlap.
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
           '  <block type="global_declaration">' +
           '    <field name="NAME">global</field>' +
           '  </block>' +
@@ -67,7 +69,7 @@ suite ('FieldLexical', function() {
       chai.assert.sameOrderedMembers(vars, ['global', 'global2', 'global3']);
     });
     test('Top-Level Local', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
           '  <block type="global_declaration">' +
           '    <field name="NAME">global</field>' +
           '  </block>' +
@@ -98,7 +100,7 @@ suite ('FieldLexical', function() {
     })
     suite('Nesting', function() {
       test('Simple Nesting', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="local_declaration_statement">' +
         '    <mutation>' +
         '      <localname name="name"></localname>' +
@@ -120,7 +122,7 @@ suite ('FieldLexical', function() {
         this.assertLexicalNames(xml, [['name', 'name'], ['name2', 'name2']]);
       });
       test('Matching Nesting - No Dupes', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="local_declaration_statement">' +
         '    <mutation>' +
         '      <localname name="name"></localname>' +
@@ -143,7 +145,7 @@ suite ('FieldLexical', function() {
 
       });
       test('Weird Nesting 1', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="local_declaration_statement">' +
         '    <mutation>' +
         '      <localname name="name"></localname>' +
@@ -165,7 +167,7 @@ suite ('FieldLexical', function() {
         this.assertLexicalNames(xml, [['name2', 'name2']]);
       });
       test('Weird Nesting 2', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="local_declaration_statement">' +
         '    <mutation>' +
         '      <localname name="name"></localname>' +
@@ -189,7 +191,7 @@ suite ('FieldLexical', function() {
     });
     suite('Procedures', function() {
       test('Stack Procedure', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="procedures_defnoreturn">' +
         '    <mutation>' +
         '      <arg name="x"></arg>' +
@@ -206,7 +208,7 @@ suite ('FieldLexical', function() {
         this.assertLexicalNames(xml, [['x', 'x'], ['y', 'y']]);
       });
       test('Input Procedure', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="procedures_defreturn">' +
         '    <mutation>' +
         '      <arg name="x"></arg>' +
@@ -225,7 +227,7 @@ suite ('FieldLexical', function() {
     })
     suite('For Range', function() {
       test('From Input', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="controls_forRange">' +
         '    <field name="VAR">number</field>' +
         '    <value name="START">' +
@@ -236,7 +238,7 @@ suite ('FieldLexical', function() {
         this.assertLexicalNames(xml, []);
       });
       test('To Input', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="controls_forRange">' +
         '    <field name="VAR">number</field>' +
         '    <value name="END">' +
@@ -247,7 +249,7 @@ suite ('FieldLexical', function() {
         this.assertLexicalNames(xml, []);
       });
       test('By Input', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="controls_forRange">' +
         '    <field name="VAR">number</field>' +
         '    <value name="STEP">' +
@@ -258,7 +260,7 @@ suite ('FieldLexical', function() {
         this.assertLexicalNames(xml, []);
       });
       test('Do Input', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="controls_forRange">' +
         '    <field name="VAR">number</field>' +
         '    <statement name="DO">' +
@@ -271,7 +273,7 @@ suite ('FieldLexical', function() {
     })
     suite('For Each', function() {
       test('List Input', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="controls_forEach">' +
         '    <field name="VAR">item</field>' +
         '    <value name="LIST">' +
@@ -282,7 +284,7 @@ suite ('FieldLexical', function() {
         this.assertLexicalNames(xml, []);
       });
       test('Do Input', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="controls_forEach">' +
         '    <field name="VAR">item</field>' +
         '    <value name="DO">' +
@@ -295,7 +297,7 @@ suite ('FieldLexical', function() {
     });
     // suite('For Each Dict', function() {
     //   test('Item Input', function() {
-    //     const xml = Blockly.Xml.textToDom('<xml>' +
+    //     const xml = Blockly.utils.xml.textToDom('<xml>' +
     //     '  <block type="controls_for_each_dict">' +
     //     '    <field name="KEY">key</field>' +
     //     '    <field name="VALUE">value</field>' +
@@ -307,7 +309,7 @@ suite ('FieldLexical', function() {
     //     this.assertLexicalNames(xml, []);
     //   });
     //   test('Do Input', function() {
-    //     const xml = Blockly.Xml.textToDom('<xml>' +
+    //     const xml = Blockly.utils.xml.textToDom('<xml>' +
     //     '  <block type="controls_for_each_dict">' +
     //     '    <field name="KEY">key</field>' +
     //     '    <field name="VALUE">value</field>' +
@@ -321,7 +323,7 @@ suite ('FieldLexical', function() {
     // });
     suite('Local Expression Declaration', function() {
       test('const Input', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="local_declaration_expression">' +
         '    <mutation>' +
         '      <localname name="name"></localname>' +
@@ -335,7 +337,7 @@ suite ('FieldLexical', function() {
         this.assertLexicalNames(xml, []);
       });
       test('Expression Input', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="local_declaration_expression">' +
         '    <mutation>' +
         '      <localname name="name"></localname>' +
@@ -351,7 +353,7 @@ suite ('FieldLexical', function() {
     });
     suite('Local Statement Declaration', function() {
       test('const Input', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="local_declaration_statement">' +
         '    <mutation>' +
         '      <localname name="name"></localname>' +
@@ -365,7 +367,7 @@ suite ('FieldLexical', function() {
         this.assertLexicalNames(xml, []);
       });
       test('Statement Input', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="local_declaration_statement">' +
         '    <mutation>' +
         '      <localname name="name"></localname>' +
@@ -394,7 +396,7 @@ suite ('FieldLexical', function() {
       delete this.assertNames;
     })
     test('Globals First', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="global_declaration" y="-200">' +
       '    <field name="NAME">gName</field>' +
       '  </block>' +
@@ -414,7 +416,7 @@ suite ('FieldLexical', function() {
       ]);
     });
     test('Vars Sorted 1', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="global_declaration" y="-200">' +
       '    <field name="NAME">gA</field>' +
       '  </block>' +
@@ -447,7 +449,7 @@ suite ('FieldLexical', function() {
       ]);
     });
     test('Vars Sorted 2', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="global_declaration" y="-200">' +
       '    <field name="NAME">gB</field>' +
       '  </block>' +
@@ -481,7 +483,7 @@ suite ('FieldLexical', function() {
     });
     test('Global Prefix is Translated', function() {
       Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX = 'testPrefix';
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="global_declaration" y="-200">' +
       '    <field name="NAME">gName</field>' +
       '  </block>' +
@@ -651,7 +653,7 @@ suite ('FieldLexical', function() {
       delete this.assertReference;
     })
     test('Lexical > For Range', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="local_declaration_statement">' +
       '    <mutation>' +
       '      <localname name="a"></localname>' +
@@ -694,7 +696,7 @@ suite ('FieldLexical', function() {
       this.assertReference(xml, 'a', ['a', 'b', 'c', 'd', 'e'], ['b', 'b']);
     });
     test('Lexical > Lexical > For Range; Reference Outer', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="local_declaration_statement">' +
       '    <mutation>' +
       '      <localname name="out"></localname>' +
@@ -744,7 +746,7 @@ suite ('FieldLexical', function() {
       this.assertReference(xml, 'a', [], ['out', 'out', 'out', 'out', 'out']);
     })
     test('Lexical > Lexical > For Range; No Reference', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="local_declaration_statement">' +
       '    <mutation>' +
       '      <localname name="out"></localname>' +
@@ -793,7 +795,7 @@ suite ('FieldLexical', function() {
       this.assertReference(xml, 'a', ['a', 'b', 'c', 'd', 'e'], ['b', 'b']);
     });
     test('Lexical > Foreach', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="local_declaration_statement">' +
       '    <mutation>' +
       '      <localname name="a"></localname>' +
@@ -824,7 +826,7 @@ suite ('FieldLexical', function() {
       this.assertReference(xml, 'a', ['a', 'b', 'c'], ['b', 'b']);
     });
     test('Lexical > Lexical > Foreach; Reference Outer', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="local_declaration_statement">' +
       '    <mutation>' +
       '      <localname name="out"></localname>' +
@@ -863,7 +865,7 @@ suite ('FieldLexical', function() {
       this.assertReference(xml, 'a', [], ['out', 'out', 'out']);
     })
     test('Lexical > Lexical > Foreach; No Reference', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="local_declaration_statement">' +
       '    <mutation>' +
       '      <localname name="out"></localname>' +
@@ -902,7 +904,7 @@ suite ('FieldLexical', function() {
       this.assertReference(xml, 'a', ['a', 'b', 'c'], ['b', 'b']);
     });
     // test('Lexical > Foreach Dict', function() {
-    //   const xml = Blockly.Xml.textToDom('<xml>' +
+    //   const xml = Blockly.utils.xml.textToDom('<xml>' +
     //   '  <block type="local_declaration_statement">' +
     //   '    <mutation>' +
     //   '      <localname name="a"></localname>' +
@@ -935,7 +937,7 @@ suite ('FieldLexical', function() {
     //       ['a', 'b', 'c'], ['key', 'value', 'key', 'value']);
     // });
     // test('Lexical > Lexical > Foreach Dict; Reference Outer', function() {
-    //   const xml = Blockly.Xml.textToDom('<xml>' +
+    //   const xml = Blockly.utils.xml.textToDom('<xml>' +
     //   '  <block type="local_declaration_statement">' +
     //   '    <mutation>' +
     //   '      <localname name="out"></localname>' +
@@ -975,7 +977,7 @@ suite ('FieldLexical', function() {
     //   this.assertReference(xml, 'a', [], ['out', 'out', 'out']);
     // })
     // test('Lexical > Lexical > Foreach Dict; No Reference', function() {
-    //   const xml = Blockly.Xml.textToDom('<xml>' +
+    //   const xml = Blockly.utils.xml.textToDom('<xml>' +
     //   '  <block type="local_declaration_statement">' +
     //   '    <mutation>' +
     //   '      <localname name="out"></localname>' +
@@ -1016,7 +1018,7 @@ suite ('FieldLexical', function() {
     //       ['a', 'b', 'c'], ['key', 'value', 'key', 'value']);
     // });
     test('Lexical > Lexical Statement', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="local_declaration_statement">' +
       '    <mutation>' +
       '      <localname name="a"></localname>' +
@@ -1050,7 +1052,7 @@ suite ('FieldLexical', function() {
       this.assertReference(xml, 'a', ['a', 'b', 'c'], ['b', 'b']);
     });
     test('Lexical > Lexical > Lexical Statement; Reference Outer', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="local_declaration_statement">' +
       '    <mutation>' +
       '      <localname name="out"></localname>' +
@@ -1092,7 +1094,7 @@ suite ('FieldLexical', function() {
       this.assertReference(xml, 'a', [], ['out', 'out', 'out']);
     })
     test('Lexical > Lexical > Lexical Statement; No Reference', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="local_declaration_statement">' +
       '    <mutation>' +
       '      <localname name="out"></localname>' +
@@ -1134,7 +1136,7 @@ suite ('FieldLexical', function() {
       this.assertReference(xml, 'a', ['a', 'b', 'c'], ['b', 'b']);
     });
     test('Lexical > Lexical Expression', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="local_declaration_expression">' +
       '    <mutation>' +
       '      <localname name="a"></localname>' +
@@ -1163,7 +1165,7 @@ suite ('FieldLexical', function() {
       this.assertReference(xml, 'a', ['a', 'b'], ['b']);
     });
     test('Lexical > Lexical > Lexical Expression; Reference Outer', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="local_declaration_expression">' +
       '    <mutation>' +
       '      <localname name="out"></localname>' +
@@ -1200,7 +1202,7 @@ suite ('FieldLexical', function() {
       this.assertReference(xml, 'a', [], ['out', 'out']);
     })
     test('Lexical > Lexical > Lexical Expression; No Reference', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="local_declaration_expression">' +
       '    <mutation>' +
       '      <localname name="out"></localname>' +
@@ -1249,7 +1251,7 @@ suite ('FieldLexical', function() {
       delete this.getVarsFor;
     })
     test('Rename Capturables', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="local_declaration_statement" id="rename">' +
       '    <mutation>' +
       '      <localname name="old"></localname>' +
@@ -1302,7 +1304,7 @@ suite ('FieldLexical', function() {
         delete this.assertGlobalRename;
       })
       test('Simple', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="global_declaration" id="rename">' +
         '    <field name="NAME">old</field>' +
         '  </block>' +
@@ -1318,7 +1320,7 @@ suite ('FieldLexical', function() {
         this.assertGlobalRename(xml, 'new', ['1', '2'], 'new');
       });
       test('Nested', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="global_declaration" id="rename">' +
         '    <field name="NAME">old</field>' +
         '  </block>' +
@@ -1347,7 +1349,7 @@ suite ('FieldLexical', function() {
         this.assertGlobalRename(xml, 'new', ['1', '2', '3'], 'new');
       });
       test('Collision', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="global_declaration" id="rename">' +
         '    <field name="NAME">old</field>' +
         '  </block>' +
@@ -1392,7 +1394,7 @@ suite ('FieldLexical', function() {
         }
       })
       test('Simple', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="local_declaration_statement" id="rename">' +
         '    <mutation>' +
         '      <localname name="old"></localname>' +
@@ -1426,7 +1428,7 @@ suite ('FieldLexical', function() {
         this.assertLocalRename(xml, 'new', ['1', '2', '3'], 'new');
       });
       test('Some Renames in Scope', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="local_declaration_statement" id="rename">' +
         '    <mutation>' +
         '      <localname name="old"></localname>' +
@@ -1463,7 +1465,7 @@ suite ('FieldLexical', function() {
         chai.assert.equal(block.getVars(), 'new');
       });
       test('Rename on Nested', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="local_declaration_statement">' +
         '    <mutation>' +
         '      <localname name="old"></localname>' +
@@ -1506,7 +1508,7 @@ suite ('FieldLexical', function() {
         chai.assert.equal(block.getVars(), 'old');
       });
       test('Overlap - Rename Outer - Allowed', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="local_declaration_statement" id="rename">' +
         '    <mutation>' +
         '      <localname name="old"></localname>' +
@@ -1530,7 +1532,7 @@ suite ('FieldLexical', function() {
         this.assertLocalRename(xml, 'new', ['1'], 'new');
       });
       test('Overlap - Rename Outer - Not Allowed', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="local_declaration_statement" id="rename">' +
         '    <mutation>' +
         '      <localname name="old"></localname>' +
@@ -1564,7 +1566,7 @@ suite ('FieldLexical', function() {
         this.assertLocalRename(xml, 'new', ['1', '2', '3'], 'new2');
       })
       test('Overlap - Rename Inner', function() {
-        const xml = Blockly.Xml.textToDom('<xml>' +
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="local_declaration_statement">' +
         '    <mutation>' +
         '      <localname name="new"></localname>' +
@@ -1635,7 +1637,7 @@ suite ('FieldLexical', function() {
     });
     test('Is Event Param', function() {
       // Component mutator is emitted for simplicity.
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="component_event">' +
       '    <statement name="DO">' +
       '      <block type="lexical_variable_set" id="target">' +
@@ -1651,7 +1653,7 @@ suite ('FieldLexical', function() {
       chai.assert.equal(block.eventparam, 'test');
     });
     test('References Global', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="component_event">' +
       '    <statement name="DO">' +
       '      <block type="lexical_variable_set" id="target">' +
@@ -1667,7 +1669,7 @@ suite ('FieldLexical', function() {
     });
     // TODO: The following XML doesn't parse.  It's missing an </block> somewhere.
     test('References Lexical', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="component_event">' +
       '    <statement name="DO">' +
       '      <block type="local_declaration_statement">' +
@@ -1689,7 +1691,7 @@ suite ('FieldLexical', function() {
       chai.assert.equal(block.eventparam, null);
     });
     test('No Parent', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="lexical_variable_set" id="target">' +
       '    <field name="VAR">test</field>' +
       '  </block>' +
@@ -1717,7 +1719,7 @@ suite ('FieldLexical', function() {
       delete this.assertFree;
     })
     test('Directly Next', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="controls_if" id="target">' +
       '    <next>' +
       '      <block type="lexical_variable_set">' +
@@ -1729,7 +1731,7 @@ suite ('FieldLexical', function() {
       this.assertFree(xml, ['a']);
     });
     test('Eventually Next', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="controls_if" id="target">' +
       '    <next>' +
       '      <block type="controls_if">' +
@@ -1745,7 +1747,7 @@ suite ('FieldLexical', function() {
       this.assertFree(xml, ['a']);
     })
     test('Directly Inside', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="controls_if" id="target">' +
       '    <statement name="DO0">' +
       '      <block type="lexical_variable_set">' +
@@ -1757,7 +1759,7 @@ suite ('FieldLexical', function() {
       this.assertFree(xml, ['a']);
     });
     test('Eventually Inside', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="controls_if" id="target">' +
       '    <statement name="DO0">' +
       '      <block type="controls_if">' +
@@ -1773,7 +1775,7 @@ suite ('FieldLexical', function() {
       this.assertFree(xml, ['a']);
     })
     test('Free Inside Lexical', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="controls_if" id="target">' +
       '    <statement name="DO0">' +
       '      <block type="local_declaration_statement">' +
@@ -1793,7 +1795,7 @@ suite ('FieldLexical', function() {
       this.assertFree(xml, ['b']);
     });
     test('Lexical In Scope', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="controls_if" id="target">' +
       '    <statement name="DO0">' +
       '      <block type="local_declaration_statement">' +
@@ -1822,7 +1824,7 @@ suite ('FieldLexical', function() {
       this.assertFree(xml, ['b']);
     });
     test('Lexical Out of Scope', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="controls_if" id="target">' +
       '    <statement name="DO0">' +
       '      <block type="local_declaration_statement">' +
@@ -1849,7 +1851,7 @@ suite ('FieldLexical', function() {
       this.assertFree(xml, ['b']);
     });
     test('ForRange In Scope', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="controls_if" id="target">' +
       '    <statement name="DO0">' +
       '      <block type="controls_forRange">' +
@@ -1866,7 +1868,7 @@ suite ('FieldLexical', function() {
       this.assertFree(xml, ['a']);
     });
     test('ForRange Out of Scope', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="controls_if" id="target">' +
       '    <statement name="DO0">' +
       '      <block type="controls_forRange">' +
@@ -1888,7 +1890,7 @@ suite ('FieldLexical', function() {
       this.assertFree(xml, ['b']);
     });
     test('Foreach In Scope', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="controls_if" id="target">' +
       '    <statement name="DO0">' +
       '      <block type="controls_forEach">' +
@@ -1905,7 +1907,7 @@ suite ('FieldLexical', function() {
       this.assertFree(xml, ['a']);
     });
     test('Foreach Out of Scope', function() {
-      const xml = Blockly.Xml.textToDom('<xml>' +
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
       '  <block type="controls_if" id="target">' +
       '    <statement name="DO0">' +
       '      <block type="controls_forEach">' +
@@ -1927,7 +1929,7 @@ suite ('FieldLexical', function() {
       this.assertFree(xml, ['b']);
     })
     // test('Foreach Dict In Scope', function() {
-    //   const xml = Blockly.Xml.textToDom('<xml>' +
+    //   const xml = Blockly.utils.xml.textToDom('<xml>' +
     //   '  <block type="controls_if" id="target">' +
     //   '    <statement name="DO0">' +
     //   '      <block type="controls_for_each_dict">' +
@@ -1945,7 +1947,7 @@ suite ('FieldLexical', function() {
     //   this.assertFree(xml, ['a']);
     // });
     // test('Foreach Dict Out of Scope', function() {
-    //   const xml = Blockly.Xml.textToDom('<xml>' +
+    //   const xml = Blockly.utils.xml.textToDom('<xml>' +
     //   '  <block type="controls_if" id="target">' +
     //   '    <statement name="DO0">' +
     //   '      <block type="controls_for_each_dict">' +
