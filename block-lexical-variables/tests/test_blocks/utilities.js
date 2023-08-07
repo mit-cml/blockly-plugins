@@ -13,7 +13,7 @@
 
 'use strict';
 
-import Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 
 /**
  * Checks that the given otherConnection is compatible with an InstantInTime

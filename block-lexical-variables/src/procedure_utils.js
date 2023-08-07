@@ -12,7 +12,7 @@
 
 'use strict';
 
-import Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
 import './msg.js';
 import {
   FieldLexicalVariable,
