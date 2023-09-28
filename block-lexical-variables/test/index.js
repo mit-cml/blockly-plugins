@@ -10,7 +10,7 @@
 
 import * as Blockly from 'blockly/core';
 import {createPlayground} from '@blockly/dev-tools';
-import {init} from '../src/index.js';
+import {LexicalVariablesPlugin} from '../src/index.js';
 
 // TODO: Edit list of blocks.
 const allBlocks = [
@@ -36,7 +36,7 @@ const allBlocks = [
  */
 function createWorkspace(blocklyDiv, options) {
   const workspace = Blockly.inject(blocklyDiv, options);
-  init(workspace);
+  LexicalVariablesPlugin.init(workspace);
   return workspace;
 }
 
