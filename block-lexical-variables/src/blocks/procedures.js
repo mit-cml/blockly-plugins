@@ -79,7 +79,7 @@
 
 import * as Blockly from 'blockly/core';
 import {FieldProcedureName} from '../fields/field_procedurename.js';
-import * as WarningHandler from '../warningHandler.js';
+import WarningHandler from '../warningHandler.js';
 import * as ProcedureUtils from '../procedure_utils.js';
 import {FieldParameterFlydown} from '../fields/field_parameter_flydown.js';
 import {FieldFlydown} from '../fields/field_flydown.js';
@@ -807,7 +807,7 @@ Blockly.Blocks['procedures_callnoreturn'] = {
       },
     ];
     this.setOnChange(function(changeEvent) {
-      WarningHandler.checkErrors(this);
+      this.workspace.getWarningHandler().checkErrors(this);
     });
     // Blockly.FieldProcedure.onChange.call(this.getField("PROCNAME"),
     //     this.procNamesFxn(false)[0][0]);
@@ -1038,7 +1038,7 @@ Blockly.Blocks['procedures_callreturn'] = {
       },
     ];
     this.setOnChange(function(changeEvent) {
-      WarningHandler.checkErrors(this);
+      this.workspace.getWarningHandler().checkErrors(this);
     });
     // Blockly.FieldProcedure.onChange.call(this.getField("PROCNAME"),
     //     this.procNamesFxn()[0][0]);

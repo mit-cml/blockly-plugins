@@ -90,7 +90,7 @@ function myStringify (obj) {
 
 import * as Blockly from 'blockly/core';
 import '../msg.js';
-import * as WarningHandler from '../warningHandler.js';
+import WarningHandler from '../warningHandler.js';
 import {FieldParameterFlydown} from '../fields/field_parameter_flydown.js';
 import {FieldFlydown} from '../fields/field_flydown.js';
 import {FieldGlobalFlydown} from '../fields/field_global_flydown.js';
@@ -159,7 +159,7 @@ Blockly.Blocks['lexical_variable_get'] = {
       },
     ];
     this.setOnChange(function(changeEvent) {
-      WarningHandler.checkErrors(this);
+      this.workspace.getWarningHandler().checkErrors(this);
     });
   },
   referenceResults: function(name, prefix, env) {
@@ -283,7 +283,7 @@ Blockly.Blocks['lexical_variable_set'] = {
       },
     ];
     this.setOnChange(function(changeEvent) {
-      WarningHandler.checkErrors(this);
+      this.workspace.getWarningHandler().checkErrors(this);
     });
   },
   referenceResults: Blockly.Blocks.lexical_variable_get.referenceResults,
