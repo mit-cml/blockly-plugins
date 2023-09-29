@@ -575,9 +575,7 @@ Blockly.Blocks['procedures_defreturn'] = {
         Blockly.Msg['LANG_PROCEDURES_DEFRETURN_PROCEDURE'], this);
     this.createHeader(legalName);
     this.horizontalParameters = true; // horizontal by default
-    // this.appendIndentedValueInput('RETURN')
-    //     .appendField(Blockly.Msg.LANG_PROCEDURES_DEFRETURN_RETURN);
-    this.appendValueInput('RETURN')
+    this.appendInputFromRegistry('indented_input', 'RETURN')
         .setAlign(Blockly.inputs.Align.RIGHT)
         .appendField(Blockly.Msg['LANG_PROCEDURES_DEFRETURN_RETURN']);
     this.setMutator(new Blockly.icons.MutatorIcon(['procedures_mutatorarg'], this));

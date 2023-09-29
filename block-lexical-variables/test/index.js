@@ -11,6 +11,7 @@
 import * as Blockly from 'blockly/core';
 import {createPlayground} from '@blockly/dev-tools';
 import {init} from '../src/index.js';
+import '../src/blocks.js';
 
 // TODO: Edit list of blocks.
 const allBlocks = [
