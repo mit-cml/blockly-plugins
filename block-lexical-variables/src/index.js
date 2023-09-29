@@ -14,6 +14,7 @@ import {registerCss} from '../src/css.js';
 registerCss();
 import './utilities.js';
 import './workspace.js';
+import './inputs/indented_input.js';
 import './procedure_utils.js';
 import './fields/flydown.js';
 import './fields/field_flydown.js';
@@ -31,6 +32,7 @@ import './generators/procedures.js';
 import './generators/lexical-variables.js';
 import * as Blockly from 'blockly/core';
 import {Flydown} from './fields/flydown.js';
+import {GerasRenderer} from './renderers/geras.js';
 
 // Export Flydown and fields for use by plugin users.
 // Note that we might eb exporting too much here, but let's see how it goes.
@@ -64,3 +66,5 @@ export function init(workspace) {
   flydown.init(workspace);
   flydown.autoClose = true; // Flydown closes after selecting a block
 }
+
+Blockly.blockRendering.register('geras2_renderer', GerasRenderer);
