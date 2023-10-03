@@ -14,6 +14,7 @@ import {registerCss} from '../src/css.js';
 registerCss();
 import './utilities.js';
 import './workspace.js';
+import './inputs/indented_input.js';
 import './procedure_utils.js';
 import {Flydown} from './fields/flydown.js';
 import {FieldFlydown} from "./fields/field_flydown.js";
@@ -22,14 +23,12 @@ import './fields/field_nocheck_dropdown.js';
 import {FieldLexicalVariable} from './fields/field_lexical_variable.js';
 import {FieldParameterFlydown} from './fields/field_parameter_flydown.js';
 import {FieldProcedureName} from './fields/field_procedurename.js';
-import './blocks/lexical-variables.js';
-import './blocks/controls.js';
 import './procedure_database.js';
-import './blocks/procedures.js';
 import './generators/controls.js';
 import './generators/procedures.js';
 import './generators/lexical-variables.js';
 import * as Blockly from 'blockly/core';
+import {GerasRenderer} from './renderers/geras.js';
 
 export class LexicalVariablesPlugin {
 
@@ -63,3 +62,5 @@ export class LexicalVariablesPlugin {
   static FieldLexicalVariable = FieldLexicalVariable;
   static FieldProcedureName = FieldProcedureName;
 }
+
+Blockly.blockRendering.register('geras2_renderer', GerasRenderer);
