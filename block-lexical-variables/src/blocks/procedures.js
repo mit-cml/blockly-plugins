@@ -79,7 +79,7 @@
 
 import * as Blockly from 'blockly/core';
 import {FieldProcedureName} from '../fields/field_procedurename.js';
-import * as WarningHandler from '../warningHandler.js';
+import {ErrorCheckers} from '../warningHandler.js';
 import * as ProcedureUtils from '../procedure_utils.js';
 import {FieldParameterFlydown} from '../fields/field_parameter_flydown.js';
 import {FieldFlydown} from '../fields/field_flydown.js';
@@ -798,14 +798,14 @@ Blockly.Blocks['procedures_callnoreturn'] = {
     this.quarkConnections_ = null;
     this.quarkArguments_ = null;
     this.errors = [
-      {func: WarningHandler.checkIsInDefinition},
+      {func: ErrorCheckers.checkIsInDefinition},
       {
-        func: WarningHandler.checkDropDownContainsValidValue,
+        func: ErrorCheckers.checkDropDownContainsValidValue,
         dropDowns: ['PROCNAME'],
       },
     ];
     this.setOnChange(function(changeEvent) {
-      WarningHandler.checkErrors(this);
+      this.workspace.getWarningHandler().checkErrors(this);
     });
     // Blockly.FieldProcedure.onChange.call(this.getField("PROCNAME"),
     //     this.procNamesFxn(false)[0][0]);
@@ -1029,14 +1029,14 @@ Blockly.Blocks['procedures_callreturn'] = {
     this.quarkConnections_ = null;
     this.quarkArguments_ = null;
     this.errors = [
-      {func: WarningHandler.checkIsInDefinition},
+      {func: ErrorCheckers.checkIsInDefinition},
       {
-        func: WarningHandler.checkDropDownContainsValidValue,
+        func: ErrorCheckers.checkDropDownContainsValidValue,
         dropDowns: ['PROCNAME'],
       },
     ];
     this.setOnChange(function(changeEvent) {
-      WarningHandler.checkErrors(this);
+      this.workspace.getWarningHandler().checkErrors(this);
     });
     // Blockly.FieldProcedure.onChange.call(this.getField("PROCNAME"),
     //     this.procNamesFxn()[0][0]);

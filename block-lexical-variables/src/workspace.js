@@ -1,5 +1,5 @@
 import * as Blockly from 'blockly/core';
-import * as WarningHandler from './warningHandler.js';
+import WarningHandler from './warningHandler.js';
 import {ProcedureDatabase} from './procedure_database.js';
 
 // This ia a bit kludgey and we'll need a better way to make this play nice with
