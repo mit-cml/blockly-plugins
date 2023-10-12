@@ -21,8 +21,10 @@ import {FieldFlydown} from "./fields/field_flydown.js";
 import {FieldGlobalFlydown} from "./fields/field_global_flydown.js";
 import './fields/field_nocheck_dropdown.js';
 import {FieldLexicalVariable} from './fields/field_lexical_variable.js';
+import {FieldLexicalVariable, LexicalVariable} from './fields/field_lexical_variable.js';
 import {FieldParameterFlydown} from './fields/field_parameter_flydown.js';
 import {FieldProcedureName} from './fields/field_procedurename.js';
+import * as Shared from './shared.js';
 import './procedure_database.js';
 import './generators/controls.js';
 import './generators/procedures.js';
@@ -59,8 +61,10 @@ export class LexicalVariablesPlugin {
   static FieldFlydown = FieldFlydown;
   static FieldGlobalFlydown = FieldGlobalFlydown;
   static FieldParameterFlydown = FieldParameterFlydown;
+  static LexicalVariable = LexicalVariable;
   static FieldLexicalVariable = FieldLexicalVariable;
   static FieldProcedureName = FieldProcedureName;
+  static Shared = Shared;
 }
 
 Blockly.blockRendering.register('geras2_renderer', GerasRenderer);
