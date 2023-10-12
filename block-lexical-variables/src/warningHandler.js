@@ -81,9 +81,17 @@ export default class WarningHandler {
       block.hasWarning = false;
     }
   };
+  setError(block, message) {
+    block.setWarningText(message);
+  }
 
+  setWarning(block, message) {
+    block.setWarningText(message);
+  }
+}
 
-// Errors
+export class ErrorCheckers {
+  // Errors
 
 // Errors indicate that the project will not run
 // Each function returns true if there is an error, and sets the error text on
@@ -96,7 +104,7 @@ export default class WarningHandler {
     const rootBlock = block.getRootBlock();
     if (rootBlock.type === 'global_declaration') {
       const errorMessage = Blockly.Msg.ERROR_BLOCK_CANNOT_BE_IN_DEFINITION;
-      block.setWarningText(errorMessage);
+      block.workspace.getWarningHandler().setError(block, errorMessage);
       return true;
     } else {
       return false;
@@ -131,7 +139,7 @@ export default class WarningHandler {
       }
       if (!textInDropDown) {
         const errorMessage = Blockly.Msg.ERROR_SELECT_VALID_ITEM_FROM_DROPDOWN;
-        block.setWarningText(errorMessage);
+        block.workspace.getWarningHandler().setError(block, errorMessage);
         return true;
       }
     }
