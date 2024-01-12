@@ -42,7 +42,10 @@ Blockly.Workspace.prototype.getTopWorkspace = Blockly.Workspace.prototype.getTop
 };
 
 Blockly.Workspace.prototype.getWarningHandler = Blockly.Workspace.prototype.getWarningHandler || function() {
-  return WarningHandler;
+  if (!this.warningHandler_) {
+    this.warningHandler_ = new WarningHandler;
+  }
+  return this.warningHandler_;
 };
 
 /**

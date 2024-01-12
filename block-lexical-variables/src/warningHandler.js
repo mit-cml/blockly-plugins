@@ -20,7 +20,7 @@ export default class WarningHandler {
    * on the block.
    * @param {Blockly.Block} block The block to check for errors.
    */
-  static checkErrors(block) {
+  checkErrors(block) {
     if ((block.getSvgRoot && !block.getSvgRoot()) || block.readOnly) {
       // remove from error count
       if (block.hasWarning) {
