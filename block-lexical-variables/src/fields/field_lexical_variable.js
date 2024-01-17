@@ -842,7 +842,6 @@ LexicalVariable.renameParamWithoutRenamingCapturables =
       if (oldName === newName) {
         return oldName;
       }
-      sourceBlock.declaredNames ? sourceBlock.declaredNames() : [];
       let sourcePrefix = '';
       if (Shared.showPrefixToUser) {
         sourcePrefix = this.lexicalVarPrefix;
