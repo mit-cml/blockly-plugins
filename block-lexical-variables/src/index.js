@@ -26,7 +26,7 @@ import {FieldProcedureName} from './fields/field_procedurename.js';
 import {NameSet} from './nameSet.js';
 import * as Shared from './shared.js';
 import {Substitution} from './substitution.js';
-import './blocks.js';
+// import './blocks.js';
 import './procedure_database.js';
 import './generators/controls.js';
 import './generators/procedures.js';
