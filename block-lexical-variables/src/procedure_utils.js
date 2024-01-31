@@ -130,6 +130,10 @@ export const removeProcedureValues = function(name, workspace) {
  * @return {string} The new, validated name of the block.
  */
 export const renameProcedure = function(newName) {
+  if (this.sourceBlock_ && this.sourceBlock_.isInFlyout) {
+    // Do not rename procedures in flyouts
+    return newName;
+  }
   // this is bound to field_textinput object
   const oldName = this.oldName_ || this.getValue();
   const originalNewName = newName;
