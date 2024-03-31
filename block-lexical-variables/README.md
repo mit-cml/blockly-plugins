@@ -134,13 +134,13 @@ writing that would be version 8.0.0._
 You'll want to include something like the following in your app:
 
 ```js
-import * as Blockly from 'blockly';
-import * as LexicalVariables from '@mit-app-inventor/blockly-block-lexical-variables';
+import Blockly from 'blockly';
+import { LexicalVariablesPlugin } from '@mit-app-inventor/blockly-block-lexical-variables';
 ...
 const workspace = Blockly.inject(...);
 ...
 // Load lexical variable plugin
-LexicalVariables.init(workspace);
+LexicalVariablesPlugin.init(workspace);
 ```
 Note that unlike with standard Blockly, you should **not** use a custom toolbox category
 for your variables, as this would interfere with the way that variables are declared and
