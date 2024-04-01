@@ -129,18 +129,18 @@ npm install @mit-app-inventor/blockly-block-lexical-variables --save
 
 ## Usage
 _Please make sure that your app which includes this plugin uses a relatively recent version of Blockly.  As of this
-writing that would be version 8.0.0._
+writing that would be version 10.0.0._
 
 You'll want to include something like the following in your app:
 
 ```js
 import * as Blockly from 'blockly';
-import * as LexicalVariables from '@mit-app-inventor/blockly-block-lexical-variables';
+import {LexicalVariablesPlugin} from '@mit-app-inventor/blockly-block-lexical-variables';
 ...
 const workspace = Blockly.inject(...);
 ...
 // Load lexical variable plugin
-LexicalVariables.init(workspace);
+LexicalVariablesPlugin.init(workspace);
 ```
 Note that unlike with standard Blockly, you should **not** use a custom toolbox category
 for your variables, as this would interfere with the way that variables are declared and
