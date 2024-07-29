@@ -39,7 +39,7 @@ FieldNoCheckDropdown.prototype.doClassValidation_ = function(opt_newValue) {
     // Add the value to the cached options array.  Note that this is
     // potentially fragile, as it depends on knowledge of the
     // Blockly.FieldDropdown implementation.
-    this.generatedOptions_.push([opt_newValue, opt_newValue]);
+    this.generatedOptions.push([opt_newValue, opt_newValue]);
   }
   return /** @type {string} */ (opt_newValue);
 };
