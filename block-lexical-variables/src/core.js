@@ -18,6 +18,7 @@ import './fields/field_nocheck_dropdown.js';
 import {FieldLexicalVariable, LexicalVariable} from './fields/field_lexical_variable.js';
 import {FieldParameterFlydown} from './fields/field_parameter_flydown.js';
 import {FieldProcedureName} from './fields/field_procedurename.js';
+import {FieldNoCheckDropdown} from './fields/field_nocheck_dropdown.js';
 import {NameSet} from './nameSet.js';
 import * as Shared from './shared.js';
 import {Substitution} from './substitution.js';
@@ -57,6 +58,7 @@ export class LexicalVariablesPlugin {
     static LexicalVariable = LexicalVariable;
     static FieldLexicalVariable = FieldLexicalVariable;
     static FieldProcedureName = FieldProcedureName;
+    static FieldNoCheckDropdown = FieldNoCheckDropdown;
     static NameSet = NameSet;
     static Shared = Shared;
     static Substitution = Substitution;
