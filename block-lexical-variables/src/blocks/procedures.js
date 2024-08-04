@@ -823,7 +823,13 @@ Blockly.Blocks['procedures_callnoreturn'] = {
       // called because our defining procedure got renamed and
       // this.setFieldValue() will fail if it's value isn't in the options set
       nameField.getOptions();
-      this.setFieldValue(newName, 'PROCNAME');
+      const oldIsRenaming = !!this.isRenaming;
+      this.isRenaming = true;
+      try {
+        this.setFieldValue(newName, 'PROCNAME');
+      } finally {
+        this.isRenaming = oldIsRenaming;
+      }
     }
   },
   // [lyn, 10/27/13] Renamed "fromChange" parameter to "startTracking", because

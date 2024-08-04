@@ -29,18 +29,24 @@ export const onChange = function(procedureId) {
     return;
   }
 
-  const def = workspace.getProcedureDatabase().getProcedure(procedureId);
+  const procDefBlock = workspace.getProcedureDatabase().getProcedure(procedureId);
   // loading but the definition block hasn't been processed yet.
-  if (!def) return;
-  const text = def.getFieldValue('NAME');
-  if (text == '' || text != this.getValue()) {
-    for (let i=0; this.block.getInput('ARG' + i) != null; i++) {
-      this.block.removeInput('ARG' + i);
+  if (!procDefBlock) return;
+  const text = procDefBlock.getFieldValue('NAME');
+  // If we're just in the midst of renaming the procedure, we don't have (or want) to
+  // remove the old arguments.
+  if (!this.block.isRenaming) {
+    if (text == '' || text != this.getValue()) {
+      for (let i=0; this.block.getInput('ARG' + i) != null; i++) {
+        this.block.removeInput('ARG' + i);
+      }
+      // return;
     }
-    // return;
   }
   this.doValueUpdate_(text);
-  if (def) {
+  // If we're just in the midst of renaming the procedure, we don't have (or want) to
+  // add the new arguments
+  if (!this.block.isRenaming) {
     // [lyn, 10/27/13] Lyn sez: this causes complications (e.g., might open up
     // mutator on collapsed procedure declaration block) and is no longer
     // necessary with changes to setProedureParameters.
@@ -49,7 +55,9 @@ export const onChange = function(procedureId) {
     //  def.mutator.shouldHide = true;
     // }
     // It's OK if def.paramIds is null
-    this.block.setProcedureParameters(def.arguments_, def.paramIds_, true);
+    this.block.setProcedureParameters(procDefBlock.arguments_, procDefBlock.paramIds_, true);
+  } else {
+    this.block.render();
   }
 };
 
