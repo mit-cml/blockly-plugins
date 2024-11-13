@@ -88,10 +88,10 @@ export class FieldFlydown extends Blockly.FieldTextInput {
   init(block) {
     super.init(block);
     // Remove inherited field css classes ...
-    Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.fieldGroup_),
-        'blocklyEditableText');
-    Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.fieldGroup_),
-        'blocklyNoNEditableText');
+    // Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.fieldGroup_),
+    //     'blocklyEditableText');
+    // Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.fieldGroup_),
+    //     'blocklyNoNEditableText');
     // ... and add new ones, so that look and feel of flyout fields can be
     // customized
     Blockly.utils.dom.addClass(/** @type {!Element} */ (this.fieldGroup_),
