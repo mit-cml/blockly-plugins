@@ -6,7 +6,6 @@
 'use strict';
 
 import {registerCss} from '../src/css.js';
-registerCss();
 import './utilities.js';
 import './workspace.js';
 import './inputs/indented_input.js';
@@ -32,6 +31,12 @@ export class LexicalVariablesPlugin {
      * @param workspace
      */
     static init(workspace) {
+        // TODO(ewpatton): We need to make sure this is reentrant.
+        const rendererName = workspace.getRenderer().getClassName();
+        const themeName = workspace.getTheme().getClassName();
+        const selector = `.${rendererName}.${themeName}`;
+        registerCss(selector);
+
         // TODO: Might need the next line
         // Blockly.DropDownDiv.createDom();
         const flydown = new Flydown(

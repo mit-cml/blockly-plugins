@@ -1,22 +1,26 @@
 'use strict';
 
-import * as Blockly from 'blockly/core';
+const cssNode = document.createElement('style');
+document.head.appendChild(cssNode);
 
 /**
- * Array making up the extra CSS content for added Blockly fields.
+ * Register our extra CSS with Blockly.
+ *
+ * @param {string} selector The CSS selector for the Blockly workspace.
  */
-const EXTRA_CSS = `
-  .blocklyFieldParameter>rect {
+export function registerCss(selector) {
+  cssNode.textContent = `
+  ${selector}  .blocklyFieldParameter>rect {
     fill: rgb(222, 143, 108);
     fill-opacity: 1.0;
     stroke-width: 2;
     stroke: rgb(231, 175, 150);
   }
-  .blocklyFieldParameter>text {
+  ${selector} .blocklyFieldParameter>text {
     stroke-width: 1;
     fill: #000;
   }
-  .blocklyFieldParameter:hover>rect {
+  ${selector} .blocklyFieldParameter:hover>rect {
     stroke-width: 2;
     stroke: rgb(231,175,150);
     fill: rgb(231,175,150);
@@ -25,7 +29,7 @@ const EXTRA_CSS = `
   /*
    * [lyn, 10/08/13] Control flydown with the getter/setter blocks.
    */
-  .blocklyFieldParameterFlydown {
+  ${selector} .blocklyFieldParameterFlydown {
     fill: rgb(231,175,150);
     fill-opacity: 0.8;
   }
@@ -33,16 +37,16 @@ const EXTRA_CSS = `
    * [lyn, 10/08/13] Control parameter fields with flydown procedure
    * caller block.
    */
-  .blocklyFieldProcedure>rect {
+  ${selector} .blocklyFieldProcedure>rect {
     fill: rgb(215,203,218);
     fill-opacity: 1.0;
     stroke-width: 0;
     stroke: #000;
   }
-  .blocklyFieldProcedure>text {
+  ${selector} .blocklyFieldProcedure>text {
     fill: #000;
   }
-  .blocklyFieldProcedure:hover>rect {
+  ${selector} .blocklyFieldProcedure:hover>rect {
     stroke-width: 2;
     stroke: #fff;
     fill: rgb(215,203,218);
@@ -51,15 +55,8 @@ const EXTRA_CSS = `
   /*
    * [lyn, 10/08/13] Control flydown with the procedure caller block.
    */
-  .blocklyFieldProcedureFlydown {
+  ${selector} .blocklyFieldProcedureFlydown {
     fill: rgb(215,203,218);
     fill-opacity: 0.8;
-  }
-`;
-
-/**
- * Register our extra CSS with Blockly.
- */
-export function registerCss() {
-  Blockly.Css.register(EXTRA_CSS);
+  }`;
 }
