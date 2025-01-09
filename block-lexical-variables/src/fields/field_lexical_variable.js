@@ -82,15 +82,31 @@ import {Substitution} from '../substitution.js'
  * @constructor
  */
 export class FieldLexicalVariable extends Blockly.FieldDropdown {
-  constructor(varname) {
+  constructor(varname, translatedName) {
     // Call parent's constructor.
     super(FieldLexicalVariable.dropdownCreate);
+    this.varname = varname;
+    this.translatedName = translatedName;
     if (varname) {
       this.doValueUpdate_(varname);
     } else {
       this.doValueUpdate_(Blockly.Variables.generateUniqueName());
     }
   };
+
+  /**
+   * Marks the lexical variable field as containing a translated variable.
+   * @param {string} translatedName the translated name shown to the user
+   * @param {string} codeName the name of the variable in the code
+   */
+  setTranslatedValue(translatedName, codeName) {
+    this.varname = codeName;
+    this.translatedName = translatedName;
+    // Repopulate the options list to include the [translated, codename] pair.
+    this.getOptions(false);
+    this.setValue(codeName);
+    this.forceRerender();
+  }
 
   /**
    * Set the variable name.
@@ -238,11 +254,13 @@ FieldLexicalVariable.getLexicalNamesInScope = function(block) {
 
   // [lyn, 12/24/2012] Abstract over name handling
   /**
-   * @param name
+   * @param codeName
    * @param list
    * @param prefix
+   * @param {string=} translated The translated name of the variable, if any
    */
-  function rememberName(name, list, prefix) {
+  function rememberName(codeName, list, prefix, translated) {
+    const name = translated || codeName;
     let fullName;
     if (!Shared.usePrefixInCode) { // Only a single namespace
       if (!innermostPrefix[name]) {
@@ -255,7 +273,7 @@ FieldLexicalVariable.getLexicalNamesInScope = function(block) {
       // note: correctly handles case where some prefixes are the same
       fullName = (Shared.possiblyPrefixMenuNameWith(prefix))(name);
     }
-    list.push(fullName);
+    list.push([fullName, codeName]);
   }
 
   child = block;
@@ -264,8 +282,8 @@ FieldLexicalVariable.getLexicalNamesInScope = function(block) {
     if (parent) {
       while (parent) {
         if (parent.withLexicalVarsAndPrefix) {
-          parent.withLexicalVarsAndPrefix(child, (lexVar, prefix) => {
-            rememberName(lexVar, allLexicalNames, prefix);
+          parent.withLexicalVarsAndPrefix(child, (lexVar, prefix, translated) => {
+            rememberName(lexVar, allLexicalNames, prefix, translated);
           });
         }
         child = parent;
@@ -273,22 +291,25 @@ FieldLexicalVariable.getLexicalNamesInScope = function(block) {
       }
     }
   }
-  allLexicalNames = LexicalVariable.sortAndRemoveDuplicates(allLexicalNames);
-  return allLexicalNames.map(function(name) {
-    return [name, name];
-  });
+  return LexicalVariable.sortAndRemoveDuplicates(allLexicalNames);
 };
 
 /**
  * Return a sorted list of variable names for variable dropdown menus.
- * @return {!Array.<string>} Array of variable names.
+ * @return {!Array.<string[]>} Array of variable names.
  * @this {!FieldLexicalVariable}
  */
 FieldLexicalVariable.dropdownCreate = function() {
   const variableList = this.getNamesInScope(); // [lyn, 11/10/12] Get all
   // global, parameter, and local
   // names
-  return variableList.length == 0 ? [[' ', ' ']] : variableList;
+  if (variableList.length > 0) {
+    return variableList;
+  } else if (this.translatedName) {
+    return [[this.translatedName, this.varname]];
+  } else {
+    return [[' ', ' ']];
+  }
 };
 
 /*
@@ -369,24 +390,27 @@ FieldLexicalVariable.prototype.updateMutation = function() {
     this.sourceBlock_.eventparam = undefined;
     if (text.indexOf(Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + ' ') === 0) {
       this.sourceBlock_.eventparam = null;
+      this.translatedName = undefined;
+      this.varname = undefined;
       return;
     }
     let i, parent = this.sourceBlock_.getParent();
     while (parent) {
       const variables = parent.declaredVariables ? parent.declaredVariables() : [];
-      if (parent.type != 'component_event') {
-        for (i = 0; i < variables.length; i++) {
-          if (variables[i] == text) {
-            // Innermost scope is not an event block, so eventparam can be nulled.
-            this.sourceBlock_.eventparam = null;
+      for (i = 0; i < variables.length; i++) {
+        if (variables[i] == text) {
+          if (parent.type == 'component_event') {
+            // Innermost scope is an event block, so eventparam can be set.
+            const codeName = parent.getParameters()[i].name;
+            this.sourceBlock_.eventparam = codeName;
+            this.translatedName = variables[i];
+            this.varname = codeName;
             return;
-          }
-        }
-      } else {
-        for (i = 0; i < variables.length; i++) {
-          if (variables[i] == text) {
-            // text is an event parameter so compute the eventparam value
-            this.sourceBlock_.eventparam = parent.getParameters()[i].name;
+          } else {
+            // Innermost scope is not an event, so eventparam can be nulled.
+            this.sourceBlock_.eventparam = null;
+            this.translatedName = undefined;
+            this.varname = undefined;
             return;
           }
         }
@@ -1057,7 +1081,16 @@ LexicalVariable.referenceResult = function(block, name, prefix, env) {
 };
 
 LexicalVariable.sortAndRemoveDuplicates = function(strings) {
-  const sorted = strings.sort();
+  const sorted = strings.sort((a, b) => {
+    if (typeof a == 'string' && typeof b == 'string') {
+      return a.localeCompare(b);
+    } else if (Array.isArray(a) && Array.isArray(b)) {
+      return a[1].localeCompare(b[1]);
+    } else {
+      throw Error('LexicalVariable.sortAndRemoveDuplicates: ' +
+            'arguments must be strings or arrays of strings');
+    }
+  });
   const nodups = [];
   if (strings.length >= 1) {
     let prev = sorted[0];
