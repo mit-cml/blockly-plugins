@@ -89,6 +89,7 @@ function myStringify (obj) {
 'use strict';
 
 import * as Blockly from 'blockly/core';
+import '../inputs/indented_input.js';
 import '../msg.js';
 import {ErrorCheckers} from '../warningHandler.js';
 import {FieldParameterFlydown} from '../fields/field_parameter_flydown.js';
@@ -102,6 +103,7 @@ import * as Utilities from '../utilities.js';
 import * as Shared from '../shared.js';
 import {NameSet} from "../nameSet.js";
 import {Substitution} from '../substitution.js'
+import {lexicalVariableScopeMixin} from "../mixins.js";
 
 delete Blockly.Blocks['global_declaration'];
 /**
@@ -121,12 +123,12 @@ Blockly.Blocks['global_declaration'] = {
         .appendField(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TO);
     this.setTooltip(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TOOLTIP);
   },
-  getVars: function() {
+  getDeclaredVars: function() {
     const field = this.getField('NAME');
     return field ? [field.getText()] : [];
   },
   getGlobalNames: function() {
-    return this.getVars();
+    return this.getDeclaredVars();
   },
   renameVar: function(oldName, newName) {
     if (Blockly.Names.equals(oldName, this.getFieldValue('NAME'))) {
@@ -135,196 +137,33 @@ Blockly.Blocks['global_declaration'] = {
   },
 };
 
-/**
- * Prototype bindings for a variable getter block.
- */
-Blockly.Blocks['lexical_variable_get'] = {
-  // Variable getter.
+Blockly.Blocks['simple_local_declaration_statement'] = {
+  // For each loop.
   category: 'Variables',
-  helpUrl: Blockly.Msg.LANG_VARIABLES_GET_HELPURL,
-  init: function() {
+  helpUrl: Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_HELPURL,
+  init: function () {
+    // Let the theme determine the color.
     this.setStyle('variable_blocks');
-    this.fieldVar_ = new FieldLexicalVariable(' ');
-    this.fieldVar_.setBlock(this);
-    this.appendDummyInput()
-        .appendField(Blockly.Msg.LANG_VARIABLES_GET_TITLE_GET)
-        .appendField(this.fieldVar_, 'VAR');
-    this.setOutput(true, null);
-    this.setTooltip(Blockly.Msg.LANG_VARIABLES_GET_TOOLTIP);
-    this.errors = [
-      {func: ErrorCheckers.checkIsInDefinition},
-      {
-        func: ErrorCheckers.checkDropDownContainsValidValue,
-        dropDowns: ['VAR'],
-      },
-    ];
-    this.setOnChange(function(changeEvent) {
-      this.workspace.getWarningHandler().checkErrors(this);
-    });
-  },
-  referenceResults: function(name, prefix, env) {
-    const childrensReferenceResults = this.getChildren().map(function(blk) {
-      return LexicalVariable.referenceResult(blk, name, prefix, env);
-    });
-    let blocksToRename = [];
-    let capturables = [];
-    for (let r = 0; r < childrensReferenceResults.length; r++) {
-      blocksToRename = blocksToRename.concat(childrensReferenceResults[r][0]);
-      capturables = capturables.concat(childrensReferenceResults[r][1]);
-    }
-    const possiblyPrefixedReferenceName = this.getField('VAR').getText();
-    const unprefixedPair = Shared.unprefixName(possiblyPrefixedReferenceName);
-    const referencePrefix = unprefixedPair[0];
-    const referenceName = unprefixedPair[1];
-    const referenceNotInEnv = ((Shared.usePrefixInCode &&
-            (env.indexOf(possiblyPrefixedReferenceName) == -1)) ||
-        ((!Shared.usePrefixInCode) && (env.indexOf(referenceName) == -1)));
-    if (!(referencePrefix === Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX)) {
-      if ((referenceName === name) && referenceNotInEnv) {
-        // if referenceName refers to name and not some intervening
-        // declaration, it's a reference to be renamed:
-        blocksToRename.push(this);
-        // Any intervening declared name with the same prefix as the searched
-        // for name can be captured:
-        if (Shared.usePrefixInCode) {
-          for (let i = 0; i < env.length; i++) {
-            // env is a list of prefixed names.
-            const unprefixedEntry = Shared.unprefixName(env[i]);
-            if (prefix === unprefixedEntry[0]) {
-              capturables.push(unprefixedEntry[1]);
-            }
-          }
-        } else { // Shared.usePrefixInCode
-          capturables = capturables.concat(env);
-        }
-      } else if (referenceNotInEnv &&
-          (!Shared.usePrefixInCode || prefix === referencePrefix)) {
-        // If reference is not in environment, it's externally declared and
-        // capturable When Shared.usePrefixInYail is true, only consider names
-        // with same prefix to be capturable
-        capturables.push(referenceName);
-      }
-    }
-    return [[blocksToRename, capturables]];
-  },
-  getVars: function() {
-    return [this.getFieldValue('VAR')];
-  },
-  renameLexicalVar: function(oldName, newName, oldTranslatedName,
-      newTranslatedName) {
-    if (oldTranslatedName === undefined) {
-      // Local variables
-      if (oldName === this.getFieldValue('VAR')) {
-        this.setFieldValue(newName, 'VAR');
-      }
-    } else if (oldTranslatedName && oldTranslatedName ===
-        this.fieldVar_.getText()) {
-      // Global variables
-
-      // Force a regeneration of the dropdown options, so the subsequent
-      // calls to setValue and setFieldValue will work properly.
-      this.fieldVar_.getOptions(false);
-      this.fieldVar_.setValue(newName);
-      if (oldName === newName) {
-        this.setFieldValue(newName, 'VAR');
-      }
-      this.fieldVar_.forceRerender();
-    }
-  },
-  renameFree: function(freeSubstitution) {
-    const prefixPair = Shared.unprefixName(this.getFieldValue('VAR'));
-    const prefix = prefixPair[0];
-    // Only rename lexical (nonglobal) names
-    if (prefix !== Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX) {
-      const oldName = prefixPair[1];
-      const newName = freeSubstitution.apply(oldName);
-      if (newName !== oldName) {
-        this.renameLexicalVar(oldName, newName);
-      }
-    }
-  },
-  freeVariables: function() { // return the free lexical variables of this block
-    const prefixPair = Shared.unprefixName(this.getFieldValue('VAR'));
-    const prefix = prefixPair[0];
-    // Only return lexical (nonglobal) names
-    if (prefix !== Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX) {
-      const oldName = prefixPair[1];
-      return new NameSet([oldName]);
-    } else {
-      return new NameSet();
-    }
-  },
-};
-
-/**
- * Prototype bindings for a variable setter block.
- */
-Blockly.Blocks['lexical_variable_set'] = {
-  // Variable setter.
-  category: 'Variables',
-  helpUrl: Blockly.Msg.LANG_VARIABLES_SET_HELPURL, // *** [lyn, 11/10/12] Fix
-  // this
-  init: function() {
-    this.setStyle('variable_blocks');
-    this.fieldVar_ = new FieldLexicalVariable(' ');
-    this.fieldVar_.setBlock(this);
-    this.appendValueInput('VALUE')
-        .appendField(Blockly.Msg.LANG_VARIABLES_SET_TITLE_SET)
-        .appendField(this.fieldVar_, 'VAR')
-        .appendField(Blockly.Msg.LANG_VARIABLES_SET_TITLE_TO);
+    const declInput = this.appendValueInput('DECL');
+    declInput.appendField(
+        Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_TITLE_INIT)
+        .appendField(new FieldParameterFlydown(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_DEFAULT_NAME, true), 'VAR')
+        .appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_INPUT_TO)
+        .setAlign(Blockly.inputs.Align.RIGHT);
+    this.appendStatementInput('DO')
+        .appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_IN_DO);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setTooltip(Blockly.Msg.LANG_VARIABLES_SET_TOOLTIP);
-    this.errors = [
-      {func: ErrorCheckers.checkIsInDefinition},
-      {
-        func: ErrorCheckers.checkDropDownContainsValidValue,
-        dropDowns: ['VAR'],
-      },
-    ];
-    this.setOnChange(function(changeEvent) {
-      this.workspace.getWarningHandler().checkErrors(this);
-    });
+    this.setTooltip(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_TOOLTIP);
+    this.mixin(lexicalVariableScopeMixin);
   },
-  referenceResults: Blockly.Blocks.lexical_variable_get.referenceResults,
-  getVars: function() {
-    return [this.getFieldValue('VAR')];
+  getDeclaredVarFieldNames: function () {
+    return ['VAR'];
   },
-  renameLexicalVar: Blockly.Blocks.lexical_variable_get.renameLexicalVar,
-  renameFree: function(freeSubstitution) {
-    // potentially rename the set variable
-    const prefixPair = Shared.unprefixName(this.getFieldValue('VAR'));
-    const prefix = prefixPair[0];
-    // Only rename lexical (nonglobal) names
-    if (prefix !== Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX) {
-      const oldName = prefixPair[1];
-      const newName = freeSubstitution.apply(oldName);
-      if (newName !== oldName) {
-        this.renameLexicalVar(oldName, newName);
-      }
-    }
-    // [lyn, 06/26/2014] Don't forget to rename children!
-    this.getChildren().map(function(blk) {
-      LexicalVariable.renameFree(blk, freeSubstitution);
-    });
+  getScopedInputName: function () {
+    return 'DO';
   },
-  freeVariables: function() { // return the free lexical variables of this block
-    // [lyn, 06/27/2014] Find free vars of *all* children, including subsequent
-    // commands in NEXT slot.
-    const childrenFreeVars = this.getChildren().map(function(blk) {
-      return LexicalVariable.freeVariables(blk);
-    });
-    const result = NameSet.unionAll(childrenFreeVars);
-    const prefixPair = Shared.unprefixName(this.getFieldValue('VAR'));
-    const prefix = prefixPair[0];
-    // Only return lexical (nonglobal) names
-    if (prefix !== Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX) {
-      const oldName = prefixPair[1];
-      result.insert(oldName);
-    }
-    return result;
-  },
-};
+}
 
 /**
  * Prototype bindings for a statement block that declares local names for use
@@ -614,7 +453,7 @@ Blockly.Blocks['local_declaration_statement'] = {
       containerBlock.bodyConnection_ = bodyInput.connection.targetConnection;
     }
   },
-  getVars: function() {
+  getDeclaredVars: function() {
     const varList = [];
     for (let i = 0, input; input = this.getField('VAR' + i); i++) {
       varList.push(input.getValue());
@@ -623,10 +462,10 @@ Blockly.Blocks['local_declaration_statement'] = {
   },
   // Interface with LexicalVariable.renameParam
   declaredNames: function() {
-    return this.getVars();
+    return this.getDeclaredVars();
   },
   declaredVariables: function() {
-    return this.getVars();
+    return this.getDeclaredVars();
   },
   // [lyn, 11/16/13 ] Return all the initializer connections
   initializerConnections: function() {
@@ -809,7 +648,7 @@ Blockly.Blocks['local_declaration_expression'] = {
   decompose: Blockly.Blocks.local_declaration_statement.decompose,
   compose: Blockly.Blocks.local_declaration_statement.compose,
   saveConnections: Blockly.Blocks.local_declaration_statement.saveConnections,
-  getVars: Blockly.Blocks.local_declaration_statement.getVars,
+  getDeclaredVars: Blockly.Blocks.local_declaration_statement.getDeclaredVars,
   declaredNames: Blockly.Blocks.local_declaration_statement.declaredNames,
   declaredVariables:
       Blockly.Blocks.local_declaration_statement.declaredVariables,

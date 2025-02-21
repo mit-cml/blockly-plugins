@@ -471,7 +471,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
       this.bodyInputName === 'RETURN',
     ]; // true for procedures that return values.
   },
-  getVars: function() {
+  getDeclaredVars: function() {
     const names = [];
     for (let i = 0, param; param = this.getFieldValue('VAR' + i); i++) {
       names.push(param);
@@ -480,10 +480,10 @@ Blockly.Blocks['procedures_defnoreturn'] = {
   },
   declaredNames: function() {
     // [lyn, 10/11/13] return the names of all parameters of this procedure
-    return this.getVars();
+    return this.getDeclaredVars();
   },
   declaredVariables: function() {
-    return this.getVars();
+    return this.getDeclaredVars();
   },
   renameVar: function(oldName, newName) {
     this.renameVars(Substitution.simpleSubstitution(oldName, newName));
@@ -602,7 +602,7 @@ Blockly.Blocks['procedures_defreturn'] = {
   compose: Blockly.Blocks.procedures_defnoreturn.compose,
   dispose: Blockly.Blocks.procedures_defnoreturn.dispose,
   getProcedureDef: Blockly.Blocks.procedures_defnoreturn.getProcedureDef,
-  getVars: Blockly.Blocks.procedures_defnoreturn.getVars,
+  getDeclaredVars: Blockly.Blocks.procedures_defnoreturn.getDeclaredVars,
   declaredNames: Blockly.Blocks.procedures_defnoreturn.declaredNames,
   declaredVariables: Blockly.Blocks.procedures_defnoreturn.declaredVariables,
   renameVar: Blockly.Blocks.procedures_defnoreturn.renameVar,

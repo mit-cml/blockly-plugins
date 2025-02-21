@@ -40,13 +40,8 @@ import * as Blockly from 'blockly/core';
 import '../msg.js';
 import {FieldParameterFlydown} from '../fields/field_parameter_flydown.js';
 import {FieldFlydown} from '../fields/field_flydown.js';
-import {
-  FieldLexicalVariable,
-  LexicalVariable,
-} from '../fields/field_lexical_variable.js';
 import * as Utilities from '../utilities.js';
-import * as Shared from '../shared.js';
-import {Substitution} from '../substitution.js'
+import {lexicalVariableScopeMixin} from '../mixins.js';
 
 Blockly.Blocks['controls_forRange'] = {
   // For range.
@@ -85,113 +80,13 @@ Blockly.Blocks['controls_forRange'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setTooltip(Blockly.Msg.LANG_CONTROLS_FORRANGE_TOOLTIP);
-    this.lexicalVarPrefix = Shared.loopRangeParameterPrefix;
+    this.mixin(lexicalVariableScopeMixin);
   },
-  referenceResults: function(name, prefix, env) {
-    let loopVar = this.getFieldValue('VAR');
-    // Invariant: Shared.showPrefixToUser must also be true!
-    if (Shared.usePrefixInCode) {
-      loopVar =
-          (Shared.possiblyPrefixMenuNameWith(Shared.loopRangeParameterPrefix))(
-              loopVar);
-    }
-    const newEnv = env.concat([loopVar]);
-    const startResults = LexicalVariable.referenceResult(
-        this.getInputTargetBlock('START'), name, prefix, env);
-    const endResults = LexicalVariable.referenceResult(
-        this.getInputTargetBlock('END'), name, prefix, env);
-    const stepResults = LexicalVariable.referenceResult(
-        this.getInputTargetBlock('STEP'), name, prefix, env);
-    const doResults = LexicalVariable.referenceResult(
-        this.getInputTargetBlock('DO'), name, prefix, newEnv);
-    const nextResults = LexicalVariable.referenceResult(
-        LexicalVariable.getNextTargetBlock(this), name, prefix, env);
-    return [startResults, endResults, stepResults, doResults, nextResults];
+  getDeclaredVarFieldNames: function () {
+    return ['VAR'];
   },
-  withLexicalVarsAndPrefix: function(child, proc) {
-    if (this.getInputTargetBlock('DO') == child) {
-      const lexVar = this.getFieldValue('VAR');
-      proc(lexVar, this.lexicalVarPrefix);
-    }
-  },
-  getVars: function() {
-    return [this.getFieldValue('VAR')];
-  },
-  blocksInScope: function() {
-    const doBlock = this.getInputTargetBlock('DO');
-    if (doBlock) {
-      return [doBlock];
-    } else {
-      return [];
-    }
-  },
-  declaredNames: function() {
-    return [this.getFieldValue('VAR')];
-  },
-  renameVar: function(oldName, newName) {
-    if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
-      this.setFieldValue(newName, 'VAR');
-    }
-  },
-  renameBound: function(boundSubstitution, freeSubstitution) {
-    LexicalVariable.renameFree(this.getInputTargetBlock('START'),
-        freeSubstitution);
-    LexicalVariable.renameFree(this.getInputTargetBlock('END'),
-        freeSubstitution);
-    LexicalVariable.renameFree(this.getInputTargetBlock('STEP'),
-        freeSubstitution);
-    const oldIndexVar = this.getFieldValue('VAR');
-    const newIndexVar = boundSubstitution.apply(oldIndexVar);
-    if (newIndexVar !== oldIndexVar) {
-      this.renameVar(oldIndexVar, newIndexVar);
-      const indexSubstitution = Substitution.simpleSubstitution(
-          oldIndexVar, newIndexVar);
-      const extendedFreeSubstitution = freeSubstitution.extend(
-          indexSubstitution);
-      LexicalVariable.renameFree(this.getInputTargetBlock('DO'),
-          extendedFreeSubstitution);
-    } else {
-      const removedFreeSubstitution = freeSubstitution.remove([oldIndexVar]);
-      LexicalVariable.renameFree(this.getInputTargetBlock('DO'),
-          removedFreeSubstitution);
-    }
-    if (this.nextConnection) {
-      const nextBlock = this.nextConnection.targetBlock();
-      LexicalVariable.renameFree(nextBlock, freeSubstitution);
-    }
-  },
-  renameFree: function(freeSubstitution) {
-    const indexVar = this.getFieldValue('VAR');
-    const bodyFreeVars = LexicalVariable.freeVariables(
-        this.getInputTargetBlock('DO'));
-    bodyFreeVars.deleteName(indexVar);
-    const renamedBodyFreeVars = bodyFreeVars.renamed(freeSubstitution);
-    if (renamedBodyFreeVars.isMember(indexVar)) { // Variable capture!
-      const newIndexVar = FieldLexicalVariable.nameNotIn(indexVar,
-          renamedBodyFreeVars.toList());
-      const boundSubstitution = Substitution.simpleSubstitution(
-          indexVar, newIndexVar);
-      this.renameBound(boundSubstitution, freeSubstitution);
-    } else {
-      this.renameBound(new Substitution(), freeSubstitution);
-    }
-  },
-  freeVariables: function() { // return the free variables of this block
-    const result = LexicalVariable.freeVariables(
-        this.getInputTargetBlock('DO'));
-    // Remove bound index variable from body free vars
-    result.deleteName(this.getFieldValue('VAR'));
-    result.unite(LexicalVariable.freeVariables(
-        this.getInputTargetBlock('START')));
-    result.unite(
-        LexicalVariable.freeVariables(this.getInputTargetBlock('END')));
-    result.unite(LexicalVariable.freeVariables(
-        this.getInputTargetBlock('STEP')));
-    if (this.nextConnection) {
-      const nextBlock = this.nextConnection.targetBlock();
-      result.unite(LexicalVariable.freeVariables(nextBlock));
-    }
-    return result;
+  getScopedInputName: function () {
+    return 'DO';
   },
 };
 
@@ -227,96 +122,13 @@ Blockly.Blocks['controls_forEach'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setTooltip(Blockly.Msg.LANG_CONTROLS_FOREACH_TOOLTIP);
-    this.lexicalVarPrefix = Shared.loopParameterPrefix;
+    this.mixin(lexicalVariableScopeMixin);
   },
-  referenceResults: function(name, prefix, env) {
-    let loopVar = this.getFieldValue('VAR');
-    // Invariant: Shared.showPrefixToUser must also be true!
-    if (Shared.usePrefixInCode) {
-      loopVar = (Shared.possiblyPrefixMenuNameWith(Shared.loopParameterPrefix))(
-          loopVar);
-    }
-    const newEnv = env.concat([loopVar]);
-    const listResults = LexicalVariable.referenceResult(
-        this.getInputTargetBlock('LIST'), name, prefix, env);
-    const doResults = LexicalVariable.referenceResult(
-        this.getInputTargetBlock('DO'), name, prefix, newEnv);
-    const nextResults = LexicalVariable.referenceResult(
-        LexicalVariable.getNextTargetBlock(this), name, prefix, env);
-    return [listResults, doResults, nextResults];
+  getDeclaredVarFieldNames: function () {
+    return ['VAR'];
   },
-  withLexicalVarsAndPrefix:
-    Blockly.Blocks.controls_forRange.withLexicalVarsAndPrefix,
-  getVars: function() {
-    return [this.getFieldValue('VAR')];
-  },
-  blocksInScope: function() {
-    const doBlock = this.getInputTargetBlock('DO');
-    if (doBlock) {
-      return [doBlock];
-    } else {
-      return [];
-    }
-  },
-  declaredNames: function() {
-    return [this.getFieldValue('VAR')];
-  },
-  renameVar: function(oldName, newName) {
-    if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
-      this.setFieldValue(newName, 'VAR');
-    }
-  },
-  renameBound: function(boundSubstitution, freeSubstitution) {
-    LexicalVariable.renameFree(this.getInputTargetBlock('LIST'),
-        freeSubstitution);
-    const oldIndexVar = this.getFieldValue('VAR');
-    const newIndexVar = boundSubstitution.apply(oldIndexVar);
-    if (newIndexVar !== oldIndexVar) {
-      this.renameVar(oldIndexVar, newIndexVar);
-      const indexSubstitution = Substitution.simpleSubstitution(
-          oldIndexVar, newIndexVar);
-      const extendedFreeSubstitution = freeSubstitution.extend(
-          indexSubstitution);
-      LexicalVariable.renameFree(this.getInputTargetBlock('DO'),
-          extendedFreeSubstitution);
-    } else {
-      const removedFreeSubstitution = freeSubstitution.remove([oldIndexVar]);
-      LexicalVariable.renameFree(this.getInputTargetBlock('DO'),
-          removedFreeSubstitution);
-    }
-    if (this.nextConnection) {
-      const nextBlock = this.nextConnection.targetBlock();
-      LexicalVariable.renameFree(nextBlock, freeSubstitution);
-    }
-  },
-  renameFree: function(freeSubstitution) {
-    const indexVar = this.getFieldValue('VAR');
-    const bodyFreeVars = LexicalVariable.freeVariables(
-        this.getInputTargetBlock('DO'));
-    bodyFreeVars.deleteName(indexVar);
-    const renamedBodyFreeVars = bodyFreeVars.renamed(freeSubstitution);
-    if (renamedBodyFreeVars.isMember(indexVar)) { // Variable capture!
-      const newIndexVar = FieldLexicalVariable.nameNotIn(indexVar,
-          renamedBodyFreeVars.toList());
-      const boundSubstitution = Substitution.simpleSubstitution(
-          indexVar, newIndexVar);
-      this.renameBound(boundSubstitution, freeSubstitution);
-    } else {
-      this.renameBound(new Substitution(), freeSubstitution);
-    }
-  },
-  freeVariables: function() { // return the free variables of this block
-    const result = LexicalVariable.freeVariables(
-        this.getInputTargetBlock('DO'));
-    // Remove bound index variable from body free vars
-    result.deleteName(this.getFieldValue('VAR'));
-    result.unite(LexicalVariable.freeVariables(
-        this.getInputTargetBlock('LIST')));
-    if (this.nextConnection) {
-      const nextBlock = this.nextConnection.targetBlock();
-      result.unite(LexicalVariable.freeVariables(nextBlock));
-    }
-    return result;
+  getScopedInputName: function () {
+    return 'DO';
   },
 };
 

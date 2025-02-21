@@ -24,6 +24,7 @@ import {Substitution} from './substitution.js';
 import './procedure_database.js';
 import * as Blockly from 'blockly/core';
 import {GerasRenderer} from './renderers/geras.js';
+import {lexicalVariableScopeMixin} from './mixins.js'
 
 export class LexicalVariablesPlugin {
 
@@ -60,6 +61,7 @@ export class LexicalVariablesPlugin {
     static FieldFlydown = FieldFlydown;
     static FieldGlobalFlydown = FieldGlobalFlydown;
     static FieldParameterFlydown = FieldParameterFlydown;
+    static lexicalVariableScopeMixin= lexicalVariableScopeMixin;
     static LexicalVariable = LexicalVariable;
     static FieldLexicalVariable = FieldLexicalVariable;
     static FieldProcedureName = FieldProcedureName;

@@ -21,6 +21,7 @@ const allBlocks = [
   'controls_forEach',
   // 'controls_flow_statements',
   'local_declaration_statement',
+  'simple_local_declaration_statement',
   'local_declaration_expression',
   'controls_do_then_return',
   // 'procedures_defnoreturn',
@@ -50,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <sep></sep>
       <category id="catVariables" colour="330" name="Variables">
         <block type="global_declaration"></block>
+        <block type="simple_local_declaration_statement"></block>
         <block type="local_declaration_statement"></block>
         <block type="local_declaration_expression"></block>
         <block type="lexical_variable_get"></block>

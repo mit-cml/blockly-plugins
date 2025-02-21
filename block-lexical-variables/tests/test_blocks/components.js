@@ -144,7 +144,7 @@ ComponentBlock.addGenericOption = function(block, options) {
                 block.walk(function(block) {
                     if (block.type === 'local_declaration_statement' ||
                         block.type === 'local_declaration_expression') {
-                        const localNames = block.getVars();
+                        const localNames = block.getDeclaredVars();
                         localNames.forEach(function(varname) {
                             namesInScope[varname] = true;
                             const match = varname.match(regex);
@@ -480,7 +480,7 @@ Blockly.Blocks.component_event = {
         return url;
     },
 
-    getVars: function() {
+    getDeclaredVars: function() {
         const varList = [];
         let i = 0, input;
         for (; input = this.getFieldValue('VAR' + i); i++) {
@@ -604,7 +604,7 @@ Blockly.Blocks.component_event = {
                 return false; // no such event : this event was for another version!  block is undefined!
             }
             // check parameters
-            const varList = this.getVars();
+            const varList = this.getDeclaredVars();
             const params = event.parameters;
             if (this.isGeneric) {
                 varList.splice(0, 2);  // remove component and wasDefined parameters
