@@ -1,4 +1,4 @@
-**Lexical Variable Fields**
+## Lexical Variable Fields
 
 There are four main fields defined by the Lexical Variable plugin:
 
@@ -33,7 +33,7 @@ You can see examples of how to use it in [lexical-variables.js](src/blocks/lexic
 `simple_local_declaration_statement` block
 and in [controls.js](src/blocks/controls.js) for the`controls_forEach` and `controls_forRange` blocks.
 
-**Method Details**
+## Method Details
 
 `LexicalVariable.referenceResult(block, name, prefix, env)` \- Given a block, return a two element array (i.e. pair) of:
 
@@ -50,3 +50,5 @@ A block's `referenceResults(name, prefix, env)` method will return an array of t
 Each pair will correspond to `LexicalVariable.referenceResult` called on one of the block's target blocks 
 (corresponding to its inputs and its next block).  See the description of `LexicalVariable.referenceResult` for an 
 explanation of what the elements of each of those pairs correspond to.
+
+**More to come ...**

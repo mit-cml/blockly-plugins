@@ -1,5 +1,29 @@
 # blockly-block-lexical-variables [![Built on Blockly](https://tinyurl.com/built-on-blockly)](https://github.com/google/blockly)
 
+# Table of Contents
+
+- [Blocks](#blocks)
+    - [Lexical/local variable declarations](#lexicallocal-variable-declarations)
+    - [Global variable declaration](#global-variable-declaration)
+- [Variable/Parameter setters and getters](#variableparameter-setters-and-getters)
+    - [Setter](#setter)
+    - [Getter](#getter)
+- [Loops](#loops)
+    - [For](#for)
+- [Functions/procedures](#functionsprocedures)
+    - [Function/procedure definition with no return value](#functionprocedure-definition-with-no-return-value)
+    - [Function/procedure definition with a return value](#functionprocedure-definition-with-a-return-value)
+    - [Function/procedure call with no value](#functionprocedure-call-with-no-value)
+    - [Function/procedure call with value](#functionprocedure-call-with-value)
+- [Notes](#notes)
+- [Installation](#installation)
+    - [Yarn](#yarn)
+    - [npm](#npm)
+- [Usage](#usage)
+- [BYOB (Build Your Own Blocks)](#byob-build-your-own-blocks-aka-how-to-build-your-own-blocks-using-the-lexical-variable-fields)
+- [Credits](#credits)
+- [License](#license)
+
 This plugin adds a set of [Blockly](https://www.npmjs.com/package/blockly) 
 blocks and fields that support lexical (aka local) variables, as well as a dynamic UI
 for obtaining variable and parameter getters and setters and for renaming variables.
@@ -171,12 +195,12 @@ exports the `lexicalVariableScopeMixin` as a field on the exported static `Lexic
 
 NOTE: If you are creating your own blocks and do not want to use the blocks defined in this plugin, you should import
 just the `core` module from this plugin, i.e. 
-```
+```js
 import {LexicalVariablesPlugin} from '@mit-app-inventor/blockly-block-lexical-variables/core';
 ```
 Here's snippet of what the code might look like to implement a `simple_local_declaration_statement` block, if 
 you didn't want to use the blocks already defined in this plugin:
-```
+```js
 import * as Blockly from 'blockly/core';
 import * as libraryBlocks from 'blockly/blocks';
 import * as En from 'blockly/msg/en';
@@ -184,6 +208,8 @@ import {javascriptGenerator} from 'blockly/javascript';
 import {LexicalVariablesPlugin} from '@mit-app-inventor/blockly-block-lexical-variables/core';
 
 Blockly.setLocale(En);
+const workspace = Blockly.inject(...);
+LexicalVariablesPlugin.init(workspace);
 
 const FieldParameterFlydown =  LexicalVariablesPlugin.FieldParameterFlydown;
 const lexicalVariableScopeMixin =  LexicalVariablesPlugin.lexicalVariableScopeMixin;
