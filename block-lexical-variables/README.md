@@ -166,10 +166,67 @@ You can see examples of how to use it in [lexical-variables.js](src/blocks/lexic
 `simple_local_declaration_statement` block 
 and in [controls.js](src/blocks/controls.js) for the`controls_forEach` and `controls_forRange` blocks.
 
-NOTE: If you are creating your own blocks and do not want to use the blocks defined in this plugin, you should import
-just the `core` module from this plugin (_more instructions to come on exactly how to do this_).  The `core` module 
+The `core` module
 exports the `lexicalVariableScopeMixin` as a field on the exported static `LexicalVariablesPlugin` class.
 
+NOTE: If you are creating your own blocks and do not want to use the blocks defined in this plugin, you should import
+just the `core` module from this plugin, i.e. 
+```
+import {LexicalVariablesPlugin} from '@mit-app-inventor/blockly-block-lexical-variables/core';
+```
+Here's snippet of what the code might look like to implement a `simple_local_declaration_statement` block, if 
+you didn't want to use the blocks already defined in this plugin:
+```
+import * as Blockly from 'blockly/core';
+import * as libraryBlocks from 'blockly/blocks';
+import * as En from 'blockly/msg/en';
+import {javascriptGenerator} from 'blockly/javascript';
+import {LexicalVariablesPlugin} from '@mit-app-inventor/blockly-block-lexical-variables/core';
+
+Blockly.setLocale(En);
+
+const FieldParameterFlydown =  LexicalVariablesPlugin.FieldParameterFlydown;
+const lexicalVariableScopeMixin =  LexicalVariablesPlugin.lexicalVariableScopeMixin;
+
+Blockly.Blocks['simple_local_declaration_statement'] = {
+    category: 'Variables',
+    helpUrl: "help",
+    init: function () {
+        // Let the theme determine the color.
+        this.setStyle('variable_blocks');
+        const declInput = this.appendValueInput('DECL');
+        declInput.appendField(
+            'let')
+            .appendField(new FieldParameterFlydown('name', true), 'VAR')
+            .appendField('to')
+            .setAlign(Blockly.inputs.Align.RIGHT);
+        this.appendStatementInput('DO')
+            .appendField('in');
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setTooltip('tooltip');
+        this.mixin(lexicalVariableScopeMixin);
+    },
+    getDeclaredVarFieldNames: function () {
+        return ['VAR'];
+    },
+    getScopedInputName: function () {
+        return 'DO';
+    },
+}
+
+javascriptGenerator.forBlock['simple_local_declaration_statement'] = function (block, generator) {
+    let code = '{\n  let ';
+    code += (Shared.usePrefixInCode ? 'local_' : '') +
+        block.getFieldValue('VAR');
+    code += ' = ' + (generator.valueToCode(block,
+        'DECL', Order.NONE) || '0');
+    code += ';\n';
+    code += generator.statementToCode(block, 'DO');
+    code += '}\n';
+    return code;
+}
+```
 ## Credits
 As mentioned earlier, this plugin is based on code written for
 [MIT App Inventor](https://github.com/mit-cml/appinventor-sources). The lexical 
