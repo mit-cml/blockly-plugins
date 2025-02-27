@@ -55,6 +55,9 @@ export class FieldParameterFlydown extends FieldFlydown {
 
     super(name, isEditable, opt_displayLocation, changeHandler);
   };
+  referencesVariables() {
+    return true;
+  };
 }
 
 FieldParameterFlydown.prototype.fieldCSSClassName =

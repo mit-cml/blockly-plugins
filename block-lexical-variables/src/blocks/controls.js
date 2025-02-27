@@ -55,7 +55,7 @@ Blockly.Blocks['controls_forRange'] = {
     // Need to deal with variables here
     // [lyn, 11/30/12] Changed variable to be text input box that does renaming
     // right (i.e., avoids variable capture)
-    this.appendValueInput('START')
+    this.appendValueInput('FROM')
         .setCheck(Utilities.yailTypeToBlocklyType('number',
             Utilities.INPUT))
         .appendField(Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_ITEM)
@@ -64,12 +64,12 @@ Blockly.Blocks['controls_forRange'] = {
             FieldFlydown.DISPLAY_BELOW), 'VAR')
         .appendField(Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_START)
         .setAlign(Blockly.inputs.Align.RIGHT);
-    this.appendValueInput('END')
+    this.appendValueInput('TO')
         .setCheck(Utilities.yailTypeToBlocklyType('number',
             Utilities.INPUT))
         .appendField(Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_END)
         .setAlign(Blockly.inputs.Align.RIGHT);
-    this.appendValueInput('STEP')
+    this.appendValueInput('BY')
         .setCheck(Utilities.yailTypeToBlocklyType('number',
             Utilities.INPUT))
         .appendField(Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_STEP)
