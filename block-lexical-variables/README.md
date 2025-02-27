@@ -134,13 +134,6 @@ call block.
 or
 ![A picture of a procedure call block with a value](readme-media/proccall-with-return-inline.png "Procedure call")
 
-## Notes
-Right now the new fields and the new (or redefined) blocks are somewhat
-co-dependent.  At some point they will be disentangled.  At that point
-this plugin might split into two; one for the fields and one for the blocks,
-with the latter plugin dependent on the first.  At that point you will
-also be able to build you own blocks using the fields.
-
 ## Installation
 
 ### Yarn
@@ -155,7 +148,7 @@ npm install @mit-app-inventor/blockly-block-lexical-variables --save
 
 ## Usage
 _Please make sure that your app which includes this plugin uses a relatively recent version of Blockly.  As of this
-writing that would be version 10.0.0._
+writing that would be version 10.4.0.  It also seems to work with Blockly v11, but that hasn't been extensively tested_
 
 You'll want to include something like the following in your app:
 
