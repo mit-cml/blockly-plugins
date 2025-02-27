@@ -6,10 +6,10 @@ import * as pkg from 'blockly/javascript';
 
 if (pkg) {
 // We might be loaded into an environment that doesn't have Blockly's JavaScript generator.
-  const {javascriptGenerator} = pkg;
-  javascriptGenerator['lexical_variable_get'] = function (block) {
+  const {javascriptGenerator, Order} = pkg;
+  javascriptGenerator.forBlock['lexical_variable_get'] = function (block, generator) {
     const code = getVariableName(block.getFieldValue('VAR'));
-    return [code, javascriptGenerator.ORDER_ATOMIC];
+    return [code, Order.ATOMIC];
   };
 
   /**
@@ -35,30 +35,30 @@ if (pkg) {
    * @param {string} varFieldName
    * @return {string} The code.
    */
-  function genBasicSetterCode(block, varFieldName) {
-    const argument0 = javascriptGenerator.valueToCode(block, 'VALUE',
-        javascriptGenerator.ORDER_ASSIGNMENT) || '0';
+  function genBasicSetterCode(block, varFieldName, generator) {
+    const argument0 = generator.valueToCode(block, 'VALUE',
+        Order.ASSIGNMENT) || '0';
     const varName = getVariableName(block.getFieldValue(varFieldName));
     return varName + ' = ' + argument0 + ';\n';
   }
 
-  javascriptGenerator['lexical_variable_set'] = function (block) {
+  javascriptGenerator.forBlock['lexical_variable_set'] = function (block, generator) {
     // Variable setter.
-    return genBasicSetterCode(block, 'VAR');
+    return genBasicSetterCode(block, 'VAR', generator);
   };
 
-  javascriptGenerator['global_declaration'] = function (block) {
+  javascriptGenerator.forBlock['global_declaration'] = function (block, generator) {
     // Global variable declaration
-    return 'var ' + genBasicSetterCode(block, 'NAME');
+    return 'var ' + genBasicSetterCode(block, 'NAME', generator);
   };
 
-  function generateDeclarations(block) {
+  function generateDeclarations(block, generator) {
     let code = '{\n  let ';
     for (let i = 0; block.getFieldValue('VAR' + i); i++) {
       code += (Shared.usePrefixInCode ? 'local_' : '') +
           block.getFieldValue('VAR' + i);
-      code += ' = ' + (javascriptGenerator.valueToCode(block,
-          'DECL' + i, javascriptGenerator.ORDER_NONE) || '0');
+      code += ' = ' + (generator.valueToCode(block,
+          'DECL' + i, Order.NONE) || '0');
       code += ', ';
     }
     // Get rid of the last comma
@@ -67,22 +67,34 @@ if (pkg) {
     return code;
   }
 
-  javascriptGenerator['local_declaration_statement'] = function () {
-    let code = generateDeclarations(this);
-    code += javascriptGenerator.statementToCode(this, 'STACK',
-        javascriptGenerator.ORDER_NONE);
+  javascriptGenerator.forBlock['local_declaration_statement'] = function (block, generator) {
+    let code = generateDeclarations(block, generator);
+    code += generator.statementToCode(block, 'STACK');
     code += '}\n';
     return code;
   };
 
-  javascriptGenerator['local_declaration_expression'] = function () {
+  javascriptGenerator.forBlock['local_declaration_expression'] = function (block, generator) {
     // TODO: This can probably be redone to use the variables as parameters to the generated function
     // and then call the function with the generated variable values.
     let code = '(function() {\n'
-    code += generateDeclarations(this);
-    code += 'return ' + (javascriptGenerator.valueToCode(this,
-        'RETURN', javascriptGenerator.ORDER_NONE) || 'null');
+    code += generateDeclarations(block, generator);
+    code += 'return ' + (generator.valueToCode(block,
+        'RETURN', Order.NONE) || 'null');
     code += '}})()\n';
-    return [code, javascriptGenerator.ORDER_NONE];
+    return [code, Order.NONE];
   };
+
+  javascriptGenerator.forBlock['simple_local_declaration_statement'] = function (block, generator) {
+    let code = '{\n  let ';
+    code += (Shared.usePrefixInCode ? 'local_' : '') +
+        block.getFieldValue('VAR');
+    code += ' = ' + (generator.valueToCode(block,
+        'DECL', Order.NONE) || '0');
+    code += ';\n';
+    code += generator.statementToCode(block, 'DO');
+    code += '}\n';
+    return code;
+  }
 }
+

@@ -1,7 +1,7 @@
 # blockly-block-lexical-variables [![Built on Blockly](https://tinyurl.com/built-on-blockly)](https://github.com/google/blockly)
 
 This plugin adds a set of [Blockly](https://www.npmjs.com/package/blockly) 
-blocks that support lexical (aka local) variables, as well as a dynamic UI
+blocks and fields that support lexical (aka local) variables, as well as a dynamic UI
 for obtaining variable and parameter getters and setters and for renaming variables.
 It  also updates the UI for existing blocks that are implicitly lexically scoped,
 i.e.:
@@ -24,6 +24,8 @@ You can see a demo version of a Blockly app that has integrated this plugin
 [here](https://mit-cml.github.io/lexical-variable-demo/).  The code for that
 demo is [here](https://github.com/mit-cml/lexical-variable-demo).
 
+If you want to define your own blocks that use the fields defined by this plugin, see the 
+[BYOB](#byob-build-your-own-blocks-aka-how-to-build-your-own-blocks-using-the-lexical-variable-fields) section
 ## Blocks
 ### Lexical/local variable declarations
 **Block type: 'local-declaration-statement'** - The variable name will be scoped to be valid
@@ -147,11 +149,84 @@ for your variables, as this would interfere with the way that variables are decl
 used with this plugin.  Just create an ordinary Variables category, if you want, and
 place the lexical-variable-get and lexical-variable-set blocks in there.
 
-In theory, you can also use the lexical variable fields to build your own blocks,
-but the process is not documented yet.  If you're really curious, take a look
-at the block definitions.  Basically, in addition to using the fields there are
-a bunch of properties and methods that you need to define on your blocks to make it
-all work.
+## BYOB (Build Your Own Blocks), aka, how to build your own blocks using the lexical variable fields
+The lexical variable fields are designed to be used in blocks that contain a set of methods that the lexical variable
+implementation will call. In the general case, you would need to define all of these methods (see 
+[FIELDS.md](FIELDS.md) for details).  However, if you are building a block that that doesn't have a mutation UI that needs 
+to be kept
+in sync with the fields, then the situation is a bit simpler.  In that case, you can use the `lexicalVariableScopeMixin`
+defined in [mixins.js](src/mixins.js).  If you use that mixin you only need to define these two methods for your block:
+
+* `getDeclaredVarFieldNames()`: a list of the names of the fields of the block's declared variables (e.g. "VARS").
+* `getScopedInputName()`: The name of the input that defines the block's scope (e.g., "DO")
+
+The mixin will then take care of the rest (i.e. define the rest of the methods that the block needs).  You add the mixin
+to your block like this by calling `this.mixin(lexicalVariableScopeMixin);` in the block's `init()` method.
+You can see examples of how to use it in [lexical-variables.js](src/blocks/lexical-variables.js) for the 
+`simple_local_declaration_statement` block 
+and in [controls.js](src/blocks/controls.js) for the`controls_forEach` and `controls_forRange` blocks.
+
+The `core` module
+exports the `lexicalVariableScopeMixin` as a field on the exported static `LexicalVariablesPlugin` class.
+
+NOTE: If you are creating your own blocks and do not want to use the blocks defined in this plugin, you should import
+just the `core` module from this plugin, i.e. 
+```
+import {LexicalVariablesPlugin} from '@mit-app-inventor/blockly-block-lexical-variables/core';
+```
+Here's snippet of what the code might look like to implement a `simple_local_declaration_statement` block, if 
+you didn't want to use the blocks already defined in this plugin:
+```
+import * as Blockly from 'blockly/core';
+import * as libraryBlocks from 'blockly/blocks';
+import * as En from 'blockly/msg/en';
+import {javascriptGenerator} from 'blockly/javascript';
+import {LexicalVariablesPlugin} from '@mit-app-inventor/blockly-block-lexical-variables/core';
+
+Blockly.setLocale(En);
+
+const FieldParameterFlydown =  LexicalVariablesPlugin.FieldParameterFlydown;
+const lexicalVariableScopeMixin =  LexicalVariablesPlugin.lexicalVariableScopeMixin;
+
+Blockly.Blocks['simple_local_declaration_statement'] = {
+    category: 'Variables',
+    helpUrl: "help",
+    init: function () {
+        // Let the theme determine the color.
+        this.setStyle('variable_blocks');
+        const declInput = this.appendValueInput('DECL');
+        declInput.appendField(
+            'let')
+            .appendField(new FieldParameterFlydown('name', true), 'VAR')
+            .appendField('to')
+            .setAlign(Blockly.inputs.Align.RIGHT);
+        this.appendStatementInput('DO')
+            .appendField('in');
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setTooltip('tooltip');
+        this.mixin(lexicalVariableScopeMixin);
+    },
+    getDeclaredVarFieldNames: function () {
+        return ['VAR'];
+    },
+    getScopedInputName: function () {
+        return 'DO';
+    },
+}
+
+javascriptGenerator.forBlock['simple_local_declaration_statement'] = function (block, generator) {
+    let code = '{\n  let ';
+    code += (Shared.usePrefixInCode ? 'local_' : '') +
+        block.getFieldValue('VAR');
+    code += ' = ' + (generator.valueToCode(block,
+        'DECL', Order.NONE) || '0');
+    code += ';\n';
+    code += generator.statementToCode(block, 'DO');
+    code += '}\n';
+    return code;
+}
+```
 ## Credits
 As mentioned earlier, this plugin is based on code written for
 [MIT App Inventor](https://github.com/mit-cml/appinventor-sources). The lexical 

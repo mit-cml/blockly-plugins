@@ -15,6 +15,7 @@ import * as Blockly from 'blockly/core';
 import '../msg.js';
 import {FieldFlydown} from './field_flydown.js';
 import {LexicalVariable} from './field_lexical_variable.js';
+import '../blocks/variable-get-set.js';
 
 /**
  * Class for a clickable global variable declaration field.

@@ -2,8 +2,9 @@
 
 There are unit tests written in [Mocha](https://mochajs.org/) in tests/mocha.
 Unfortunately, they can't be run as is.  Something with Mocha, Node or the combination doesn't seem to work properly
-with imports of the form `import * as Blcokly from 'blockly/code';`. So, before running the tests, you need to
-do a global replace of `import * as Blockly from 'blockly/code';` with `import Blockly from 'blockly';` in 
+with imports of the form `import * as Blockly from 'blockly/core';`. So, before running the tests, you need to
+do a global replace of `import * as Blockly from 'blockly/core';` with `import Blockly from 'blockly';` and do a global 
+replace of `import * as pkg from 'blockly/javascript';` with `import pkg from 'blockly/javascript';` in 
 **all the files in this package**. 
 
 Once the above is done, you can run the tests with

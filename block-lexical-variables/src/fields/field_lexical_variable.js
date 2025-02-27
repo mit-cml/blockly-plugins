@@ -1096,8 +1096,15 @@ LexicalVariable.sortAndRemoveDuplicates = function(strings) {
     let prev = sorted[0];
     nodups.push(prev);
     for (let i = 1; i < sorted.length; i++) {
-      if (!(sorted[i] === prev)) {
-        prev = sorted[i];
+      let isDup = false;
+      const item = sorted[i];
+      if (Array.isArray(item) && Array.isArray(prev)) {
+        isDup = item[1].localeCompare(prev[1]) === 0;
+      } else {
+        isDup = item === prev;
+      }
+      if (!isDup) {
+        prev = item;
         nodups.push(prev);
       }
     }

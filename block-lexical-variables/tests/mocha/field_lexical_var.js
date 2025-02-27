@@ -24,6 +24,7 @@ import '../../src/fields/field_parameter_flydown';
 import '../../src/fields/field_procedurename';
 import '../../src/blocks/lexical-variables';
 import '../../src/blocks/controls';
+import '../../src/blocks/variable-get-set.js';
 import '../../src/procedure_database';
 import '../../src/blocks/procedures';
 import '../../src/generators/controls';
@@ -378,6 +379,30 @@ suite ('FieldLexical', function() {
         '    </value>' +
         '  </block>' +
         '</xml>');
+        this.assertLexicalNames(xml, [['name', 'name']]);
+      });
+    })
+    suite('Simple Local Statement Declaration', function() {
+      test('const Input', function() {
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
+            '  <block type="simple_local_declaration_statement">' +
+            '    <field name="VAR">name</field>' +
+            '    <value name="DECL">' +
+            '      <block type="logic_boolean" id="a"/>' +
+            '    </value>' +
+            '  </block>' +
+            '</xml>');
+        this.assertLexicalNames(xml, []);
+      });
+      test('Statement Input', function() {
+        const xml = Blockly.utils.xml.textToDom('<xml>' +
+            '  <block type="simple_local_declaration_statement">' +
+            '    <field name="VAR">name</field>' +
+            '    <value name="DO">' +
+            '      <block type="controls_if" id="a"/>' +
+            '    </value>' +
+            '  </block>' +
+            '</xml>');
         this.assertLexicalNames(xml, [['name', 'name']]);
       });
     })
@@ -1243,7 +1268,7 @@ suite ('FieldLexical', function() {
     setup(function() {
       this.getVarsFor = function(blockIds) {
         return blockIds.map((id) => {
-          return this.workspace.getBlockById(id).getVars()[0];
+          return this.workspace.getBlockById(id).getDeclaredVars()[0];
         });
       }
     })
@@ -1462,7 +1487,7 @@ suite ('FieldLexical', function() {
         '</xml>');
         this.assertLocalRename(xml, 'new', ['2', '3'], 'old');
         const block = this.workspace.getBlockById('1');
-        chai.assert.equal(block.getVars(), 'new');
+        chai.assert.equal(block.getDeclaredVars(), 'new');
       });
       test('Rename on Nested', function() {
         const xml = Blockly.utils.xml.textToDom('<xml>' +
@@ -1503,9 +1528,9 @@ suite ('FieldLexical', function() {
         '</xml>');
         this.assertLocalRename(xml, 'new', ['2', '3'], 'new');
         let block = this.workspace.getBlockById('4');
-        chai.assert.equal(block.getVars(), 'old');
+        chai.assert.equal(block.getDeclaredVars(), 'old');
         block = this.workspace.getBlockById('1');
-        chai.assert.equal(block.getVars(), 'old');
+        chai.assert.equal(block.getDeclaredVars(), 'old');
       });
       test('Overlap - Rename Outer - Allowed', function() {
         const xml = Blockly.utils.xml.textToDom('<xml>' +
@@ -1599,7 +1624,7 @@ suite ('FieldLexical', function() {
         '</xml>');
         this.assertLocalRename(xml, 'new', ['2', '3'], 'new');
         const block = this.workspace.getBlockById('1');
-        chai.assert.equal(block.getVars(), 'old');
+        chai.assert.equal(block.getDeclaredVars(), 'old');
       })
     });
   });
