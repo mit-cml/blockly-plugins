@@ -174,8 +174,8 @@ to be kept
 in sync with the fields, then the situation is a bit simpler.  In that case, you can use the `lexicalVariableScopeMixin`
 defined in [mixins.js](src/mixins.js).  If you use that mixin you only need to define these two methods for your block:
 
-* `getDeclaredVarFieldNames()`: a list of the names of the fields of the block's declared variables (e.g. "VARS").
-* `getScopedInputName()`: The name of the input that defines the block's scope (e.g., "DO")
+* `getDeclaredVarFieldNames()`: a list of the names of the fields of the block's declared variables (e.g. `['VAR']`).
+* `getScopedInputName()`: The name of the input that defines the block's scope (e.g., `'DO'`)
 
 The mixin will then take care of the rest (i.e. define the rest of the methods that the block needs).  You add the mixin
 to your block like this by calling `this.mixin(lexicalVariableScopeMixin);` in the block's `init()` method.
