@@ -33,14 +33,14 @@ export class FieldProcedureName extends Blockly.FieldTextInput {
    * @override
    */
   setValue(newValue) {
-    if (this.sourceBlock_ && this.sourceBlock_.isInFlyout) {
-      // Do not take action for blocks in flyouts
-      return;
-    }
     const oldValue = this.getValue();
     this.oldName_ = oldValue;
     this.doValueUpdate_(newValue);
     super.setValue(newValue);
+    if (this.sourceBlock_ && this.sourceBlock_.isInFlyout) {
+      // Do not take action for blocks in flyouts
+      return;
+    }
     newValue = this.getValue();
     if (typeof newValue === 'string' && this.sourceBlock_) {
       const procDb = this.sourceBlock_.workspace.getProcedureDatabase();
