@@ -231,7 +231,7 @@ suite ('FieldLexical', function() {
         const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="controls_forRange">' +
         '    <field name="VAR">number</field>' +
-        '    <value name="START">' +
+        '    <value name="FROM">' +
         '      <block type="logic_boolean" id="a"/>' +
         '    </value>' +
         '  </block>' +
@@ -242,7 +242,7 @@ suite ('FieldLexical', function() {
         const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="controls_forRange">' +
         '    <field name="VAR">number</field>' +
-        '    <value name="END">' +
+        '    <value name="TO">' +
         '      <block type="logic_boolean" id="a"/>' +
         '    </value>' +
         '  </block>' +
@@ -253,7 +253,7 @@ suite ('FieldLexical', function() {
         const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="controls_forRange">' +
         '    <field name="VAR">number</field>' +
-        '    <value name="STEP">' +
+        '    <value name="BY">' +
         '      <block type="logic_boolean" id="a"/>' +
         '    </value>' +
         '  </block>' +
@@ -687,17 +687,17 @@ suite ('FieldLexical', function() {
       '    <statement name="STACK">' +
       '      <block type="controls_forRange" id="root">' +
       '        <field name="VAR">b</field>' +
-      '        <value name="START">' +
+      '        <value name="FROM">' +
       '          <block type="lexical_variable_get" id="a">' +
       '            <field name="VAR">a</field>' +
       '          </block>' +
       '        </value>' +
-      '        <value name="END">' +
+      '        <value name="TO">' +
       '          <block type="lexical_variable_get" id="b">' +
       '            <field name="VAR">a</field>' +
       '          </block>' +
       '        </value>' +
-      '        <value name="STEP">' +
+      '        <value name="BY">' +
       '          <block type="lexical_variable_get" id="c">' +
       '            <field name="VAR">a</field>' +
       '          </block>' +
@@ -736,17 +736,17 @@ suite ('FieldLexical', function() {
       '        <statement name="STACK">' +
       '          <block type="controls_forRange" id="root">' +
       '            <field name="VAR">b</field>' +
-      '            <value name="START">' +
+      '            <value name="FROM">' +
       '              <block type="lexical_variable_get" id="a">' +
       '                <field name="VAR">out</field>' +
       '              </block>' +
       '            </value>' +
-      '            <value name="END">' +
+      '            <value name="TO">' +
       '              <block type="lexical_variable_get" id="b">' +
       '                <field name="VAR">out</field>' +
       '              </block>' +
       '            </value>' +
-      '            <value name="STEP">' +
+      '            <value name="BY">' +
       '              <block type="lexical_variable_get" id="c">' +
       '                <field name="VAR">out</field>' +
       '              </block>' +
@@ -786,17 +786,17 @@ suite ('FieldLexical', function() {
       '        <statement name="STACK">' +
       '          <block type="controls_forRange" id="root">' +
       '            <field name="VAR">b</field>' +
-      '            <value name="START">' +
+      '            <value name="FROM">' +
       '              <block type="lexical_variable_get" id="a">' +
       '                <field name="VAR">a</field>' +
       '              </block>' +
       '            </value>' +
-      '            <value name="END">' +
+      '            <value name="TO">' +
       '              <block type="lexical_variable_get" id="b">' +
       '                <field name="VAR">a</field>' +
       '              </block>' +
       '            </value>' +
-      '            <value name="STEP">' +
+      '            <value name="BY">' +
       '              <block type="lexical_variable_get" id="c">' +
       '                <field name="VAR">a</field>' +
       '              </block>' +
@@ -1881,7 +1881,7 @@ suite ('FieldLexical', function() {
       '    <statement name="DO0">' +
       '      <block type="controls_forRange">' +
       '        <field name="VAR">a</field>' +
-      '        <value name="START">' +
+      '        <value name="FROM">' +
       '          <block type="lexical_variable_get">' +
       '            <field name="VAR">a</field>' +
       '          </block>' +
