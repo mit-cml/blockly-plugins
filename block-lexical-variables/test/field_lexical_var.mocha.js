@@ -10,29 +10,31 @@
  */
 
 import * as Blockly from 'blockly/core';
+import * as libraryBlocks from 'blockly/blocks';
 
-import '../../src/msg';
-import '../../src/utilities';
-import '../../src/workspace';
-import '../../src/procedure_utils';
-import '../../src/fields/flydown';
-import '../../src/fields/field_flydown';
-import '../../src/fields/field_global_flydown';
-import '../../src/fields/field_nocheck_dropdown';
-import {FieldLexicalVariable, LexicalVariable} from '../../src/fields/field_lexical_variable';
-import '../../src/fields/field_parameter_flydown';
-import '../../src/fields/field_procedurename';
-import '../../src/blocks/lexical-variables';
-import '../../src/blocks/controls';
-import '../../src/blocks/variable-get-set.js';
-import '../../src/procedure_database';
-import '../../src/blocks/procedures';
-import '../../src/generators/controls';
-import '../../src/generators/procedures';
-import '../../src/generators/lexical-variables';
+import '../src/msg';
+import '../src/utilities';
+import '../src/workspace';
+import '../src/procedure_utils';
+import '../src/fields/flydown';
+import '../src/fields/field_flydown';
+import '../src/fields/field_global_flydown';
+import '../src/fields/field_nocheck_dropdown';
+import {FieldLexicalVariable, LexicalVariable} from '../src/fields/field_lexical_variable';
+import '../src/fields/field_parameter_flydown';
+import '../src/fields/field_procedurename';
+import '../src/blocks/lexical-variables';
+import '../src/blocks/controls';
+import '../src/blocks/variable-get-set.js';
+import '../src/procedure_database';
+import '../src/blocks/procedures';
+import '../src/generators/controls';
+import '../src/generators/procedures';
+import '../src/generators/lexical-variables';
+
 
 import chai from 'chai';
-import {NameSet} from "../../src/nameSet";
+import {NameSet} from "../src/nameSet";
 
 suite ('FieldLexical', function() {
   setup(function() {
