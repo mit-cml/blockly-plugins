@@ -9,6 +9,7 @@
  */
 
 import * as Blockly from 'blockly/core';
+import * as En from 'blockly/msg/en';
 import {createPlayground} from '@blockly/dev-tools';
 import {LexicalVariablesPlugin} from '../src/index.js';
 import '../src/blocks.js';
@@ -42,6 +43,7 @@ function createWorkspace(blocklyDiv, options) {
   return workspace;
 }
 
+Blockly.setLocale(En);
 document.addEventListener('DOMContentLoaded', function() {
   const defaultOptions = {
     toolbox: `<xml xmlns="https://developers.google.com/blockly/xml">
