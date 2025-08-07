@@ -47,13 +47,13 @@
   ],
   "devDependencies": {
     "@blockly/dev-scripts": "^4.0.9",
-    "@blockly/dev-tools": "^8.1.2",
-    "blockly": "^11.2.2",
+    "@blockly/dev-tools": "^9.0.2",
+    "blockly": "^12.2.0",
     "chai": "^4.5.0",
     "mocha": "^10.2.0"
   },
   "peerDependencies": {
-    "blockly": "^11.2.2"
+    "blockly": "^12.2.0"
   },
   "publishConfig": {},
   "engines": {
