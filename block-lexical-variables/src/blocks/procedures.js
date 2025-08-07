@@ -250,7 +250,11 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     // horizontal -> vertical params in procedure decl doesn't handle body tag
     // appropriately!
     for (let i = 0; i < this.inputList.length; i++) {
-      this.inputList[i].init();
+      if (this.inputList[i].sourceBlock.rendered) {
+        this.inputList[i].init();
+      } else {
+        this.inputList[i].initModel();
+      }
     }
     if (this.rendered) {
       this.render();

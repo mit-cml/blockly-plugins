@@ -19,7 +19,7 @@ export class IndentedInput extends Blockly.inputs.ValueInput {
   constructor(name, block) {
     super(name, block);
     this.connection = this.makeConnection(Blockly.ConnectionType.INPUT_VALUE);
-    this.type = Blockly.inputTypes.VALUE;
+    this.type = Blockly.inputs.inputTypes.VALUE;
   }
 }
 
