@@ -25,7 +25,6 @@ export const onChange = function(procedureId) {
   let workspace = this.block.workspace.getTopWorkspace();
   // [lyn, 10/14/13] .editable is undefined on blocks. Changed to .editable_
   if (!this.block.isEditable()) {
-    workspace = Blockly.Drawer.flyout_.workspace_;
     return;
   }
 
