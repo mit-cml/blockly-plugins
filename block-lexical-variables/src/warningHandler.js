@@ -140,8 +140,14 @@ export class ErrorCheckers {
       if (!textInDropDown) {
         const errorMessage = Blockly.Msg.ERROR_SELECT_VALID_ITEM_FROM_DROPDOWN;
         block.workspace.getWarningHandler().setError(block, errorMessage);
+        // Disable the block when dropdown has invalid value
+        block.setEnabled(false);
         return true;
       }
+    }
+    // Re-enable the block if all dropdowns are valid
+    if (!block.isEnabled()) {
+      block.setEnabled(true);
     }
     return false;
   };
