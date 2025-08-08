@@ -117,6 +117,12 @@ export class ErrorCheckers {
     if (block.workspace.isDragging && block.workspace.isDragging()) {
       return false; // wait until the user is done dragging to check validity.
     }
+
+    // Don't disable blocks that are being dragged from toolbox or aren't fully rendered
+    if (block.isInFlyout || !block.workspace || block.workspace.isFlyout || !block.rendered) {
+      return false;
+    }
+
     for (let i=0; i<params.dropDowns.length; i++) {
       const dropDown = block.getField(params.dropDowns[i]);
       const dropDownList = dropDown.menuGenerator_();
