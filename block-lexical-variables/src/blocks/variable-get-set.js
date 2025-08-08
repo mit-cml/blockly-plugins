@@ -21,7 +21,6 @@ Blockly.Blocks['lexical_variable_get'] = {
     init: function() {
         this.setStyle('variable_blocks');
         this.fieldVar_ = new FieldLexicalVariable(' ');
-        this.fieldVar_.setBlock(this);
         this.appendDummyInput()
             .appendField(Blockly.Msg.LANG_VARIABLES_GET_TITLE_GET)
             .appendField(this.fieldVar_, 'VAR');
@@ -143,7 +142,6 @@ Blockly.Blocks['lexical_variable_set'] = {
     init: function() {
         this.setStyle('variable_blocks');
         this.fieldVar_ = new FieldLexicalVariable(' ');
-        this.fieldVar_.setBlock(this);
         this.appendValueInput('VALUE')
             .appendField(Blockly.Msg.LANG_VARIABLES_SET_TITLE_SET)
             .appendField(this.fieldVar_, 'VAR')
