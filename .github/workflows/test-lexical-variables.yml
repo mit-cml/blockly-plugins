@@ -17,6 +17,7 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
+        working-directory: block-lexical-variables
         run: npm ci
 
       - name: Run block-lexical-variables tests
