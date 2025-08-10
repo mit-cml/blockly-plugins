@@ -172,7 +172,8 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     // [lyn, 10/24/13] need to reconstruct first input
 
     // Body of procedure
-    const bodyInput = this.inputList[this.inputList.length - 1];
+    const stackInput = this.getInput('STACK');
+    const returnInput = this.getInput('RETURN');
 
     // stop rendering until block is recreated
     const savedRendered = this.rendered;
@@ -193,7 +194,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     // necessary)
 
     // Only args and body are left
-    const oldArgCount = this.inputList.length - 1;
+    const oldArgCount = this.inputList.length - (stackInput ? 1 : 0) - (returnInput ? 1 : 0);
     if (oldArgCount > 0) {
       const paramInput0 = this.getInput('VAR0');
       if (paramInput0) { // Yes, they were vertical
@@ -242,7 +243,20 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     }
 
     // put the last two arguments back
-    this.inputList = this.inputList.concat(bodyInput);
+    const wantStack = (this.bodyInputName === 'STACK') || !!this.stackEnabled_;
+    if (wantStack) {
+      if (stackInput) {
+        this.inputList = this.inputList.concat(stackInput);
+      } else if (this.bodyInputName !== 'STACK') {
+        // defreturn with STACK enabled but missing -> create it
+        this.appendStatementInput('STACK')
+          .appendField(Blockly.Msg['LANG_PROCEDURES_DEFNORETURN_DO']);
+      }
+    }
+
+    if (returnInput) {
+      this.inputList = this.inputList.concat(returnInput);
+    }
 
     this.rendered = savedRendered;
     // [lyn, 10/28/13] I thought this rerendering was unnecessary. But I was
@@ -664,10 +678,6 @@ Blockly.Blocks['procedures_mutatorcontainer'] = {
     this.appendDummyInput()
       .appendField(Blockly.Msg['LANG_PROCEDURES_MUTATORCONTAINER_TITLE']);
     this.appendStatementInput('STACK');
-    this.appendDummyInput('ENABLE_STACK')
-      .appendField(Blockly.Msg['LANG_PROCEDURES_DEFRETURN_ENABLE_STACK'])
-      .appendField(new Blockly.FieldCheckbox('false'), Blockly.Msg['LANG_PROCEDURES_DEFRETURN_STACK_ENABLE_FIELD'])
-      .appendField(Blockly.Msg['LANG_PROCEDURES_MUTATORCONTAINER_STACK']);
     this.setTooltip(Blockly.Msg['LANG_PROCEDURES_MUTATORCONTAINER_TOOLTIP']);
     this.contextMenu = false;
     this.mustNotRenameCapturables = true;
@@ -675,6 +685,22 @@ Blockly.Blocks['procedures_mutatorcontainer'] = {
   // [lyn. 11/24/12] Set procBlock associated with this container.
   setProcBlock: function(procBlock) {
     this.procBlock_ = procBlock;
+    const isDefReturn = !!procBlock && procBlock.type === 'procedures_defreturn';
+
+    if (this.getInput('ENABLE_STACK')) this.removeInput('ENABLE_STACK');
+
+    if (isDefReturn) {
+      const row = this.appendDummyInput('ENABLE_STACK')
+        .appendField(Blockly.Msg['LANG_PROCEDURES_DEFRETURN_ENABLE_STACK'])
+        .appendField(new Blockly.FieldCheckbox('false'), Blockly.Msg['LANG_PROCEDURES_DEFRETURN_STACK_ENABLE_FIELD'])
+        .appendField(Blockly.Msg['LANG_PROCEDURES_MUTATORCONTAINER_STACK']);
+      row.init();
+
+      const cb = this.getField('STACK_ENABLED');
+      if (cb) cb.setValue(procBlock.stackEnabled_ ? 'TRUE' : 'FALSE');
+    }
+
+    if (this.rendered) this.render();
   },
   // [lyn. 11/24/12] Set procBlock associated with this container.
   // Invariant: should not be null, since only created as mutator for a
