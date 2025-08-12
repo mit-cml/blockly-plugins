@@ -404,6 +404,17 @@ Blockly.Blocks['procedures_defnoreturn'] = {
         xmlElement.getAttribute('vertical_parameters') !== 'true';
     this.updateParams_(params);
   },
+  saveExtraState() {
+    const state = {};
+    if (!this.horizontalParameters) state.vertical_parameters = true;
+    if (this.arguments_?.length) state.args = [...this.arguments_];
+    return state;
+  },
+  loadExtraState(state) {
+    const params = state?.args || [];
+    this.horizontalParameters = state?.vertical_parameters !== true;
+    this.updateParams_(params);
+  },
   decompose: function(workspace) {
     const containerBlock = workspace.newBlock('procedures_mutatorcontainer');
     containerBlock.initSvg();
@@ -621,6 +632,23 @@ Blockly.Blocks['procedures_defreturn'] = {
     Blockly.Blocks.procedures_defnoreturn.domToMutation.call(this, xml);
 
     this.stackEnabled_ = xml.getAttribute('stack_enabled') === 'true';
+    const hasStack = !!this.getInput('STACK');
+    if (this.stackEnabled_ && !hasStack) {
+      this.appendStatementInput('STACK')
+        .appendField(Blockly.Msg['LANG_PROCEDURES_DOTHENRETURN_DO']);
+      if (this.getInput('RETURN')) this.moveInputBefore('STACK', 'RETURN');
+    } else if (!this.stackEnabled_ && hasStack) {
+      this.removeInput('STACK');
+    }
+  },
+  saveExtraState: function () {
+    const element = Blockly.Blocks.procedures_defnoreturn.saveExtraState.call(this);
+    element.stackEnabled = !!this.stackEnabled_;
+    return element;
+  },
+  loadExtraState: function (state) {
+    Blockly.Blocks.procedures_defnoreturn.loadExtraState.call(this, state);
+    this.stackEnabled_ = state.stackEnabled;
     const hasStack = !!this.getInput('STACK');
     if (this.stackEnabled_ && !hasStack) {
       this.appendStatementInput('STACK')

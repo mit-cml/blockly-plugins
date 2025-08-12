@@ -125,6 +125,85 @@ suite ('Procedures', function() {
         });
     })
 
+    test('Load procedure from old version using JSON (without stack_enable)', function() {
+      const json = {
+        blocks: {
+          languageVersion: 0,
+          blocks: [
+            {
+              type: 'procedures_defreturn',
+              id: 'p',
+              x: 310,
+              y: 213,
+              fields: {
+                NAME: 'do_something',
+                VAR0: 'x',
+                VAR1: 'y',
+              },
+              extraState: { args: ['x', 'y'] },
+              inputs: {
+                RETURN: {
+                  block: {
+                    type: 'controls_do_then_return',
+                    id: 'a',
+                    inputs: {
+                      STM: {
+                        block: {
+                          type: 'simple_local_declaration_statement',
+                          id: 'b',
+                          fields: { VAR: 'name' },
+                          inputs: {
+                            DO: {
+                              block: {
+                                type: 'lexical_variable_set',
+                                id: 'c',
+                                fields: { VAR: 'name' },
+                                inputs: {
+                                  VALUE: {
+                                    block: {
+                                      type: 'lexical_variable_get',
+                                      id: 'd',
+                                      fields: { VAR: 'y' },
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                      VALUE: {
+                        block: {
+                          type: 'lexical_variable_get',
+                          id: 'f',
+                          fields: { VAR: 'x' },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          ],
+        },
+      };
+
+      Blockly.serialization.workspaces.load(json, this.workspace);
+      const block = this.workspace.getBlockById('p');
+      chai.assert.isDefined(block, 'Procedure block should be defined');
+      chai.assert.equal(block.type, 'procedures_defreturn', 'Block type should be procedures_defreturn');
+
+      const extra = block.saveExtraState ? block.saveExtraState() : null;
+      chai.assert.isNotNull(extra, 'Extra state should not be null');
+      chai.assert.strictEqual(extra.stackEnabled, false, 'stack_enabled should be false');
+
+      const blockIds = ['a', 'b', 'c', 'd', 'f'];
+      blockIds.forEach(id => {
+        chai.assert.isTrue(containsBlocks(block, id), `Block with id ${id} should be contained`);
+      });
+    });
+
+
     test('Mutation button click should enable stack', function() {
       const xml = Blockly.utils.xml.textToDom(
         '<xml>' +
@@ -154,6 +233,38 @@ suite ('Procedures', function() {
       ));
       const updatedMutation = block.mutationToDom();
       chai.assert.equal(updatedMutation.getAttribute('stack_enabled'), 'true', 'stack_enabled should be true after toggle');
+      checkStackFieldExists(block, true);
+    });
+
+    test('Mutation button click should enable stack using JSON', function() {
+      const json = {
+        blocks: {
+          languageVersion: 0,
+          blocks: [
+            {
+              type: 'procedures_defreturn',
+              id: 'p',
+              x: 310,
+              y: 213,
+              fields: { NAME: 'do_something' },
+              extraState: { stack_enabled: false, args: ['x', 'y'] },
+            },
+          ],
+        },
+      };
+
+      Blockly.serialization.workspaces.load(json, this.workspace);
+      const block = this.workspace.getBlockById('p');
+      chai.assert.isDefined(block, 'Procedure block should be defined');
+
+      const extra = block.saveExtraState();
+      chai.assert.strictEqual(extra.stackEnabled, false, 'stack_enabled should initially be false');
+      checkStackFieldExists(block, false);
+
+      block.loadExtraState({ ...extra, stackEnabled: true });
+
+      const updated = block.saveExtraState();
+      chai.assert.strictEqual(updated.stackEnabled, true, 'stack_enabled should be true after toggle');
       checkStackFieldExists(block, true);
     });
   })
