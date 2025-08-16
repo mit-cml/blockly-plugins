@@ -37,7 +37,7 @@ import '../blocks/variable-get-set.js';
 // [lyn, 10/26/13] Added opt_additionalChangeHandler to handle propagation of
 //    renaming of proc decl params
 export class FieldParameterFlydown extends FieldFlydown {
-  constructor(name, isEditable, opt_displayLocation, opt_additionalChangeHandler) {
+  constructor(name, isEditable, opt_displayLocation, opt_additionalChangeHandler, type) {
     const changeHandler = function(text) {
       if (!FieldParameterFlydown.changeHandlerEnabled) {
         return text;
@@ -54,10 +54,17 @@ export class FieldParameterFlydown extends FieldFlydown {
     };
 
     super(name, isEditable, opt_displayLocation, changeHandler);
+    this.type_ = type;
   };
   referencesVariables() {
     return true;
   };
+  getVariableType() {
+    return this.type_;
+  }
+  setVariableType(type) {
+    this.type_ = type;
+  }
 }
 
 FieldParameterFlydown.prototype.fieldCSSClassName =
@@ -176,5 +183,3 @@ FieldParameterFlydown.fromJson = function(options) {
 
 Blockly.fieldRegistry.register('field_parameter_flydown',
     FieldParameterFlydown);
-
-

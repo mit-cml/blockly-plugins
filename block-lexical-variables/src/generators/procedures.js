@@ -26,4 +26,9 @@ if (pkg) {
     const code = funcName + '(' + args.join(', ') + ')';
     return [code, Order.FUNCTION_CALL];
   };
+
+  javascriptGenerator.forBlock['procedures_early_return'] = function (block, generator) {
+      const returnValue = generator.valueToCode(block, 'RETURN_VALUE', Order.NONE) || 'null';
+      return `return ${returnValue};\n`;
+  }
 }

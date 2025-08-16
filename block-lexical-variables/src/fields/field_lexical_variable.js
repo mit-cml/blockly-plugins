@@ -163,7 +163,11 @@ FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
       const block = blocks[i];
       if ((block.getGlobalNames) &&
           (block != optExcludedBlock)) {
-        globals.push(...block.getGlobalNames());
+        const names = block.getGlobalNames();
+        const type = block.getVariableType();
+        names.forEach(name => {
+          globals.push([name, name, type])
+        })
       }
     }
   }
@@ -206,7 +210,7 @@ FieldLexicalVariable.getNamesInScope = function(block) {
   // [lyn, 11/24/12] Sort and remove duplicates from namespaces
   globalNames = LexicalVariable.sortAndRemoveDuplicates(globalNames);
   globalNames = globalNames.map(function(name) {
-    return [Shared.prefixGlobalMenuName(name), 'global ' + name];
+    return [Shared.prefixGlobalMenuName(name[0]), 'global ' + name[1], name[2]];
   });
   const allLexicalNames = FieldLexicalVariable.getLexicalNamesInScope(
       block);
@@ -242,8 +246,9 @@ FieldLexicalVariable.getLexicalNamesInScope = function(block) {
    * @param list
    * @param prefix
    * @param {string=} translated The translated name of the variable, if any
+   * @param type
    */
-  function rememberName(codeName, list, prefix, translated) {
+  function rememberName(codeName, list, prefix, translated, type) {
     const name = translated || codeName;
     let fullName;
     if (!Shared.usePrefixInCode) { // Only a single namespace
@@ -257,7 +262,7 @@ FieldLexicalVariable.getLexicalNamesInScope = function(block) {
       // note: correctly handles case where some prefixes are the same
       fullName = (Shared.possiblyPrefixMenuNameWith(prefix))(name);
     }
-    list.push([fullName, codeName]);
+    list.push([fullName, codeName, type]);
   }
 
   child = block;
@@ -266,8 +271,8 @@ FieldLexicalVariable.getLexicalNamesInScope = function(block) {
     if (parent) {
       while (parent) {
         if (parent.withLexicalVarsAndPrefix) {
-          parent.withLexicalVarsAndPrefix(child, (lexVar, prefix, translated) => {
-            rememberName(lexVar, allLexicalNames, prefix, translated);
+          parent.withLexicalVarsAndPrefix(child, (lexVar, prefix, translated, type) => {
+            rememberName(lexVar, allLexicalNames, prefix, translated, type);
           });
         }
         child = parent;
@@ -290,9 +295,9 @@ FieldLexicalVariable.dropdownCreate = function() {
   if (variableList.length > 0) {
     return variableList;
   } else if (this.translatedName) {
-    return [[this.translatedName, this.varname]];
+    return [[this.translatedName, this.varname, this.getVariableType?.() || '']];
   } else {
-    return [[' ', ' ']];
+    return [[' ', ' ', '']];
   }
 };
 
@@ -348,13 +353,27 @@ FieldLexicalVariable.prototype.doValueUpdate_ = function(newValue) {
   }
 
   this.value_ = newValue;
-  // Note that we are asking getOptions to add newValue to the list of available
-  // options.  We do that essentially to force callers up the chain to accept
-  // newValue as an option.  This could potentially cause trouble, but it seems
-  // to be ok for our use case.  It is ugly, though, since it bypasses an aspect
-  // of the normal dropdown validation.
-  const options =
-      this.getOptions(true, [[genLocalizedValue(newValue), newValue]]);
+
+  // Try to fetch the parameter type from the flydown
+  let extraOption;
+  try {
+    const topWs = this.sourceBlock_ && this.sourceBlock_.workspace && this.sourceBlock_.workspace.getTopWorkspace
+      ? this.sourceBlock_.workspace.getTopWorkspace()
+      : null;
+    const flydown = topWs && typeof topWs.getFlydown === 'function' ? topWs.getFlydown() : null;
+    const openerField = flydown && flydown.field_ ? flydown.field_ : null;
+    const vartype = openerField && typeof openerField.getVariableType === 'function'
+      ? openerField.getVariableType()
+      : undefined;
+
+    if (vartype) {
+      extraOption = [[genLocalizedValue(newValue), newValue, vartype]];
+    }
+  } catch (e) {
+    // Fall back silently if flydown not available.
+  }
+
+  const options = this.getOptions(false, extraOption || [[genLocalizedValue(newValue), newValue]]);
   for (let i = 0, option; (option = options[i]); i++) {
     if (option[1] == this.value_) {
       this.selectedOption = option;
@@ -591,6 +610,10 @@ FieldLexicalVariable.fromJson = function(options) {
   return new FieldLexicalVariable(name);
 };
 
+FieldLexicalVariable.prototype.getVariableType = function () {
+    return this.selectedOption[2];
+}
+
 Blockly.fieldRegistry.register('field_lexical_variable',
     FieldLexicalVariable);
 
@@ -613,7 +636,7 @@ LexicalVariable.renameGlobal = function(newName) {
   const globals = FieldLexicalVariable.getGlobalNames(this.sourceBlock_);
   // this.sourceBlock excludes block being renamed from consideration
   // Potentially rename declaration against other occurrences
-  newName = FieldLexicalVariable.nameNotIn(newName, globals);
+  newName = FieldLexicalVariable.nameNotIn(newName, globals.map((element) => element[0]));
   if (this.sourceBlock_.rendered) {
     // Rename getters and setters
     if (Blockly.common.getMainWorkspace()) {
@@ -1129,3 +1152,45 @@ LexicalVariable.stringListsEqual = function(strings1, strings2) {
   }
   return true; // get here iff lists are equal
 };
+
+LexicalVariable.changeVariableType = function(block, name, oldType, newType) {
+  let inScopeBlocks = [];
+  if (block.blocksInScope) {
+    inScopeBlocks = block.blocksInScope();
+  }
+
+  const referenceResults = inScopeBlocks.map(function(blk) {
+    return LexicalVariable.referenceResult(blk, name,
+      '', []);
+  });
+
+  let blockToChangeType = []
+  let capturables = [];
+  for (let r = 0; r < referenceResults.length; r++) {
+    blockToChangeType = blockToChangeType.concat(referenceResults[r][0]);
+    capturables = capturables.concat(referenceResults[r][1]);
+  }
+
+  // Rename getters and setters
+  for (let i = 0; i < blockToChangeType.length; i++) {
+    const block = blockToChangeType[i];
+    if (block.changeVariableType) {
+      block.changeVariableType(newType);
+    }
+
+  }
+}
+
+LexicalVariable.changeGlobalVariableType = function(name, oldType, newType) {
+  if (Blockly.common.getMainWorkspace()) {
+    const blocks = Blockly.common.getMainWorkspace().getAllBlocks();
+    for (let i = 0; i < blocks.length; i++) {
+      const block = blocks[i];
+      if (block.type === 'lexical_variable_set' || block.type === 'lexical_variable_get') {
+        if (block.getDeclaredVars().includes(`global ${name}`)) {
+          block.changeVariableType(newType)
+        }
+      }
+    }
+  }
+}

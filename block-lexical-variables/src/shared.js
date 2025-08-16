@@ -116,3 +116,6 @@ export const possiblyPrefixGeneratedVarName = function(prefix) {
   };
 };
 
+export const dataTypesEnabled = function () {
+  return Blockly.types_ && Blockly.types_.enableDataTypes;
+}

@@ -41,7 +41,8 @@ export const coreLexicalVariableScopeMixin = {
         if (child && thisBlock.getInputTargetBlock(thisBlock.getScopedInputName()) === child) {
             thisBlock.getDeclaredVarFieldNamesAndPrefixes().forEach(([fieldName, prefix]) => {
                 const lexVar = thisBlock.getFieldValue(fieldName);
-                proc(lexVar, prefix);
+                if (thisBlock && thisBlock.getVariableType) proc(lexVar, prefix, '', thisBlock.getVariableType());
+                else proc(lexVar, prefix);
             });
         }
     },

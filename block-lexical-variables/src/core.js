@@ -31,7 +31,9 @@ export class LexicalVariablesPlugin {
     /**
      * @param workspace
      */
-    static init(workspace) {
+    static init(workspace, options) {
+        Blockly.types_ = options.types;
+
         // TODO(ewpatton): We need to make sure this is reentrant.
         const rendererName = workspace.getRenderer().getClassName();
         const themeName = workspace.getTheme().getClassName();

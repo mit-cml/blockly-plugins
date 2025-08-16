@@ -10,6 +10,7 @@ import {
 } from '../fields/field_lexical_variable.js';
 import * as Shared from '../shared.js';
 import {NameSet} from "../nameSet.js";
+import {dataTypesEnabled} from "../shared.js";
 
 /**
  * Prototype bindings for a variable getter block.
@@ -24,7 +25,12 @@ Blockly.Blocks['lexical_variable_get'] = {
         this.appendDummyInput()
             .appendField(Blockly.Msg.LANG_VARIABLES_GET_TITLE_GET)
             .appendField(this.fieldVar_, 'VAR');
-        this.setOutput(true, null);
+        const type = this.getVariableType();
+        if (dataTypesEnabled()) {
+          this.setOutput(true, type ? [type] : null);
+        } else {
+          this.setOutput(true, null);
+        }
         this.setTooltip(Blockly.Msg.LANG_VARIABLES_GET_TOOLTIP);
         this.errors = [
             {func: ErrorCheckers.checkIsInDefinition},
@@ -35,6 +41,10 @@ Blockly.Blocks['lexical_variable_get'] = {
         ];
         this.setOnChange(function(changeEvent) {
             this.workspace.getWarningHandler().checkErrors(this);
+            if (dataTypesEnabled()) {
+              const type = this.getVariableType();
+              this.setOutput(true, type ? [type] : null);
+            }
         });
     },
     referenceResults: function(name, prefix, env) {
@@ -85,6 +95,9 @@ Blockly.Blocks['lexical_variable_get'] = {
     getDeclaredVars: function() {
         return [this.getFieldValue('VAR')];
     },
+    getDeclaredVariableType: function() {
+        return [this.getFieldValue('TYPE')];
+    },
     renameLexicalVar: function(oldName, newName, oldTranslatedName,
                                newTranslatedName) {
         if (oldTranslatedName === undefined) {
@@ -129,6 +142,14 @@ Blockly.Blocks['lexical_variable_get'] = {
             return new NameSet();
         }
     },
+    getVariableType: function() {
+        return this.fieldVar_.getVariableType();
+    },
+    changeVariableType: function() {
+      this.fieldVar_.getOptions(false);
+      this.fieldVar_.setValue(this.getFieldValue('VAR')); // Reselect to update the selected option
+      this.fieldVar_.forceRerender();
+    }
 };
 
 /**
@@ -156,8 +177,17 @@ Blockly.Blocks['lexical_variable_set'] = {
                 dropDowns: ['VAR'],
             },
         ];
+
+        if (dataTypesEnabled()) {
+          const type = this.getVariableType();
+          this.getInput('VALUE').setCheck(type ? [type] : null);
+        }
         this.setOnChange(function(changeEvent) {
             this.workspace.getWarningHandler().checkErrors(this);
+            if (dataTypesEnabled()) {
+              const type = this.getVariableType();
+              this.getInput('VALUE').setCheck(type ? [type] : null);
+            }
         });
     },
     referenceResults: Blockly.Blocks.lexical_variable_get.referenceResults,
@@ -198,4 +228,8 @@ Blockly.Blocks['lexical_variable_set'] = {
         }
         return result;
     },
+    getVariableType: function() {
+        return this.fieldVar_.getVariableType();
+    },
+  changeVariableType: Blockly.Blocks.lexical_variable_get.changeVariableType,
 };
