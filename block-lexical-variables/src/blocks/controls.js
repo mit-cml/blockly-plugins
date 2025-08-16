@@ -61,7 +61,7 @@ Blockly.Blocks['controls_forRange'] = {
         .appendField(Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_ITEM)
         .appendField(new FieldParameterFlydown(
             Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_VAR, true,
-            FieldFlydown.DISPLAY_BELOW), 'VAR')
+            FieldFlydown.DISPLAY_BELOW, undefined, Blockly?.types_?.loopType), 'VAR')
         .appendField(Blockly.Msg.LANG_CONTROLS_FORRANGE_INPUT_START)
         .setAlign(Blockly.inputs.Align.RIGHT);
     this.appendValueInput('TO')
@@ -88,6 +88,9 @@ Blockly.Blocks['controls_forRange'] = {
   getScopedInputName: function () {
     return 'DO';
   },
+  getVariableType: function () {
+    return Blockly?.types_?.loopType
+  }
 };
 
 // Alias controls_for to controls_forRange We need this because
@@ -114,7 +117,7 @@ Blockly.Blocks['controls_forEach'] = {
         .appendField(Blockly.Msg.LANG_CONTROLS_FOREACH_INPUT_ITEM)
         .appendField(new FieldParameterFlydown(
             Blockly.Msg.LANG_CONTROLS_FOREACH_INPUT_VAR,
-            true, FieldFlydown.DISPLAY_BELOW), 'VAR')
+            true, FieldFlydown.DISPLAY_BELOW, undefined, Blockly?.types_?.loopType), 'VAR')
         .appendField(Blockly.Msg.LANG_CONTROLS_FOREACH_INPUT_INLIST)
         .setAlign(Blockly.inputs.Align.RIGHT);
     this.appendStatementInput('DO')
@@ -130,6 +133,9 @@ Blockly.Blocks['controls_forEach'] = {
   getScopedInputName: function () {
     return 'DO';
   },
+  getVariableType: function () {
+    return Blockly?.types_?.loopType
+  }
 };
 
 Blockly.Blocks['controls_do_then_return'] = {
@@ -148,4 +154,3 @@ Blockly.Blocks['controls_do_then_return'] = {
     this.setTooltip(Blockly.Msg.LANG_CONTROLS_DO_THEN_RETURN_TOOLTIP);
   },
 };
-

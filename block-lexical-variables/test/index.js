@@ -39,7 +39,31 @@ const allBlocks = [
  */
 function createWorkspace(blocklyDiv, options) {
   const workspace = Blockly.inject(blocklyDiv, options);
-  LexicalVariablesPlugin.init(workspace);
+  LexicalVariablesPlugin.init(workspace, {
+    types: {
+      enableDataTypes: true,
+      dataTypes: [
+        ['int', 'int'],
+        ['float', 'float'],
+        ['boolean', 'boolean'],
+        ['char*', 'String'],
+      ],
+      loopType: 'int',
+      defaultType: 'int',
+    }
+  });
+
+workspace.registerToolboxCategoryCallback(
+    'CUSTOM_PROCEDURE',
+    function(workspace) {
+        const xmlList = Blockly.Procedures.flyoutCategory(workspace);
+        const earlyReturn = document.createElement('block');
+        earlyReturn.setAttribute('type', 'procedures_early_return');
+        xmlList.push(earlyReturn);
+        return xmlList;
+    }
+);
+
   return workspace;
 }
 
@@ -60,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <block type="lexical_variable_set"></block>
       </category>
       <category
-        id="catFunctions" colour="290" custom="PROCEDURE" name="Functions"
+        id="catFunctions" colour="290" custom="CUSTOM_PROCEDURE" name="Functions"
       ></category>
     </xml>`,
     collapse: true,
