@@ -136,22 +136,6 @@ FieldLexicalVariable.prototype.doClassValidation_ = function(
   return /** @type {string} */ (opt_newValue);
 };
 
-/**
- * Get the block holding this drop-down variable chooser.
- * @return {string} Block holding this drop-down variable chooser.
- */
-FieldLexicalVariable.prototype.getBlock = function() {
-  return this.block_;
-};
-
-/**
- * Set the block holding this drop-down variable chooser.
- * @param {?Blockly.Block} block Block holding this drop-down variable chooser.
- */
-FieldLexicalVariable.prototype.setBlock = function(block) {
-  this.block_ = block;
-};
-
 // [lyn, 11/10/12] Returns the names of all global definitions as a list of
 // strings [lyn, 11/18/12] * Removed from prototype and stripped off "global"
 // prefix (add it elsewhere) * Add optional excluded block argument as in
@@ -205,7 +189,7 @@ FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
 // Shared.showPrefixToUser is true, non-global names are prefixed with labels
 // specified in blocklyeditor.js
 FieldLexicalVariable.prototype.getNamesInScope = function() {
-  return FieldLexicalVariable.getNamesInScope(this.block_);
+  return FieldLexicalVariable.getNamesInScope(this.sourceBlock_);
 };
 
 /**
