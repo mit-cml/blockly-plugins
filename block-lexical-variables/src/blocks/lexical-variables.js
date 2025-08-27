@@ -286,7 +286,6 @@ Blockly.Blocks['local_declaration_statement'] = {
     this.rendered = false;
 
     // Save current body connection, then remove the body input cleanly.
-    console.log(`BodyInputName: ${this.bodyInputName}`)
     const oldBody = this.getInput(this.bodyInputName);
     const oldBodyConn =
       oldBody && oldBody.connection && oldBody.connection.targetConnection;
