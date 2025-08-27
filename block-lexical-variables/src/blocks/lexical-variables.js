@@ -286,6 +286,7 @@ Blockly.Blocks['local_declaration_statement'] = {
     this.rendered = false;
 
     // Save current body connection, then remove the body input cleanly.
+    console.log(`BodyInputName: ${this.bodyInputName}`)
     const oldBody = this.getInput(this.bodyInputName);
     const oldBodyConn =
       oldBody && oldBody.connection && oldBody.connection.targetConnection;
@@ -335,8 +336,15 @@ Blockly.Blocks['local_declaration_statement'] = {
     }
 
     // Recreate the body input and reconnect the body if it existed.
-    const bodyInput = this.appendStatementInput(this.bodyInputName)
-      .appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_IN_DO);
+    let bodyInput
+    if (this.type === 'local_declaration_expression') {
+      bodyInput = this.appendInputFromRegistry('indented_input', this.bodyInputName)
+        .appendField(
+          Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_EXPRESSION_IN_RETURN);
+    } else {
+      bodyInput = this.appendStatementInput(this.bodyInputName)
+        .appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_IN_DO);
+    }
     if (savedRendered && bodyInput.init) bodyInput.init();
     if (oldBodyConn) {
       bodyInput.connection.connect(oldBodyConn);
