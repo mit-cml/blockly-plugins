@@ -282,34 +282,34 @@ Blockly.Blocks['local_declaration_statement'] = {
     // list. [lyn, 03/04/13] As of change to, Blockly 1636, there is no longer
     // a collapsed input at end.
 
-    // Remember last (= body) input
-    const bodyInput = this.inputList[this.inputList.length - 1]; // Body input
-    // for local
-    // declaration
-    const numDecls = this.inputList.length - 1;
-
-    // [lyn, 07/03/14] stop rendering until block is recreated
     const savedRendered = this.rendered;
     this.rendered = false;
+
+    // Save current body connection, then remove the body input cleanly.
+    const oldBody = this.getInput(this.bodyInputName);
+    const oldBodyConn =
+      oldBody && oldBody.connection && oldBody.connection.targetConnection;
+    if (oldBody) {
+      this.removeInput(this.bodyInputName, true);
+    }
 
     // Modify this local-in-do block according to arrangement of name blocks in
     // mutator editor. Remove all the local declaration inputs ...
     const thisBlock = this; // Grab correct object for use in thunk below
     FieldParameterFlydown.withChangeHanderDisabled(
-        // [lyn, 07/02/14] Need to disable change handler, else this will try
-        // to rename params removed fields.
-        function() {
-          for (let i = 0; i < numDecls; i++) {
-            thisBlock.removeInput('DECL' + i);
-          }
-        },
+      // [lyn, 07/02/14] Need to disable change handler, else this will try
+      // to rename params removed fields.
+      function() {
+        let i = 0;
+        while (thisBlock.getInput('DECL' + i)) {
+          thisBlock.removeInput('DECL' + i, true);
+          i++;
+        }
+      },
     );
 
-    // Empty the inputList and recreate it, building local initializers from
-    // mutator
-    this.inputList = [];
+    // Recreate DECL* inputs and reconnect initializers if provided.
     this.localNames_ = names;
-
     for (let i = 0; i < names.length; i++) {
       const declInput = this.appendValueInput('DECL' + i);
       // [lyn, 11/06/12]
@@ -321,22 +321,31 @@ Blockly.Blocks['local_declaration_statement'] = {
       // in the future. if (i == 0) { declInput.appendField("local"); // Only
       // put keyword "local" on top line. }
       declInput.appendField(
-          Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_TITLE_INIT)
-          .appendField(this.parameterFlydown(i), 'VAR' + i)
-          .appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_INPUT_TO)
-          .setAlign(Blockly.inputs.Align.RIGHT);
-      if (inits && inits[i]) { // If there is an initializer, connect it
+        Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_TITLE_INIT)
+        .appendField(this.parameterFlydown(i), 'VAR' + i)
+        .appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_INPUT_TO)
+        .setAlign(Blockly.inputs.Align.RIGHT);
+
+      // If the block is already on the workspace, init the new input's view.
+      if (savedRendered && declInput.init) declInput.init();
+
+      if (inits && inits[i]) {
         declInput.connection.connect(inits[i]);
       }
     }
 
-    // Now put back last (= body) input
-    this.inputList = this.inputList.concat(bodyInput);
+    // Recreate the body input and reconnect the body if it existed.
+    const bodyInput = this.appendStatementInput(this.bodyInputName)
+      .appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_IN_DO);
+    if (savedRendered && bodyInput.init) bodyInput.init();
+    if (oldBodyConn) {
+      bodyInput.connection.connect(oldBodyConn);
+    }
 
     this.rendered = savedRendered;
     if (this.rendered) {
-      this.initSvg();
-      this.render();
+      this.initSvg()
+      void this.queueRender();
     }
   },
   // [lyn, 10/27/13] Introduced this to correctly handle renaming of mutatorarg
