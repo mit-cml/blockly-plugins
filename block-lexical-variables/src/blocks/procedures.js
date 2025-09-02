@@ -415,7 +415,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
   },
   dispose: function(...args) {
     const name = this.getFieldValue('NAME');
-    const editable = this.editable_;
+    const editable = this.isOwnEditable();
     const workspace = this.workspace;
 
     // This needs to happen first so that the Blockly events will be replayed
