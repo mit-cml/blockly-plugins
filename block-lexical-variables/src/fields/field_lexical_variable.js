@@ -159,6 +159,8 @@ FieldLexicalVariable.prototype.setBlock = function(block) {
 FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
   // TODO: Maybe switch to injectable warning/error handling
   const mainWorkspace = Blockly.common.getMainWorkspace();
+  // Return when the workspace is not initialized yet (e.g. toolbox-search plugin)
+  if (!mainWorkspace) return []
   const rootWorkspace = mainWorkspace.getRootWorkspace() || mainWorkspace;
   if (Instrument.useLynCacheGlobalNames && rootWorkspace &&
       rootWorkspace.getWarningHandler &&
