@@ -74,9 +74,7 @@ export default class WarningHandler {
     }
 
     // remove the warning icon, if there is one
-    if (block.warning) {
-      block.setWarningText(null);
-    }
+    block.setWarningText(null);
     if (block.hasWarning) {
       block.hasWarning = false;
     }
