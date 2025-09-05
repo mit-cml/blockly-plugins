@@ -121,7 +121,10 @@ Blockly.Blocks['global_declaration'] = {
             Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_NAME,
             FieldFlydown.DISPLAY_BELOW), 'NAME')
         .appendField(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TO);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
     this.setTooltip(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TOOLTIP);
+    this.setOnChange(this._checkPlacement);
   },
   getDeclaredVars: function() {
     const field = this.getField('NAME');
@@ -135,6 +138,17 @@ Blockly.Blocks['global_declaration'] = {
       this.setFieldValue(newName, 'NAME');
     }
   },
+  _checkPlacement: function() {
+    const parent = this.getSurroundParent();
+
+    if (parent) {
+      this.setWarningText(Blockly.Msg.VARIABLES_GLOBAL_DECLARATION_WARNING);
+      this.setEnabled(false);
+    } else {
+        this.setWarningText(null);
+        this.setEnabled(true);
+    }
+  }
 };
 
 Blockly.Blocks['simple_local_declaration_statement'] = {
