@@ -162,8 +162,8 @@ FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
     for (let i = 0; i < blocks.length; i++) {
       const block = blocks[i];
       if ((block.getGlobalNames) &&
-          (block != optExcludedBlock)) {
-        globals.push(...block.getGlobalNames());
+          (block != optExcludedBlock) && block.isEnabled()) {
+        globals.push(...block.getGlobalNames(optExcludedBlock));
       }
     }
   }

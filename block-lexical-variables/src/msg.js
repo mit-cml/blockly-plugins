@@ -148,4 +148,9 @@ Blockly.Msg['LANG_CONTROLS_DO_THEN_RETURN_COLLAPSED_TEXT'] = 'do/result';
 Blockly.Msg['LANG_CONTROLS_DO_THEN_RETURN_TITLE'] = 'do result';
 Blockly.Msg['PROCEDURES_DEFNORETURN_PROCEDURE'] = Blockly.Msg['LANG_PROCEDURES_DEFNORETURN_PROCEDURE'];
 Blockly.Msg['PROCEDURES_DEFRETURN_PROCEDURE'] = Blockly.Msg['LANG_PROCEDURES_DEFRETURN_PROCEDURE'];
-Blockly.Msg['VARIABLES_GLOBAL_DECLARATION_WARNING'] = 'Global declarations must be at the top level.'
+Blockly.Msg['LANG_VARIABLES_GLOBAL_DECLARATION_WARNING'] = 'Global declarations must be inside of a initialize global block.'
+Blockly.Msg['LANG_VARIABLES_GLOBAL_DECLARATION_TITLE_INIT'] = 'initialize global variables';
+Blockly.Msg['LANG_VARIABLES_GLOBAL_DECLARATION_TO_DO'] = 'to';
+Blockly.Msg['LANG_VARIABLES_GLOBAL_DECLARATION_TOOLTIP'] =
+  'Allows you to create global variables that are accessible everywhere';
+Blockly.Msg['LANG_VARIABLES_GLOBAL_DECLARATION_BLOCK_CHECK'] = 'Only global_declaration2 blocks are allowed here.';

@@ -52,6 +52,8 @@ document.addEventListener('DOMContentLoaded', function() {
       </category>
       <sep></sep>
       <category id="catVariables" colour="330" name="Variables">
+        <block type="initialize_global"></block>
+        <block type="global_declaration2"></block>
         <block type="global_declaration"></block>
         <block type="simple_local_declaration_statement"></block>
         <block type="local_declaration_statement"></block>
