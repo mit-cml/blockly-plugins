@@ -25,7 +25,6 @@ export const onChange = function(procedureId) {
   let workspace = this.block.workspace.getTopWorkspace();
   // [lyn, 10/14/13] .editable is undefined on blocks. Changed to .editable_
   if (!this.block.isEditable()) {
-    workspace = Blockly.Drawer.flyout_.workspace_;
     return;
   }
 
@@ -43,7 +42,6 @@ export const onChange = function(procedureId) {
       // return;
     }
   }
-  this.doValueUpdate_(text);
   // If we're just in the midst of renaming the procedure, we don't have (or want) to
   // add the new arguments
   if (!this.block.isRenaming) {
