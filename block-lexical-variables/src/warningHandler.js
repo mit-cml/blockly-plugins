@@ -145,13 +145,16 @@ export class ErrorCheckers {
         const errorMessage = Blockly.Msg.ERROR_SELECT_VALID_ITEM_FROM_DROPDOWN;
         block.workspace.getWarningHandler().setError(block, errorMessage);
         // Disable the block when dropdown has invalid value
-        block.setEnabled(false);
+        if (block.workspace.disableInvalidBlocks) {
+          block.setDisabledReason(true, Blockly.Msg.ERROR_SELECT_VALID_ITEM_FROM_DROPDOWN);
+        }
+
         return true;
       }
     }
     // Re-enable the block if all dropdowns are valid
-    if (!block.isEnabled()) {
-      block.setEnabled(true);
+    if (!block.isEnabled() && block.workspace.disableInvalidBlocks) {
+      block.setDisabledReason(false, Blockly.Msg.ERROR_SELECT_VALID_ITEM_FROM_DROPDOWN);
     }
     return false;
   };

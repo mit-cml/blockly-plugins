@@ -83,12 +83,20 @@ in scope for that getter according to which blocks it is within.
 ![A picture of a setter block with a dropdown](readme-media/set-with-dropdown.png "Setter with dropdown")
 ![A picture of a setter block within another block](readme-media/set-within-scope.png "Setter with dropdown")
 
-###Getter
+### Getter
 **Block type: 'lexical_variable_get'** - Exactly analogous to the setter block.
 
 ![A picture of a getter block](readme-media/get.png "Getter")
 ![A picture of a getter block with a dropdown](readme-media/get-with-dropdown.png "Getter with dropdown")
 ![A picture of a getter block within another block](readme-media/get-within-scope.png "Getter with dropdown")
+
+### Disabling invalid getter/setter blocks
+
+By default, getter and setter blocks remain enabled even if their selected variable is out of scope or doesn’t exist. You can change this behavior so that invalid blocks are automatically disabled by passing the `disableInvalidBlocks` option when initializing the plugin:
+
+```js
+LexicalVariablesPlugin.init(workspace, { disableInvalidBlocks: true });
+````
 
 ## Loops
 ### For

@@ -25,6 +25,7 @@ import chai from 'chai';
 suite ('VariableGetSet', function() {
   setup(function() {
     this.workspace = new Blockly.Workspace();
+    this.workspace.disableInvalidBlocks = true;
     Blockly.common.setMainWorkspace(this.workspace);
   });
   teardown(function() {
@@ -106,6 +107,24 @@ suite ('VariableGetSet', function() {
         '</xml>');
       this.assertBlockEnabled(xml, false)
       this.assertBlockEnabled(xml, true, 'b')
+    })
+
+    test('should not be disabled if disableInvalidBlocks = false', function() {
+      this.workspace.disableInvalidBlocks = false;
+      const xml = Blockly.utils.xml.textToDom(
+        '<xml xmlns="https://developers.google.com/blockly/xml">' +
+        '  <block type="procedures_defnoreturn" id="procdef" x="165" y="-2391">' +
+        '    <field name="NAME">do_something</field>' +
+        '    <statement name="STACK">' +
+        '      <block type="lexical_variable_set" id="a">' +
+        '        <field name="VAR">global name</field>' +
+        '      </block>' +
+        '    </statement>' +
+        '  </block>' +
+        '</xml>'
+      );
+
+      this.assertBlockEnabled(xml, true)
     })
   })
 })
