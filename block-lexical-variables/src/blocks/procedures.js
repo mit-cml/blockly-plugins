@@ -160,9 +160,9 @@ Blockly.Blocks['procedures_defnoreturn'] = {
       hash['arg_' + this.arguments_[x].toLowerCase()] = true;
     }
     if (badArg) {
-      this.setWarningText(Blockly.Msg['LANG_PROCEDURES_DEF_DUPLICATE_WARNING']);
+      this.setWarningText(Blockly.Msg['LANG_PROCEDURES_DEF_DUPLICATE_WARNING'], 'procedures_defnoreturn');
     } else {
-      this.setWarningText(null);
+      this.setWarningText(null, 'procedures_defnoreturn');
     }
 
     const procName = this.getFieldValue('NAME');

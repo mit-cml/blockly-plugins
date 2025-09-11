@@ -163,10 +163,10 @@ Blockly.Blocks['global_declaration2'] = {
     const parent = this.getSurroundParent();
 
     if (!parent || parent.type !== 'initialize_global') {
-      this.setWarningText(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_WARNING);
+      this.setWarningText(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_WARNING, 'global_declaration2');
       this.setDisabledReason(true, REASON);
     } else {
-      this.setWarningText(null);
+      this.setWarningText(null, 'global_declaration2');
       this.setDisabledReason(false, REASON);
     }
   }
@@ -184,6 +184,7 @@ Blockly.Blocks['initialize_global'] = {
       .appendField(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TO_DO);
     this.setTooltip(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_TOOLTIP);
     this.setOnChange(this._checkChildren)
+    queueMicrotask(this._checkChildren.bind(this));
   },
   getDeclaredVarFieldNames: function () {
     return ['VAR'];
@@ -214,11 +215,11 @@ Blockly.Blocks['initialize_global'] = {
     while (b) {
       inStack.add(b.id);
       if (b.type !== 'global_declaration2') {
-        b.setWarningText(REASON);
+        b.setWarningText(REASON, 'initialize_global');
         b.setDisabledReason(true, REASON);
         b.__disabledByInitGlobal = true;
       } else {
-        b.setWarningText(null);
+        b.setWarningText(null, 'initialize_global');
         b.setDisabledReason(false, REASON);
         b.__disabledByInitGlobal = false;
       }
@@ -227,11 +228,14 @@ Blockly.Blocks['initialize_global'] = {
 
     // If a block was moved OUT, clear our disable flag/state
     if (e && e.blockId) {
-      const moved = this.workspace.getBlockById(e.blockId);
-      if (moved && moved.__disabledByInitGlobal && !inStack.has(moved.id)) {
-        moved.setWarningText(null);
-        moved.setDisabledReason(false, REASON);
-        moved.__disabledByInitGlobal = false;
+      let moved = this.workspace.getBlockById(e.blockId);
+      while (moved) {
+        if (moved && moved.__disabledByInitGlobal && !inStack.has(moved.id)) {
+          moved.setWarningText(null, 'initialize_global');
+          moved.setDisabledReason(false, REASON);
+          moved.__disabledByInitGlobal = false;
+        }
+        moved = moved.getNextBlock();
       }
     }
   }
