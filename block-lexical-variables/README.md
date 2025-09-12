@@ -92,11 +92,7 @@ in scope for that getter according to which blocks it is within.
 
 ### Disabling invalid getter/setter blocks
 
-By default, getter and setter blocks remain enabled even if their selected variable is out of scope or doesn’t exist. You can change this behavior so that invalid blocks are automatically disabled by passing the `disableInvalidBlocks` option when initializing the plugin:
-
-```js
-LexicalVariablesPlugin.init(workspace, { disableInvalidBlocks: true });
-````
+By default, getter and setter blocks remain enabled even if their selected variable is out of scope or doesn’t exist. You can change this behavior so that invalid blocks are automatically disabled by passing the `disableInvalidBlocks` option when initializing the plugin as demonstrated in the [Usage](#usage) section.
 
 ## Loops
 ### For
@@ -169,6 +165,19 @@ const workspace = Blockly.inject(...);
 // Load lexical variable plugin
 LexicalVariablesPlugin.init(workspace);
 ```
+
+You can also pass an options object to customize the plugin’s behavior:
+
+```js
+LexicalVariablesPlugin.init(workspace, {
+  disableInvalidBlocks: true,
+});
+````
+
+**Available options:**
+- `disableInvalidBlocks` *(boolean, default: false)*  
+  Automatically disable variable getter/setter blocks when they reference a variable that is out of scope or doesn’t exist.
+
 Note that unlike with standard Blockly, you should **not** use a custom toolbox category
 for your variables, as this would interfere with the way that variables are declared and
 used with this plugin.  Just create an ordinary Variables category, if you want, and
