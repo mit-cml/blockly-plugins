@@ -153,4 +153,4 @@ Blockly.Msg['LANG_VARIABLES_GLOBAL_DECLARATION_TITLE_INIT'] = 'initialize global
 Blockly.Msg['LANG_VARIABLES_GLOBAL_DECLARATION_TO_DO'] = 'to';
 Blockly.Msg['LANG_VARIABLES_GLOBAL_DECLARATION_TOOLTIP'] =
   'Allows you to create global variables that are accessible everywhere';
-Blockly.Msg['LANG_VARIABLES_GLOBAL_DECLARATION_BLOCK_CHECK'] = 'Only global_declaration2 blocks are allowed here.';
+Blockly.Msg['LANG_VARIABLES_GLOBAL_DECLARATION_BLOCK_CHECK'] = 'Only global_declaration_entry blocks are allowed here.';

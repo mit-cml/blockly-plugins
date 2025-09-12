@@ -100,10 +100,10 @@ suite ('FieldLexical', function() {
         '  </block>' +
         '  <block type="initialize_global">' +
         '    <statement name="DO">' +
-        '      <block type="global_declaration2">' +
+        '      <block type="global_declaration_entry">' +
         '        <field name="NAME">a</field>' +
         '        <next>' +
-        '          <block type="global_declaration2">' +
+        '          <block type="global_declaration_entry">' +
         '            <field name="NAME">b</field>' +
         '          </block>' +
         '        </next>' +
@@ -115,23 +115,23 @@ suite ('FieldLexical', function() {
       const vars = FieldLexicalVariable.getGlobalNames();
       chai.assert.sameOrderedMembers(vars, ['name', 'name2', 'a', 'b']);
     })
-    test('global_declaration2 disabled if outside of initialize_global', async function () {
+    test('global_declaration_entry disabled if outside of initialize_global', async function () {
       const xml = Blockly.utils.xml.textToDom('<xml>' +
         '  <block type="initialize_global">' +
         '    <statement name="DO">' +
-        '      <block type="global_declaration2">' +
+        '      <block type="global_declaration_entry">' +
         '        <field name="NAME">a</field>' +
         '      </block>' +
         '    </statement>' +
         '  </block>' +
-        '  <block id="b" type="global_declaration2">' +
+        '  <block id="b" type="global_declaration_entry">' +
         '    <field name="NAME">b</field>' +
         '  </block>' +
         '</xml>');
       Blockly.Xml.domToWorkspace(xml, this.workspace);
       const block = this.workspace.getBlockById('b')
       // Trigger placement check manually since it's only automatically called after BlockCreate
-      block._checkPlacement();
+      block.checkPlacement_();
       const vars = FieldLexicalVariable.getGlobalNames();
       chai.assert.sameOrderedMembers(vars, ['a']);
       chai.assert.equal(block.isEnabled(), false)

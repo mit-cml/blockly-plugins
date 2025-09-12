@@ -52,7 +52,7 @@ if (pkg) {
     return 'var ' + genBasicSetterCode(block, 'NAME', generator);
   };
 
-  javascriptGenerator.forBlock['global_declaration2'] = javascriptGenerator.forBlock['global_declaration'];
+  javascriptGenerator.forBlock['global_declaration_entry'] = javascriptGenerator.forBlock['global_declaration'];
 
   javascriptGenerator.forBlock['initialize_global'] = function (block, generator) {
     // Global variable declaration
