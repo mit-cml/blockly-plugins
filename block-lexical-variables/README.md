@@ -148,7 +148,7 @@ npm install @mit-app-inventor/blockly-block-lexical-variables --save
 
 ## Usage
 _Please make sure that your app which includes this plugin uses a relatively recent version of Blockly.  As of this
-writing that would be version 10.4.0.  It also seems to work with Blockly v11, but that hasn't been extensively tested_
+writing that would be version 11.2.2.
 
 You'll want to include something like the following in your app:
 
