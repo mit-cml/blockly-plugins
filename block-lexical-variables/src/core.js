@@ -30,8 +30,9 @@ export class LexicalVariablesPlugin {
 
     /**
      * @param workspace
+     * @param options
      */
-    static init(workspace) {
+    static init(workspace, options) {
         // TODO(ewpatton): We need to make sure this is reentrant.
         const rendererName = workspace.getRenderer().getClassName();
         const themeName = workspace.getTheme().getClassName();
@@ -55,6 +56,7 @@ export class LexicalVariablesPlugin {
             workspace.svgBubbleCanvas_);
         flydown.init(workspace);
         flydown.autoClose = true; // Flydown closes after selecting a block
+        workspace.disableInvalidBlocks = options?.disableInvalidBlocks || false;
     }
 
     static Flydown = Flydown;
