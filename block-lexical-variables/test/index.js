@@ -39,7 +39,7 @@ const allBlocks = [
  */
 function createWorkspace(blocklyDiv, options) {
   const workspace = Blockly.inject(blocklyDiv, options);
-  LexicalVariablesPlugin.init(workspace);
+  LexicalVariablesPlugin.init(workspace, {disableInvalidBlocks: true});
   return workspace;
 }
 
