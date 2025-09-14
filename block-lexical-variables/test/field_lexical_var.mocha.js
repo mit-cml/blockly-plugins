@@ -39,6 +39,7 @@ import {NameSet} from "../src/nameSet";
 suite ('FieldLexical', function() {
   setup(function() {
     this.workspace = new Blockly.Workspace();
+    this.workspace.disableInvalidBlocks = true;
     Blockly.common.setMainWorkspace(this.workspace);
 
     this.createBlock = function (type) {

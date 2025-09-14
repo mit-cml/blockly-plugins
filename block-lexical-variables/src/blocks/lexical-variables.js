@@ -164,10 +164,14 @@ Blockly.Blocks['global_declaration_entry'] = {
 
     if (!parent || parent.type !== 'initialize_global') {
       this.setWarningText(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_WARNING, 'global_declaration_entry');
-      this.setDisabledReason(true, REASON);
+      if (this.workspace.disableInvalidBlocks) {
+        this.setDisabledReason(true, REASON);
+      }
     } else {
       this.setWarningText(null, 'global_declaration_entry');
-      this.setDisabledReason(false, REASON);
+      if (this.workspace.disableInvalidBlocks) {
+        this.setDisabledReason(false, REASON);
+      }
     }
   }
 };
@@ -215,11 +219,15 @@ Blockly.Blocks['initialize_global'] = {
       inStack.add(childBlock.id);
       if (childBlock.type !== 'global_declaration_entry') {
         childBlock.setWarningText(REASON, 'initialize_global');
-        childBlock.setDisabledReason(true, REASON);
+        if (this.workspace.disableInvalidBlocks) {
+          childBlock.setDisabledReason(true, REASON);
+        }
         childBlock.__disabledByInitGlobal = true;
       } else {
         childBlock.setWarningText(null, 'initialize_global');
-        childBlock.setDisabledReason(false, REASON);
+        if (this.workspace.disableInvalidBlocks) {
+          childBlock.setDisabledReason(false, REASON);
+        }
         childBlock.__disabledByInitGlobal = false;
       }
       childBlock = childBlock.getNextBlock();
@@ -231,7 +239,9 @@ Blockly.Blocks['initialize_global'] = {
       while (moved) {
         if (moved && moved.__disabledByInitGlobal && !inStack.has(moved.id)) {
           moved.setWarningText(null, 'initialize_global');
-          moved.setDisabledReason(false, REASON);
+          if (this.workspace.disableInvalidBlocks) {
+            moved.setDisabledReason(false, REASON);
+          }
           moved.__disabledByInitGlobal = false;
         }
         moved = moved.getNextBlock();

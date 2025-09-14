@@ -71,6 +71,12 @@ and while hovering over the variable name:
 
 ![A picture of a global variable block with getter and setter blocks](readme-media/globalvar-with-flydown.png "Global variable with flydown")
 
+**Block type: 'initialize_global' and 'global_declaration_entry'** - Provide a more structured way to initialize global variables by grouping multiple initializations together.
+
+![A picture of a global variable initialization block](readme-media/initialize-global-block.png "Initialize global variable")
+
+Note: It is recommended not to mix the two different ways of initializing global variables.
+
 ## Variable/Parameter setters and getters
 ### Setter
 **Block type: 'lexical_variable_set'** - Note that despite the block type name, the 
