@@ -137,8 +137,120 @@ Blockly.Blocks['global_declaration'] = {
   },
 };
 
+Blockly.Blocks['global_declaration_entry'] = {
+  category: 'Variables',
+  helpUrl: Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_HELPURL,
+  init: function() {
+    this.setStyle('variable_blocks');
+    this.appendValueInput('VALUE')
+        .appendField(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TITLE_INIT)
+        .appendField(new FieldGlobalFlydown(
+            Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_NAME,
+            FieldFlydown.DISPLAY_BELOW), 'NAME')
+        .appendField(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TO);
+    this.setPreviousStatement(true, ['global_declaration_entry', 'initialize_global']);
+    this.setNextStatement(true, ['global_declaration_entry']);
+    this.setTooltip(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TOOLTIP);
+    this.setOnChange(this.checkPlacement_);
+  },
+  getDeclaredVars: Blockly.Blocks.global_declaration.getDeclaredVars,
+  getGlobalNames: Blockly.Blocks.global_declaration.getGlobalNames,
+  renameVar: Blockly.Blocks.global_declaration.renameVar,
+  checkPlacement_: function() {
+    if (this.isInFlyout) return;
+
+    const REASON = Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_WARNING;
+    const parent = this.getSurroundParent();
+
+    if (!parent || parent.type !== 'initialize_global') {
+      this.setWarningText(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_WARNING, 'global_declaration_entry');
+      if (this.workspace.disableInvalidBlocks) {
+        this.setDisabledReason(true, REASON);
+      }
+    } else {
+      this.setWarningText(null, 'global_declaration_entry');
+      if (this.workspace.disableInvalidBlocks) {
+        this.setDisabledReason(false, REASON);
+      }
+    }
+  }
+};
+
+Blockly.Blocks['initialize_global'] = {
+  category: 'Variables',
+  helpUrl: Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_HELPURL,
+  init: function () {
+    this.setStyle('variable_blocks');
+    this.appendDummyInput()
+        .appendField(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TITLE_INIT)
+    this.appendStatementInput('DO')
+        .appendField(Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_TO_DO);
+    this.setTooltip(Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_TOOLTIP);
+    this.setOnChange(this.checkChildren_)
+    queueMicrotask(this.checkChildren_.bind(this));
+  },
+  getDeclaredVarFieldNames: function () {
+    return ['VAR'];
+  },
+  getScopedInputName: function () {
+    return 'DO';
+  },
+  getGlobalNames: function (block) {
+    const names = []
+    let childBlock = this.getInputTargetBlock('DO')
+    while (childBlock) {
+      if (childBlock.type === 'global_declaration_entry' && block !== childBlock) {
+        names.push(...childBlock.getGlobalNames())
+      }
+      childBlock = childBlock.getNextBlock()
+    }
+    return names
+  },
+  checkChildren_: function(event) {
+    if (this.isInFlyout) return;
+    if (event && event.type !== Blockly.Events.BLOCK_MOVE && event.type !== Blockly.Events.BLOCK_DRAG) return;
+
+    const REASON = Blockly.Msg.LANG_VARIABLES_GLOBAL_DECLARATION_BLOCK_CHECK;
+    const inStack = new Set();
+
+    // Validate child blocks are global_declaration_entry types and mark them
+    let childBlock = this.getInputTargetBlock('DO');
+    while (childBlock) {
+      inStack.add(childBlock.id);
+      if (childBlock.type !== 'global_declaration_entry') {
+        childBlock.setWarningText(REASON, 'initialize_global');
+        if (this.workspace.disableInvalidBlocks) {
+          childBlock.setDisabledReason(true, REASON);
+        }
+        childBlock.__disabledByInitGlobal = true;
+      } else {
+        childBlock.setWarningText(null, 'initialize_global');
+        if (this.workspace.disableInvalidBlocks) {
+          childBlock.setDisabledReason(false, REASON);
+        }
+        childBlock.__disabledByInitGlobal = false;
+      }
+      childBlock = childBlock.getNextBlock();
+    }
+
+    // If a block was moved OUT, clear our disable flag/state
+    if (event && event.blockId) {
+      let moved = this.workspace.getBlockById(event.blockId);
+      while (moved) {
+        if (moved && moved.__disabledByInitGlobal && !inStack.has(moved.id)) {
+          moved.setWarningText(null, 'initialize_global');
+          if (this.workspace.disableInvalidBlocks) {
+            moved.setDisabledReason(false, REASON);
+          }
+          moved.__disabledByInitGlobal = false;
+        }
+        moved = moved.getNextBlock();
+      }
+    }
+  }
+}
+
 Blockly.Blocks['simple_local_declaration_statement'] = {
-  // For each loop.
   category: 'Variables',
   helpUrl: Blockly.Msg.LANG_VARIABLES_LOCAL_DECLARATION_HELPURL,
   init: function () {

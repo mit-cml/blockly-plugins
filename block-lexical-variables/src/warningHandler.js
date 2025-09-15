@@ -74,17 +74,17 @@ export default class WarningHandler {
     }
 
     // remove the warning icon, if there is one
-    block.setWarningText(null);
+    block.setWarningText(null, 'warningHandler');
     if (block.hasWarning) {
       block.hasWarning = false;
     }
   };
   setError(block, message) {
-    block.setWarningText(message);
+    block.setWarningText(message, 'warningHandler');
   }
 
   setWarning(block, message) {
-    block.setWarningText(message);
+    block.setWarningText(message, 'warningHandler');
   }
 }
 

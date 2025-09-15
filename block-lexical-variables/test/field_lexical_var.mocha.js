@@ -39,6 +39,7 @@ import {NameSet} from "../src/nameSet";
 suite ('FieldLexical', function() {
   setup(function() {
     this.workspace = new Blockly.Workspace();
+    this.workspace.disableInvalidBlocks = true;
     Blockly.common.setMainWorkspace(this.workspace);
 
     this.createBlock = function (type) {
@@ -90,6 +91,52 @@ suite ('FieldLexical', function() {
       const vars = FieldLexicalVariable.getGlobalNames();
       chai.assert.sameOrderedMembers(vars, ['global', 'global2', 'global3']);
     });
+    test('initialize globals mixed', function () {
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
+        '  <block type="global_declaration">' +
+        '    <field name="NAME">name</field>' +
+        '  </block>' +
+        '  <block type="global_declaration">' +
+        '    <field name="NAME">name2</field>' +
+        '  </block>' +
+        '  <block type="initialize_global">' +
+        '    <statement name="DO">' +
+        '      <block type="global_declaration_entry">' +
+        '        <field name="NAME">a</field>' +
+        '        <next>' +
+        '          <block type="global_declaration_entry">' +
+        '            <field name="NAME">b</field>' +
+        '          </block>' +
+        '        </next>' +
+        '      </block>' +
+        '    </statement>' +
+        '  </block>' +
+        '</xml>');
+      Blockly.Xml.domToWorkspace(xml, this.workspace);
+      const vars = FieldLexicalVariable.getGlobalNames();
+      chai.assert.sameOrderedMembers(vars, ['name', 'name2', 'a', 'b']);
+    })
+    test('global_declaration_entry disabled if outside of initialize_global', async function () {
+      const xml = Blockly.utils.xml.textToDom('<xml>' +
+        '  <block type="initialize_global">' +
+        '    <statement name="DO">' +
+        '      <block type="global_declaration_entry">' +
+        '        <field name="NAME">a</field>' +
+        '      </block>' +
+        '    </statement>' +
+        '  </block>' +
+        '  <block id="b" type="global_declaration_entry">' +
+        '    <field name="NAME">b</field>' +
+        '  </block>' +
+        '</xml>');
+      Blockly.Xml.domToWorkspace(xml, this.workspace);
+      const block = this.workspace.getBlockById('b')
+      // Trigger placement check manually since it's only automatically called after BlockCreate
+      block.checkPlacement_();
+      const vars = FieldLexicalVariable.getGlobalNames();
+      chai.assert.sameOrderedMembers(vars, ['a']);
+      chai.assert.equal(block.isEnabled(), false)
+    })
   });
   suite('getLexicalNamesInScope', function() {
     setup(function() {
