@@ -939,7 +939,7 @@ Blockly.Blocks['procedures_callnoreturn'] = {
       }
     }
   },
-  procCustomContextMenu: function(options) {
+  customContextMenu: function(options) {
     // Add option to find caller.
     const option = {enabled: true};
     option.text = Blockly.Msg['LANG_PROCEDURES_HIGHLIGHT_DEF'];
@@ -948,7 +948,7 @@ Blockly.Blocks['procedures_callnoreturn'] = {
     option.callback = function() {
       const def = Blockly.Procedures.getDefinition(name, workspace);
       if (def) {
-        def.select();
+        Blockly.common.setSelected(def);
         workspace.centerOnBlock(def.id);
         workspace.getParentSvg().parentElement.focus();
       }
@@ -1013,8 +1013,8 @@ Blockly.Blocks['procedures_callreturn'] = {
   mutationToDom: Blockly.Blocks.procedures_callnoreturn.mutationToDom,
   domToMutation: Blockly.Blocks.procedures_callnoreturn.domToMutation,
   renameVar: Blockly.Blocks.procedures_callnoreturn.renameVar,
-  procCustomContextMenu:
-      Blockly.Blocks.procedures_callnoreturn.procCustomContextMenu,
+  customContextMenu:
+      Blockly.Blocks.procedures_callnoreturn.customContextMenu,
   removeProcedureValue:
       Blockly.Blocks.procedures_callnoreturn.removeProcedureValue,
 };
