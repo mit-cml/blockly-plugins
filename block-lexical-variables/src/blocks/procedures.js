@@ -948,7 +948,7 @@ Blockly.Blocks['procedures_callnoreturn'] = {
     option.callback = function() {
       const def = Blockly.Procedures.getDefinition(name, workspace);
       if (def) {
-        def.select();
+        Blockly.common.setSelected(def);
         workspace.centerOnBlock(def.id);
         workspace.getParentSvg().parentElement.focus();
       }
