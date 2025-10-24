@@ -291,10 +291,10 @@ Blockly.Blocks['procedures_defnoreturn'] = {
 
       // 2. If there's an open mutator, change the name in the corresponding
       // slot.
-      if (procDecl.mutator && procDecl.mutator.rootBlock_) {
+      if (procDecl.mutator && procDecl.mutator.rootBlock) {
         // Iterate through mutatorarg param blocks and change name of one at
         // paramIndex
-        const mutatorContainer = procDecl.mutator.rootBlock_;
+        const mutatorContainer = procDecl.mutator.rootBlock;
         let mutatorargIndex = 0;
         let mutatorarg = mutatorContainer.getInputTargetBlock('STACK');
         while (mutatorarg && mutatorargIndex < paramIndex) {
