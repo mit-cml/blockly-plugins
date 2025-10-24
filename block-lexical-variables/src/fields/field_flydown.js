@@ -250,7 +250,7 @@ function callAllValidators(field, text) {
 // Override Blockly's behavior; they call the validator after setting the text,
 // which is incompatible with how our validators work (we expect to be called
 // before the change since in order to find the old references to be renamed).
-FieldFlydown.prototype.onHtmlInputChange_ = function(e) {
+FieldFlydown.prototype.onHtmlInputChange = function(e) {
   const htmlInput = this.htmlInput_;
   const text = htmlInput.value;
   if (text !== htmlInput.oldValue_) {

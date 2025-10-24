@@ -58,13 +58,13 @@ export class FieldProcedureName extends Blockly.FieldTextInput {
 }
 
 /*
-FieldProcedureName.prototype.onHtmlInputChange_ = function(e) {
+FieldProcedureName.prototype.onHtmlInputChange = function(e) {
   if (e.type == 'keypress') {
     console.log('Suppressed keypress event');
     return;  // suppress change handling on key press
   }
   console.log("input's value is " + Blockly.FieldTextInput.htmlInput_.value);
-  FieldProcedureName.superClass_.onHtmlInputChange_.call(this, e);
+  FieldProcedureName.superClass_.onHtmlInputChange.call(this, e);
 };
 */
 
