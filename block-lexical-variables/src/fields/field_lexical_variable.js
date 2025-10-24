@@ -422,12 +422,12 @@ FieldLexicalVariable.prototype.getOptions = function(opt_useCache,
   }
   const extraOption = opt_extraOption || [];
   if (this.isOptionListDynamic()) {
-    if (!this.generatedOptions_ || !opt_useCache) {
-      this.generatedOptions_ =
+    if (!this.generatedOptions || !opt_useCache) {
+      this.generatedOptions =
           this.menuGenerator_.call(this).concat(extraOption);
-      validateOptions(this.generatedOptions_);
+      validateOptions(this.generatedOptions);
     }
-    return this.generatedOptions_.concat(extraOption);
+    return this.generatedOptions.concat(extraOption);
   }
   return /** @type {!Array<!Array<string>>} */ (this.menuGenerator_);
 };
