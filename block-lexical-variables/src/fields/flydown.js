@@ -234,9 +234,9 @@ Flydown.prototype.placeNewBlock_ = function(originBlock) {
   xyNew.y +=
       targetWorkspace.scrollY / targetWorkspace.scale - targetWorkspace.scrollY;
   // If the flyout is collapsible and the workspace can't be scrolled.
-  if (targetWorkspace.toolbox_ && !targetWorkspace.scrollbar) {
-    xyNew.x += targetWorkspace.toolbox_.getWidth() / targetWorkspace.scale;
-    xyNew.y += targetWorkspace.toolbox_.getHeight() / targetWorkspace.scale;
+  if (targetWorkspace.getToolbox() && !targetWorkspace.scrollbar) {
+    xyNew.x += targetWorkspace.getToolbox().getWidth() / targetWorkspace.scale;
+    xyNew.y += targetWorkspace.getToolbox().getHeight() / targetWorkspace.scale;
   }
 
   // Move the new block to where the old block is.
