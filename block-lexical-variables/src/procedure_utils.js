@@ -136,7 +136,7 @@ export const removeProcedureValues = function(name, workspace) {
  * @return {string} The new, validated name of the block.
  */
 export const renameProcedure = function(newName) {
-  if (this.sourceBlock_ && this.sourceBlock_.isInFlyout) {
+  if (this.getSourceBlock() && this.getSourceBlock().isInFlyout) {
     // Do not rename procedures in flyouts
     return newName;
   }
@@ -149,7 +149,7 @@ export const renameProcedure = function(newName) {
 
   // [lyn, 10/28/13] Prevent two procedures from having the same name.
   const procBlocks = getAllProcedureDeclarationBlocksExcept(
-      this.sourceBlock_);
+      this.getSourceBlock());
   const procNames = procBlocks.map(function(decl) {
     return decl.getFieldValue('NAME');
   });
@@ -158,7 +158,7 @@ export const renameProcedure = function(newName) {
     this.doValueUpdate_(newName);
   }
   // Rename any callers.
-  const blocks = this.sourceBlock_.workspace.getAllBlocks();
+  const blocks = this.getSourceBlock().workspace.getAllBlocks();
   for (let x = 0; x < blocks.length; x++) {
     const func = blocks[x].renameProcedure;
     if (func) {

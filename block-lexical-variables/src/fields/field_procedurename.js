@@ -37,18 +37,18 @@ export class FieldProcedureName extends Blockly.FieldTextInput {
     this.oldName_ = oldValue;
     this.doValueUpdate_(newValue);
     super.setValue(newValue);
-    if (this.sourceBlock_ && this.sourceBlock_.isInFlyout) {
+    if (this.getSourceBlock() && this.getSourceBlock().isInFlyout) {
       // Do not take action for blocks in flyouts
       return;
     }
     newValue = this.getValue();
-    if (typeof newValue === 'string' && this.sourceBlock_) {
-      const procDb = this.sourceBlock_.workspace.getProcedureDatabase();
+    if (typeof newValue === 'string' && this.getSourceBlock()) {
+      const procDb = this.getSourceBlock().workspace.getProcedureDatabase();
       if (procDb) {
-        if (procDb.getProcedure(this.sourceBlock_.id)) {
-          procDb.renameProcedure(this.sourceBlock_.id, oldValue, newValue);
+        if (procDb.getProcedure(this.getSourceBlock().id)) {
+          procDb.renameProcedure(this.getSourceBlock().id, oldValue, newValue);
         } else {
-          procDb.addProcedure(newValue, this.sourceBlock_);
+          procDb.addProcedure(newValue, this.getSourceBlock());
         }
       }
     }
