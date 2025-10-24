@@ -267,7 +267,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
       // procedure arguments_ list rather than mutate that list, but I'd be
       // wrong! Turns out that *not* mutating list here causes trouble below in
       // the line
-      // Blockly.Field.prototype.setText.call(mutatorarg.getTitle_("NAME"),
+      // Blockly.Field.prototype.setValue.call(mutatorarg.getTitle_("NAME"),
       // newParamName);  The reason is that this fires a change event in
       // mutator workspace, which causes a call to the proc decl compose()
       // method, and when it detects a difference in the arguments it calls
@@ -307,13 +307,13 @@ Blockly.Blocks['procedures_defnoreturn'] = {
           // will be invoked several times, and on one of those times, it will
           // find new param name in the procedures arguments_ instance variable
           // and will try to renumber it (e.g. "a" -> "a2"). To avoid this,
-          // invoke the setText method of its Field s superclass directly.
+          // invoke the setValue method of its Field superclass directly.
           // I.e., can't do this:
           // mutatorarg.getTitle_("NAME").setValue(newParamName); so instead do
           // this:
           mutatorarg.getField('NAME').setValue(newParamName);
           // mutatorarg.getField("NAME").doValueUpdate_(newParamName);
-          //   Blockly.Field.prototype.setText.call(mutatorarg.getField("NAME"),
+          //   Blockly.Field.prototype.setValue.call(mutatorarg.getField("NAME"),
           // newParamName);
         }
       }
