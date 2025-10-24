@@ -123,7 +123,7 @@ export class ErrorCheckers {
 
     for (let i=0; i<params.dropDowns.length; i++) {
       const dropDown = block.getField(params.dropDowns[i]);
-      const dropDownList = dropDown.menuGenerator_();
+      const dropDownList = dropDown.getOptions(false);
       const text = dropDown.getText();
       const value = dropDown.getValue();
       let textInDropDown = false;
