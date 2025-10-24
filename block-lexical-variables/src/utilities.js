@@ -24,12 +24,12 @@ import './msg.js';
 export const InstantInTime = function(myConn, otherConn) {
   if (!myConn.sourceBlock_.rendered ||
       !otherConn.sourceBlock_.rendered) {
-    if (otherConn.check_ && !otherConn.check_.includes('InstantInTime')) {
+    if (otherConn.getCheck() && !otherConn.getCheck().includes('InstantInTime')) {
       otherConn.sourceBlock_.badBlock();
     }
     return true;
   }
-  return !otherConn.check_ || otherConn.check_.includes('InstantInTime');
+  return !otherConn.getCheck() || otherConn.getCheck().includes('InstantInTime');
 };
 
 
