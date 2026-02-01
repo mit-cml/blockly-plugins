@@ -16,8 +16,8 @@ import '../msg.js';
 import '../instrument.js';
 import * as Shared from '../shared.js';
 import * as Instrument from '../instrument.js';
-import {NameSet} from "../nameSet.js";
-import {Substitution} from '../substitution.js'
+import { NameSet } from "../nameSet.js";
+import { Substitution } from '../substitution.js'
 
 /**
  * Lyn's History:
@@ -131,8 +131,8 @@ export class FieldLexicalVariable extends Blockly.FieldDropdown {
   // };
 }
 
-FieldLexicalVariable.prototype.doClassValidation_ = function(
-    opt_newValue) {
+FieldLexicalVariable.prototype.doClassValidation_ = function (
+  opt_newValue) {
   return /** @type {string} */ (opt_newValue);
 };
 
@@ -140,15 +140,15 @@ FieldLexicalVariable.prototype.doClassValidation_ = function(
 // strings [lyn, 11/18/12] * Removed from prototype and stripped off "global"
 // prefix (add it elsewhere) * Add optional excluded block argument as in
 // Neil's code to avoid global declaration being created
-FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
+FieldLexicalVariable.getGlobalNames = function (optExcludedBlock) {
   // TODO: Maybe switch to injectable warning/error handling
   const mainWorkspace = Blockly.common.getMainWorkspace();
   // Return when the workspace is not initialized yet (e.g. toolbox-search plugin)
   if (!mainWorkspace) return []
   const rootWorkspace = mainWorkspace.getRootWorkspace() || mainWorkspace;
   if (Instrument.useLynCacheGlobalNames && rootWorkspace &&
-      rootWorkspace.getWarningHandler &&
-      rootWorkspace.getWarningHandler().cacheGlobalNames) {
+    rootWorkspace.getWarningHandler &&
+    rootWorkspace.getWarningHandler().cacheGlobalNames) {
     return rootWorkspace.getWarningHandler().cachedGlobalNames;
   }
   const globals = [];
@@ -164,7 +164,7 @@ FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
     for (let i = 0; i < blocks.length; i++) {
       const block = blocks[i];
       if ((block.getGlobalNames) &&
-          (block != optExcludedBlock) && block.isEnabled()) {
+        (block != optExcludedBlock) && block.isEnabled()) {
         globals.push(...block.getGlobalNames(optExcludedBlock));
       }
     }
@@ -190,7 +190,7 @@ FieldLexicalVariable.getGlobalNames = function(optExcludedBlock) {
 // Shared.showPrefixToUser is false, non-global names are not prefixed. * If
 // Shared.showPrefixToUser is true, non-global names are prefixed with labels
 // specified in blocklyeditor.js
-FieldLexicalVariable.prototype.getNamesInScope = function() {
+FieldLexicalVariable.prototype.getNamesInScope = function () {
   return FieldLexicalVariable.getNamesInScope(this.getSourceBlock());
 };
 
@@ -200,18 +200,18 @@ FieldLexicalVariable.prototype.getNamesInScope = function() {
  * and untranslated name of every variable in the scope of the current block.
  */
 // [lyn, 11/15/13] Refactored to work on any block
-FieldLexicalVariable.getNamesInScope = function(block) {
+FieldLexicalVariable.getNamesInScope = function (block) {
   let globalNames = FieldLexicalVariable.getGlobalNames(); // from
   // global
   // variable
   // declarations
   // [lyn, 11/24/12] Sort and remove duplicates from namespaces
   globalNames = LexicalVariable.sortAndRemoveDuplicates(globalNames);
-  globalNames = globalNames.map(function(name) {
+  globalNames = globalNames.map(function (name) {
     return [Shared.prefixGlobalMenuName(name), 'global ' + name];
   });
   const allLexicalNames = FieldLexicalVariable.getLexicalNamesInScope(
-      block);
+    block);
   // Return a list of all names in scope: global names followed by lexical ones.
   return globalNames.concat(allLexicalNames);
 };
@@ -224,7 +224,7 @@ FieldLexicalVariable.getNamesInScope = function(block) {
  *     "param", "local", "index"; otherwise returns unprefixed names.
  */
 // [lyn, 11/15/13] Factored this out from getNamesInScope to work on any block
-FieldLexicalVariable.getLexicalNamesInScope = function(block) {
+FieldLexicalVariable.getLexicalNamesInScope = function (block) {
   // const procedureParamNames = []; // from procedure/function declarations
   // const loopNames = []; // from for loops
   // const rangeNames = []; // from range loops
@@ -254,7 +254,7 @@ FieldLexicalVariable.getLexicalNamesInScope = function(block) {
         innermostPrefix[name] = prefix;
       }
       fullName =
-          (Shared.possiblyPrefixMenuNameWith(innermostPrefix[name]))(name);
+        (Shared.possiblyPrefixMenuNameWith(innermostPrefix[name]))(name);
     } else { // multiple namespaces distinguished by prefixes
       // note: correctly handles case where some prefixes are the same
       fullName = (Shared.possiblyPrefixMenuNameWith(prefix))(name);
@@ -285,7 +285,7 @@ FieldLexicalVariable.getLexicalNamesInScope = function(block) {
  * @return {!Array.<string[]>} Array of variable names.
  * @this {!FieldLexicalVariable}
  */
-FieldLexicalVariable.dropdownCreate = function() {
+FieldLexicalVariable.dropdownCreate = function () {
   const variableList = this.getNamesInScope(); // [lyn, 11/10/12] Get all
   // global, parameter, and local
   // names
@@ -319,7 +319,7 @@ TODO: I'm leaving the following in for now (but commented) because at one point
  * @param {*} newValue The value to be saved.
  * @protected
  */
-FieldLexicalVariable.prototype.doValueUpdate_ = function(newValue) {
+FieldLexicalVariable.prototype.doValueUpdate_ = function (newValue) {
   // The original call for the following looked like:
   //   Blockly.FieldDropdown.superClass_.doValueUpdate_.call(this, newValue);
   // but we can no longer use the Blockly.utils.object.inherits function, which sets the superclass_ property
@@ -328,10 +328,10 @@ FieldLexicalVariable.prototype.doValueUpdate_ = function(newValue) {
   // but since the original directly referenced the parent/superclass of Blockly.FieldDropdown, we do the same.
   Object.getPrototypeOf(Blockly.FieldDropdown).prototype.doValueUpdate_.call(this, newValue);
 
-  function genLocalizedValue (value) {
+  function genLocalizedValue(value) {
     return value.startsWith('global ')
-        ? value.replace('global ', Blockly.Msg['LANG_VARIABLES_GLOBAL_PREFIX'] + ' ')
-        : value;
+      ? value.replace('global ', Blockly.Msg['LANG_VARIABLES_GLOBAL_PREFIX'] + ' ')
+      : value;
   }
 
   // Fix for issue #1901. If the variable name contains a space separating two
@@ -356,7 +356,7 @@ FieldLexicalVariable.prototype.doValueUpdate_ = function(newValue) {
   // to be ok for our use case.  It is ugly, though, since it bypasses an aspect
   // of the normal dropdown validation.
   const options =
-      this.getOptions(true, [[genLocalizedValue(newValue), newValue]]);
+    this.getOptions(true, [[genLocalizedValue(newValue), newValue]]);
   for (let i = 0, option; (option = options[i]); i++) {
     if (option[1] == this.value_) {
       this.selectedOption = option;
@@ -370,7 +370,7 @@ FieldLexicalVariable.prototype.doValueUpdate_ = function(newValue) {
 /**
  * Update the eventparam mutation associated with the field's source block.
  */
-FieldLexicalVariable.prototype.updateMutation = function() {
+FieldLexicalVariable.prototype.updateMutation = function () {
   const text = this.getText();
   if (this.getSourceBlock() && this.getSourceBlock().getParent()) {
     this.getSourceBlock().eventparam = undefined;
@@ -415,8 +415,8 @@ FieldLexicalVariable.prototype.updateMutation = function() {
  *     (human-readable text or image, language-neutral name).
  * @throws {TypeError} If generated options are incorrectly structured.
  */
-FieldLexicalVariable.prototype.getOptions = function(opt_useCache,
-    opt_extraOption) {
+FieldLexicalVariable.prototype.getOptions = function (opt_useCache,
+  opt_extraOption) {
   if (Array.isArray(opt_useCache)) {
     opt_extraOption = opt_useCache;
   }
@@ -424,7 +424,7 @@ FieldLexicalVariable.prototype.getOptions = function(opt_useCache,
   if (this.isOptionListDynamic()) {
     if (!this.generatedOptions || !opt_useCache) {
       this.generatedOptions =
-          this.menuGenerator_.call(this).concat(extraOption);
+        this.menuGenerator_.call(this).concat(extraOption);
       validateOptions(this.generatedOptions);
     }
     return this.generatedOptions.concat(extraOption);
@@ -439,7 +439,7 @@ FieldLexicalVariable.prototype.getOptions = function(opt_useCache,
  * @param {?} options The proposed dropdown options.
  * @throws {TypeError} If proposed options are incorrectly structured.
  */
-const validateOptions = function(options) {
+const validateOptions = function (options) {
   if (!Array.isArray(options)) {
     throw TypeError('FieldDropdown options must be an array.');
   }
@@ -452,23 +452,23 @@ const validateOptions = function(options) {
     if (!Array.isArray(tuple)) {
       foundError = true;
       console.error(
-          'Invalid option[' + i + ']: Each FieldDropdown option must be an ' +
-          'array. Found: ',
-          tuple);
+        'Invalid option[' + i + ']: Each FieldDropdown option must be an ' +
+        'array. Found: ',
+        tuple);
     } else if (typeof tuple[1] != 'string') {
       foundError = true;
       console.error(
-          'Invalid option[' + i + ']: Each FieldDropdown option id must be ' +
-          'a string. Found ' + tuple[1] + ' in: ',
-          tuple);
+        'Invalid option[' + i + ']: Each FieldDropdown option id must be ' +
+        'a string. Found ' + tuple[1] + ' in: ',
+        tuple);
     } else if (
       tuple[0] && (typeof tuple[0] != 'string') &&
-        (typeof tuple[0].src != 'string')) {
+      (typeof tuple[0].src != 'string')) {
       foundError = true;
       console.error(
-          'Invalid option[' + i + ']: Each FieldDropdown option must have a ' +
-          'string label or image description. Found' + tuple[0] + ' in: ',
-          tuple);
+        'Invalid option[' + i + ']: Each FieldDropdown option must have a ' +
+        'string label or image description. Found' + tuple[0] + ' in: ',
+        tuple);
     }
   }
   if (foundError) {
@@ -485,7 +485,7 @@ const validateOptions = function(options) {
  * @param {string} text The selected dropdown menu option.
  * @this {!FieldLexicalVariable}
  */
-FieldLexicalVariable.dropdownChange = function(text) {
+FieldLexicalVariable.dropdownChange = function (text) {
   if (text) {
     this.doValueUpdate_(text);
     const topWorkspace = this.getSourceBlock().workspace.getTopWorkspace();
@@ -506,7 +506,7 @@ FieldLexicalVariable.dropdownChange = function(text) {
  * @param {string list} nameList List of names with which name can't conflict.
  * @return {string} Non-colliding name.
  */
-FieldLexicalVariable.nameNotIn = function(name, nameList) {
+FieldLexicalVariable.nameNotIn = function (name, nameList) {
   // First find the nonempty digit suffixes of all names in nameList that have
   // the same prefix as name e.g. for name "foo3" and nameList = ["foo",
   // "bar4", "foo17", "bar" "foo5"] suffixes is ["17", "5"]
@@ -540,10 +540,10 @@ FieldLexicalVariable.nameNotIn = function(name, nameList) {
   } else {
     // There is a possible conflict and empty suffix is not an option.
     // First sort the suffixes as numbers from low to high
-    const suffixesAsNumbers = suffixes.map(function(elt, i, arr) {
+    const suffixesAsNumbers = suffixes.map(function (elt, i, arr) {
       return parseInt(elt, 10);
     });
-    suffixesAsNumbers.sort(function(a, b) {
+    suffixesAsNumbers.sort(function (a, b) {
       return a - b;
     });
     // Now find smallest number >= 2 that is unused
@@ -571,7 +571,7 @@ FieldLexicalVariable.nameNotIn = function(name, nameList) {
  * @param {string} name Input string.
  * @return {string[]} Two-element list of prefix and suffix.
  */
-FieldLexicalVariable.prefixSuffix = function(name) {
+FieldLexicalVariable.prefixSuffix = function (name) {
   const matchResult = name.match(/^(.*?)(\d+)$/);
   if (matchResult) {
     // List of prefix and suffix
@@ -588,13 +588,13 @@ FieldLexicalVariable.prefixSuffix = function(name) {
  * @package
  * @nocollapse
  */
-FieldLexicalVariable.fromJson = function(options) {
+FieldLexicalVariable.fromJson = function (options) {
   const name = Blockly.utils.replaceMessageReferences(options['name']);
   return new FieldLexicalVariable(name);
 };
 
 Blockly.fieldRegistry.register('field_lexical_variable',
-    FieldLexicalVariable);
+  FieldLexicalVariable);
 
 export const LexicalVariable = {};
 // [lyn, 11/19/12] Rename global to a new name.
@@ -603,7 +603,7 @@ export const LexicalVariable = {};
 // underscores (none were allowed before), and to replace empty string by '_'.
 // Without special handling of empty string, the connection between a
 // declaration field and its references is lots.
-LexicalVariable.renameGlobal = function(newName) {
+LexicalVariable.renameGlobal = function (newName) {
   // this is bound to field_textinput object
   const oldName = this.value_;
 
@@ -625,12 +625,12 @@ LexicalVariable.renameGlobal = function(newName) {
         const renamingFunction = block.renameLexicalVar;
         if (renamingFunction) {
           renamingFunction.call(block,
-              Shared.GLOBAL_KEYWORD + Shared.menuSeparator + oldName,
-              Shared.GLOBAL_KEYWORD + Shared.menuSeparator + newName,
-              Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + Shared.menuSeparator +
-              oldName,
-              Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + Shared.menuSeparator +
-              newName);
+            Shared.GLOBAL_KEYWORD + Shared.menuSeparator + oldName,
+            Shared.GLOBAL_KEYWORD + Shared.menuSeparator + newName,
+            Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + Shared.menuSeparator +
+            oldName,
+            Blockly.Msg.LANG_VARIABLES_GLOBAL_PREFIX + Shared.menuSeparator +
+            newName);
         }
       }
     }
@@ -662,12 +662,12 @@ LexicalVariable.renameGlobal = function(newName) {
 // Without special handling of empty string, the connection between a
 // declaration field and its references is lost.  [lyn, 11/15/13] Refactored
 // monolithic renameParam into parts that are useful on their own
-LexicalVariable.renameParam = function(newName) {
+LexicalVariable.renameParam = function (newName) {
   const htmlInput = this.htmlInput_;
   // this is bound to field_textinput object
   const oldName = this.getValue() ||
-      (htmlInput && htmlInput.defaultValue) ||
-      this.getText(); // name being changed to newName
+    (htmlInput && htmlInput.defaultValue) ||
+    this.getText(); // name being changed to newName
 
   // [lyn, 10/27/13] now check legality of identifiers
   newName = LexicalVariable.makeLegalIdentifier(newName);
@@ -676,7 +676,7 @@ LexicalVariable.renameParam = function(newName) {
   // last argument -- I.e., will not rename inner declarations, but may rename
   // newName
   return LexicalVariable.renameParamFromTo(this.getSourceBlock(), oldName,
-      newName, false);
+    newName, false);
   // Default should be false (as above), but can also play with true:
   // return LexicalVariable.renameParamFromTo(this.getSourceBlock(),
   // oldName, newName, true);
@@ -712,20 +712,20 @@ LexicalVariable.renameParam = function(newName) {
  *     internal declarations (declared inside the scope of this name).
  */
 LexicalVariable.renameParamFromTo =
-    function(block, oldName, newName, renameCapturables) {
-      // Handle mutator blocks specially
-      if (block.mustNotRenameCapturables) {
-        return LexicalVariable.renameParamWithoutRenamingCapturables(
-            block, oldName, newName, []);
-      } else if (renameCapturables) {
-        LexicalVariable.renameParamRenamingCapturables(block, oldName,
-            newName);
-        return newName;
-      } else {
-        return LexicalVariable.renameParamWithoutRenamingCapturables(
-            block, oldName, newName, []);
-      }
-    };
+  function (block, oldName, newName, renameCapturables) {
+    // Handle mutator blocks specially
+    if (block.mustNotRenameCapturables) {
+      return LexicalVariable.renameParamWithoutRenamingCapturables(
+        block, oldName, newName, []);
+    } else if (renameCapturables) {
+      LexicalVariable.renameParamRenamingCapturables(block, oldName,
+        newName);
+      return newName;
+    } else {
+      return LexicalVariable.renameParamWithoutRenamingCapturables(
+        block, oldName, newName, []);
+    }
+  };
 
 /**
  * [lyn, written 11/15/13, installed 07/01/14]
@@ -740,50 +740,50 @@ LexicalVariable.renameParamFromTo =
  * @param newName
  */
 LexicalVariable.renameParamRenamingCapturables =
-    function(sourceBlock, oldName, newName) {
-      if (newName !== oldName) { // Do nothing if names are the same
-        const namesDeclaredHere = sourceBlock.declaredNames ?
-            sourceBlock.declaredNames() : [];
-        if (namesDeclaredHere.indexOf(oldName) == -1) {
-          throw Error('LexicalVariable.renamingCapturables: oldName ' +
-              oldName +
-              ' is not in declarations {' + namesDeclaredHere.join(',') + '}');
-        }
-        const namesDeclaredAbove = [];
-        FieldLexicalVariable.getNamesInScope(sourceBlock)
-            .map(function(pair) {
-              if (pair[0] == pair[1]) {
-                namesDeclaredAbove.push(pair[0]);
-              } else {
-                namesDeclaredAbove.push(pair[0], pair[1]);
-              }
-            }); // uses translated param names
-        const declaredNames = namesDeclaredHere.concat(namesDeclaredAbove);
-        // Should really check which forbidden names are free vars in the body
-        // of declBlock.
-        if (declaredNames.indexOf(newName) != -1) {
-          throw Error(
-              'LexicalVariable.renameParamRenamingCapturables:' +
-              ' newName ' +
-              newName +
-              ' is in existing declarations {' + declaredNames.join(',') + '}');
-        } else {
-          if (sourceBlock.renameBound) {
-            const boundSubstitution = Substitution.simpleSubstitution(
-                oldName, newName);
-            const freeSubstitution = new Substitution(); // an empty
-            // substitution
-            sourceBlock.renameBound(boundSubstitution, freeSubstitution);
+  function (sourceBlock, oldName, newName) {
+    if (newName !== oldName) { // Do nothing if names are the same
+      const namesDeclaredHere = sourceBlock.declaredNames ?
+        sourceBlock.declaredNames() : [];
+      if (namesDeclaredHere.indexOf(oldName) == -1) {
+        throw Error('LexicalVariable.renamingCapturables: oldName ' +
+          oldName +
+          ' is not in declarations {' + namesDeclaredHere.join(',') + '}');
+      }
+      const namesDeclaredAbove = [];
+      FieldLexicalVariable.getNamesInScope(sourceBlock)
+        .map(function (pair) {
+          if (pair[0] == pair[1]) {
+            namesDeclaredAbove.push(pair[0]);
           } else {
-            throw Error(
-                'LexicalVariable.renameParamRenamingCapturables:' +
-                ' block ' +
-                sourceBlock.type +
-                ' is not a declaration block.');
+            namesDeclaredAbove.push(pair[0], pair[1]);
           }
+        }); // uses translated param names
+      const declaredNames = namesDeclaredHere.concat(namesDeclaredAbove);
+      // Should really check which forbidden names are free vars in the body
+      // of declBlock.
+      if (declaredNames.indexOf(newName) != -1) {
+        throw Error(
+          'LexicalVariable.renameParamRenamingCapturables:' +
+          ' newName ' +
+          newName +
+          ' is in existing declarations {' + declaredNames.join(',') + '}');
+      } else {
+        if (sourceBlock.renameBound) {
+          const boundSubstitution = Substitution.simpleSubstitution(
+            oldName, newName);
+          const freeSubstitution = new Substitution(); // an empty
+          // substitution
+          sourceBlock.renameBound(boundSubstitution, freeSubstitution);
+        } else {
+          throw Error(
+            'LexicalVariable.renameParamRenamingCapturables:' +
+            ' block ' +
+            sourceBlock.type +
+            ' is not a declaration block.');
         }
       }
-    };
+    }
+  };
 
 /**
  * [lyn, written 11/15/13, installed 07/01/14]
@@ -794,12 +794,12 @@ LexicalVariable.renameParamRenamingCapturables =
  * @param freeRenaming: a dictionary (i.e., object) mapping old names to new
  *     names
  */
-LexicalVariable.renameFree = function(block, freeSubstitution) {
+LexicalVariable.renameFree = function (block, freeSubstitution) {
   if (block) { // If block is falsey, do nothing.
     if (block.renameFree) { // should be defined on every declaration block
       block.renameFree(freeSubstitution);
     } else {
-      block.getChildren().map(function(blk) {
+      block.getChildren().map(function (blk) {
         LexicalVariable.renameFree(blk, freeSubstitution);
       });
     }
@@ -812,7 +812,7 @@ LexicalVariable.renameFree = function(block, freeSubstitution) {
  * @param block
  * @return (NameSet) set of all free names in block
  */
-LexicalVariable.freeVariables = function(block) {
+LexicalVariable.freeVariables = function (block) {
   let result = [];
   if (!block) {
     // input and next block slots might not empty
@@ -821,7 +821,7 @@ LexicalVariable.freeVariables = function(block) {
     // should be defined on every declaration block
     result = block.freeVariables();
   } else {
-    const nameSets = block.getChildren().map(function(blk) {
+    const nameSets = block.getChildren().map(function (blk) {
       return LexicalVariable.freeVariables(blk);
     });
     result = NameSet.unionAll(nameSets);
@@ -848,70 +848,85 @@ LexicalVariable.freeVariables = function(block) {
  *     (declared inside the scope of this name).
  */
 LexicalVariable.renameParamWithoutRenamingCapturables =
-    function(sourceBlock, oldName, newName, OKNewNames) {
-      if (oldName === newName) {
-        return oldName;
+  function (sourceBlock, oldName, newName, OKNewNames) {
+    if (oldName === newName) {
+      return oldName;
+    }
+    let sourcePrefix = '';
+    if (Shared.showPrefixToUser) {
+      sourcePrefix = this.lexicalVarPrefix;
+    }
+    const helperInfo =
+      LexicalVariable.renameParamWithoutRenamingCapturablesInfo(
+        sourceBlock, oldName, sourcePrefix);
+    const blocksToRename = helperInfo[0];
+    const capturables = helperInfo[1];
+    let declaredNames = []; // declared names in source block, with which
+    // newName cannot conflict
+    if (sourceBlock.declaredNames) {
+      declaredNames = sourceBlock.declaredNames();
+      // Remove oldName from list of names. We can rename oldName to itself
+      // if we desire!
+      const oldIndex = declaredNames.indexOf(oldName);
+      if (oldIndex != -1) {
+        declaredNames.splice(oldIndex, 1);
       }
-      let sourcePrefix = '';
-      if (Shared.showPrefixToUser) {
-        sourcePrefix = this.lexicalVarPrefix;
-      }
-      const helperInfo =
-          LexicalVariable.renameParamWithoutRenamingCapturablesInfo(
-              sourceBlock, oldName, sourcePrefix);
-      const blocksToRename = helperInfo[0];
-      const capturables = helperInfo[1];
-      let declaredNames = []; // declared names in source block, with which
-      // newName cannot conflict
-      if (sourceBlock.declaredNames) {
-        declaredNames = sourceBlock.declaredNames();
-        // Remove oldName from list of names. We can rename oldName to itself
-        // if we desire!
-        const oldIndex = declaredNames.indexOf(oldName);
-        if (oldIndex != -1) {
-          declaredNames.splice(oldIndex, 1);
+      // Remove newName from list of declared names if it's in OKNewNames.
+      if (OKNewNames.indexOf(newName) != -1) {
+        const newIndex = declaredNames.indexOf(newName);
+        if (newIndex != -1) {
+          declaredNames.splice(newIndex, 1);
         }
-        // Remove newName from list of declared names if it's in OKNewNames.
-        if (OKNewNames.indexOf(newName) != -1) {
-          const newIndex = declaredNames.indexOf(newName);
-          if (newIndex != -1) {
-            declaredNames.splice(newIndex, 1);
-          }
-        }
       }
-      const conflicts = LexicalVariable.sortAndRemoveDuplicates(
-          capturables.concat(declaredNames));
-      newName = FieldLexicalVariable.nameNotIn(newName, conflicts);
+    }
+    // [Issue #77 fix] Filter out orphaned getter/setter references from capturables.
+    // An orphaned reference is one where the variable was removed from its declaration
+    // but a getter/setter still references it. We should allow re-adding that name.
+    const validDeclarations = [];
+    if (sourceBlock.declaredNames) {
+      validDeclarations.push(...sourceBlock.declaredNames());
+    }
+    // Get names from parent scopes as well
+    FieldLexicalVariable.getLexicalNamesInScope(sourceBlock).forEach(function (pair) {
+      validDeclarations.push(pair[1]); // Use the code name (second element)
+    });
+    // Filter capturables to only include names that are actually declared
+    const validCapturables = capturables.filter(function (name) {
+      return validDeclarations.indexOf(name) !== -1;
+    });
+    const conflicts = LexicalVariable.sortAndRemoveDuplicates(
+      validCapturables.concat(declaredNames));
+    newName = FieldLexicalVariable.nameNotIn(newName, conflicts);
 
-      // Special case: if newName is oldName, we're done!
-      if (!(newName === oldName)) {
-        // [lyn, 12/27/2012] I don't understand what this code is for.
-        //  I think it had something to do with locals that has now been
-        // repaired?
-        /* var oldNameInDeclaredNames = false;
-          for (var i = 0; i < declaredNames.length; i++) {
-          if(oldName === declaredNames[i]){
-            oldNameInDeclaredNames = true;
-          }
+    // Special case: if newName is oldName, we're done!
+    if (!(newName === oldName)) {
+      // [lyn, 12/27/2012] I don't understand what this code is for.
+      //  I think it had something to do with locals that has now been
+      // repaired?
+      /* var oldNameInDeclaredNames = false;
+        for (var i = 0; i < declaredNames.length; i++) {
+        if(oldName === declaredNames[i]){
+          oldNameInDeclaredNames = true;
         }
-        if(!oldNameInDeclaredNames){
-        */
-        const oldNameValid = (declaredNames.indexOf(oldName) != -1);
-        if (!oldNameValid) {
-          // Rename getters and setters
-          for (let i = 0; i < blocksToRename.length; i++) {
-            const block = blocksToRename[i];
-            const renamingFunction = block.renameLexicalVar;
-            if (renamingFunction) {
-              renamingFunction.call(block,
-                  (Shared.possiblyPrefixMenuNameWith(sourcePrefix))(oldName),
-                  (Shared.possiblyPrefixMenuNameWith(sourcePrefix))(newName));
-            }
+      }
+      if(!oldNameInDeclaredNames){
+      */
+      const oldNameValid = (declaredNames.indexOf(oldName) != -1);
+      if (!oldNameValid) {
+        // Rename getters and setters
+        for (let i = 0; i < blocksToRename.length; i++) {
+          const block = blocksToRename[i];
+          const renamingFunction = block.renameLexicalVar;
+          if (renamingFunction) {
+            renamingFunction.call(block,
+              (Shared.possiblyPrefixMenuNameWith(sourcePrefix))(oldName),
+              (Shared.possiblyPrefixMenuNameWith(sourcePrefix))(newName));
           }
         }
       }
-      return newName;
-    };
+    }
+    return newName;
+  };
 
 /**
  * [lyn, written 11/15/13, installed 07/01/14] Refactored from renameParam().
@@ -931,51 +946,51 @@ LexicalVariable.renameParamWithoutRenamingCapturables =
  *     names.
  */
 LexicalVariable.renameParamWithoutRenamingCapturablesInfo =
-    function(sourceBlock, oldName, sourcePrefix) {
-      // var sourceBlock = this; // The block containing the declaration of
-      // oldName sourceBlock is block in which name is being changed. Can be
-      // one of:
-      //   * For procedure param: procedures_mutatorarg, procedures_defnoreturn,
-      //     procedures_defreturn (last two added by lyn on 10/11/13).
-      //   * For local name: local_mutatorarg, local_declaration_statement,
-      //     local_declaration_expression
-      //   * For loop name: controls_forEach, controls_forRange, controls_for
-      let inScopeBlocks = []; // list of root blocks in scope of oldName and in
-      // which
-      // renaming must take place.
-      if (sourceBlock.blocksInScope) { // Find roots of blocks in scope.
-        inScopeBlocks = sourceBlock.blocksInScope();
-      }
-      // console.log("inScopeBlocksRoots: " + JSON.stringify(inScopeBlocks.map(
-      // function(elt) { return elt.type; })));
+  function (sourceBlock, oldName, sourcePrefix) {
+    // var sourceBlock = this; // The block containing the declaration of
+    // oldName sourceBlock is block in which name is being changed. Can be
+    // one of:
+    //   * For procedure param: procedures_mutatorarg, procedures_defnoreturn,
+    //     procedures_defreturn (last two added by lyn on 10/11/13).
+    //   * For local name: local_mutatorarg, local_declaration_statement,
+    //     local_declaration_expression
+    //   * For loop name: controls_forEach, controls_forRange, controls_for
+    let inScopeBlocks = []; // list of root blocks in scope of oldName and in
+    // which
+    // renaming must take place.
+    if (sourceBlock.blocksInScope) { // Find roots of blocks in scope.
+      inScopeBlocks = sourceBlock.blocksInScope();
+    }
+    // console.log("inScopeBlocksRoots: " + JSON.stringify(inScopeBlocks.map(
+    // function(elt) { return elt.type; })));
 
-      // referenceResult is Array of (0) list of getter/setter blocks refering
-      // to old name and (1) capturable names = names to which oldName cannot
-      // be renamed without changing meaning of program.
-      const referenceResults = inScopeBlocks.map(function(blk) {
-        return LexicalVariable.referenceResult(blk, oldName,
-            sourcePrefix, []);
-      });
-      let blocksToRename = []; // A list of all getter/setter blocks whose that
-      // reference oldName
-      // and need to have their name changed to newName
-      let capturables = []; // A list of all non-global names to which oldName
-      // cannot be renamed because doing
-      // so would change the reference "wiring diagram" and thus the meaning
-      // of the program. This is the union of:
-      // (1) all names declared between the declaration of oldName and a
-      // reference to old name; and (2) all names declared in a parent of the
-      // oldName declaration that are referenced in the scope of oldName. In
-      // the case where prefixes are used (e.g., "param a", "index i, "local
-      // x") this is a list of *unprefixed* names.
-      for (let r = 0; r < referenceResults.length; r++) {
-        blocksToRename = blocksToRename.concat(referenceResults[r][0]);
-        capturables = capturables.concat(referenceResults[r][1]);
-      }
-      capturables =
-          LexicalVariable.sortAndRemoveDuplicates(capturables);
-      return [blocksToRename, capturables];
-    };
+    // referenceResult is Array of (0) list of getter/setter blocks refering
+    // to old name and (1) capturable names = names to which oldName cannot
+    // be renamed without changing meaning of program.
+    const referenceResults = inScopeBlocks.map(function (blk) {
+      return LexicalVariable.referenceResult(blk, oldName,
+        sourcePrefix, []);
+    });
+    let blocksToRename = []; // A list of all getter/setter blocks whose that
+    // reference oldName
+    // and need to have their name changed to newName
+    let capturables = []; // A list of all non-global names to which oldName
+    // cannot be renamed because doing
+    // so would change the reference "wiring diagram" and thus the meaning
+    // of the program. This is the union of:
+    // (1) all names declared between the declaration of oldName and a
+    // reference to old name; and (2) all names declared in a parent of the
+    // oldName declaration that are referenced in the scope of oldName. In
+    // the case where prefixes are used (e.g., "param a", "index i, "local
+    // x") this is a list of *unprefixed* names.
+    for (let r = 0; r < referenceResults.length; r++) {
+      blocksToRename = blocksToRename.concat(referenceResults[r][0]);
+      capturables = capturables.concat(referenceResults[r][1]);
+    }
+    capturables =
+      LexicalVariable.sortAndRemoveDuplicates(capturables);
+    return [blocksToRename, capturables];
+  };
 
 /**
  * [lyn, 10/27/13]
@@ -1003,9 +1018,9 @@ LexicalVariable.renameParamWithoutRenamingCapturablesInfo =
  * @param ident
  * @return {{isLegal: boolean, transformed: string}}
  */
-LexicalVariable.checkIdentifier = function(ident) {
+LexicalVariable.checkIdentifier = function (ident) {
   const transformed = ident.trim() // Remove leading and trailing whitespace
-      .replace(/[\s\xa0]+/g, '_'); // Replace nonempty sequences of internal
+    .replace(/[\s\xa0]+/g, '_'); // Replace nonempty sequences of internal
   // spaces by underscores
   // [lyn, 06/11/14] Previous definition focused on *legal* characters:
   //
@@ -1024,10 +1039,10 @@ LexicalVariable.checkIdentifier = function(ident) {
   const legalRegexp = new RegExp(legalStartCharRegExp + legalRestCharsRegExp);
   // " Make Emacs Happy
   const isLegal = transformed.search(legalRegexp) == 0;
-  return {isLegal: isLegal, transformed: transformed};
+  return { isLegal: isLegal, transformed: transformed };
 };
 
-LexicalVariable.makeLegalIdentifier = function(ident) {
+LexicalVariable.makeLegalIdentifier = function (ident) {
   const check = LexicalVariable.checkIdentifier(ident);
   if (check.isLegal) {
     return check.transformed;
@@ -1048,15 +1063,15 @@ LexicalVariable.makeLegalIdentifier = function(ident) {
 // 12/25-27/2012] Updated to (1) add prefix argument, (2) handle local
 // declaration statements/expressions, and (3) treat prefixes correctly when
 // they're used.
-LexicalVariable.referenceResult = function(block, name, prefix, env) {
+LexicalVariable.referenceResult = function (block, name, prefix, env) {
   if (!block) { // special case when block is null
     return [[], []];
   }
   const referenceResults = block.referenceResults ?
-      block.referenceResults(name, prefix, env) :
-      block.getChildren().map(function(blk) {
-        return LexicalVariable.referenceResult(blk, name, prefix, env);
-      });
+    block.referenceResults(name, prefix, env) :
+    block.getChildren().map(function (blk) {
+      return LexicalVariable.referenceResult(blk, name, prefix, env);
+    });
   let blocksToRename = [];
   let capturables = [];
   for (let r = 0; r < referenceResults.length; r++) {
@@ -1066,7 +1081,7 @@ LexicalVariable.referenceResult = function(block, name, prefix, env) {
   return [blocksToRename, capturables];
 };
 
-LexicalVariable.sortAndRemoveDuplicates = function(strings) {
+LexicalVariable.sortAndRemoveDuplicates = function (strings) {
   const sorted = strings.sort((a, b) => {
     if (typeof a == 'string' && typeof b == 'string') {
       return a.localeCompare(b);
@@ -1074,7 +1089,7 @@ LexicalVariable.sortAndRemoveDuplicates = function(strings) {
       return a[1].localeCompare(b[1]);
     } else {
       throw Error('LexicalVariable.sortAndRemoveDuplicates: ' +
-            'arguments must be strings or arrays of strings');
+        'arguments must be strings or arrays of strings');
     }
   });
   const nodups = [];
@@ -1100,7 +1115,7 @@ LexicalVariable.sortAndRemoveDuplicates = function(strings) {
 
 // [lyn, 11/23/12] Given a block, return the block connected to its next
 // connection; If there is no next connection or no block, return null.
-LexicalVariable.getNextTargetBlock = function(block) {
+LexicalVariable.getNextTargetBlock = function (block) {
   if (block && block.nextConnection && block.nextConnection.targetBlock()) {
     return block.nextConnection.targetBlock();
   } else {
@@ -1117,7 +1132,7 @@ LexicalVariable.getNextTargetBlock = function(block) {
  * @return True iff strings1 and strings2 have the same names in the same
  *     order; false otherwise.
  */
-LexicalVariable.stringListsEqual = function(strings1, strings2) {
+LexicalVariable.stringListsEqual = function (strings1, strings2) {
   const len1 = strings1.length;
   const len2 = strings2.length;
   if (len1 !== len2) {
