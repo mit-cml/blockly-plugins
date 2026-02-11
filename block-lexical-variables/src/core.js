@@ -24,7 +24,8 @@ import {Substitution} from './substitution.js';
 import './procedure_database.js';
 import * as Blockly from 'blockly/core';
 import {GerasRenderer} from './renderers/geras.js';
-import {lexicalVariableScopeMixin} from './mixins.js'
+import {lexicalVariableScopeMixin} from './mixins.js';
+import {lexical_variable_get, lexical_variable_set} from './blocks/variable-get-set.js';
 
 export class LexicalVariablesPlugin {
 
@@ -71,6 +72,8 @@ export class LexicalVariablesPlugin {
     static NameSet = NameSet;
     static Shared = Shared;
     static Substitution = Substitution;
+    static lexical_variable_get = lexical_variable_get;
+    static lexical_variable_set = lexical_variable_set;
 }
 
 Blockly.blockRendering.register('geras2_renderer', GerasRenderer);
