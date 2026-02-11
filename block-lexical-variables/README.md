@@ -189,6 +189,25 @@ for your variables, as this would interfere with the way that variables are decl
 used with this plugin.  Just create an ordinary Variables category, if you want, and
 place the lexical-variable-get and lexical-variable-set blocks in there.
 
+### Exported Blocks
+
+The plugin exports the `lexical_variable_get` and `lexical_variable_set` block definitions, which are required by the core fields. These blocks are automatically registered with Blockly when you import the plugin:
+
+```js
+// Blocks are automatically registered when importing
+import {LexicalVariablesPlugin} from '@mit-app-inventor/blockly-block-lexical-variables';
+
+// You can also access the block definitions directly if needed
+import {lexical_variable_get, lexical_variable_set} from '@mit-app-inventor/blockly-block-lexical-variables';
+
+// Or from the core module
+import {LexicalVariablesPlugin} from '@mit-app-inventor/blockly-block-lexical-variables/core';
+const getterBlock = LexicalVariablesPlugin.lexical_variable_get;
+const setterBlock = LexicalVariablesPlugin.lexical_variable_set;
+```
+
+The blocks are registered idempotently, so importing the plugin multiple times is safe.
+
 ## BYOB (Build Your Own Blocks), aka, how to build your own blocks using the lexical variable fields
 The lexical variable fields are designed to be used in blocks that contain a set of methods that the lexical variable
 implementation will call. In the general case, you would need to define all of these methods (see 

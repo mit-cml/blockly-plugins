@@ -10,3 +10,4 @@ import './blocks.js';
 import './generators.js';
 
 export {LexicalVariablesPlugin};
+export {lexical_variable_get, lexical_variable_set} from './blocks/variable-get-set.js';
