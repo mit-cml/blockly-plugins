@@ -338,6 +338,21 @@ Blockly.Blocks['procedures_defnoreturn'] = {
       }
     }
   },
+  saveExtraState: function() {
+    const state = {};
+    if (!this.horizontalParameters) {
+      state['verticalParameters'] = true;
+    }
+    if (this.arguments_.length > 0) {
+      state['params'] = this.arguments_.slice();
+    }
+    return state;
+  },
+  loadExtraState: function(state) {
+    const params = (state['params'] || []).slice();
+    this.horizontalParameters = !state['verticalParameters'];
+    this.updateParams_(params);
+  },
   mutationToDom: function() {
     const container = Blockly.utils.xml.createElement('mutation');
     if (!this.horizontalParameters) {
@@ -570,6 +585,8 @@ Blockly.Blocks['procedures_defreturn'] = {
   parameterFlydown: Blockly.Blocks.procedures_defnoreturn.parameterFlydown,
   setParameterOrientation:
       Blockly.Blocks.procedures_defnoreturn.setParameterOrientation,
+  saveExtraState: Blockly.Blocks.procedures_defnoreturn.saveExtraState,
+  loadExtraState: Blockly.Blocks.procedures_defnoreturn.loadExtraState,
   mutationToDom: Blockly.Blocks.procedures_defnoreturn.mutationToDom,
   domToMutation: Blockly.Blocks.procedures_defnoreturn.domToMutation,
   decompose: Blockly.Blocks.procedures_defnoreturn.decompose,
@@ -902,6 +919,24 @@ Blockly.Blocks['procedures_callnoreturn'] = {
       }
     }
   },
+  saveExtraState: function() {
+    const state = {};
+    state['name'] = this.getFieldValue('PROCNAME');
+    const params = [];
+    for (let x = 0; this.getInput('ARG' + x); x++) {
+      params.push(this.getInput('ARG' + x).fieldRow[0].getText());
+    }
+    if (params.length > 0) {
+      state['params'] = params;
+    }
+    return state;
+  },
+  loadExtraState: function(state) {
+    const name = state['name'];
+    this.setFieldValue(name, 'PROCNAME');
+    this.arguments_ = (state['params'] || []).slice();
+    this.setProcedureParameters(this.arguments_, null, true);
+  },
   mutationToDom: function() {
     // Save the name and arguments (none of which are editable).
     const container = Blockly.utils.xml.createElement('mutation');
@@ -1010,6 +1045,8 @@ Blockly.Blocks['procedures_callreturn'] = {
   renameProcedure: Blockly.Blocks.procedures_callnoreturn.renameProcedure,
   setProcedureParameters:
   Blockly.Blocks.procedures_callnoreturn.setProcedureParameters,
+  saveExtraState: Blockly.Blocks.procedures_callnoreturn.saveExtraState,
+  loadExtraState: Blockly.Blocks.procedures_callnoreturn.loadExtraState,
   mutationToDom: Blockly.Blocks.procedures_callnoreturn.mutationToDom,
   domToMutation: Blockly.Blocks.procedures_callnoreturn.domToMutation,
   renameVar: Blockly.Blocks.procedures_callnoreturn.renameVar,
