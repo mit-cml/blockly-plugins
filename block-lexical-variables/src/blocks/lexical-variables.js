@@ -361,6 +361,20 @@ Blockly.Blocks['local_declaration_statement'] = {
     this.localNames_ = this.declaredNames(); // ensure localNames_ is in sync
     // with paramFlydown fields
   },
+  saveExtraState: function() {
+    const state = {};
+    if (this.localNames_.length > 0) {
+      state['localNames'] = this.localNames_.slice();
+    }
+    return state;
+  },
+  loadExtraState: function(state) {
+    const names = state['localNames'];
+    if (names && names.length > 0) {
+      this.localNames_ = names.slice();
+    }
+    this.updateDeclarationInputs_(this.localNames_);
+  },
   // Store local names in mutation element of XML for block
   mutationToDom: function() {
     const container = Blockly.utils.xml.createElement('mutation');
@@ -727,6 +741,8 @@ Blockly.Blocks['local_declaration_expression'] = {
   withLexicalVarsAndPrefix:
     Blockly.Blocks.local_declaration_statement.withLexicalVarsAndPrefix,
   onchange: Blockly.Blocks.local_declaration_statement.onchange,
+  saveExtraState: Blockly.Blocks.local_declaration_statement.saveExtraState,
+  loadExtraState: Blockly.Blocks.local_declaration_statement.loadExtraState,
   mutationToDom: Blockly.Blocks.local_declaration_statement.mutationToDom,
   domToMutation: Blockly.Blocks.local_declaration_statement.domToMutation,
   updateDeclarationInputs_:
