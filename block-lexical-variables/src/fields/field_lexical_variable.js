@@ -90,7 +90,8 @@ export class FieldLexicalVariable extends Blockly.FieldDropdown {
     if (varname) {
       this.doValueUpdate_(varname);
     } else {
-      this.doValueUpdate_(Blockly.Variables.generateUniqueName());
+      const ws = this.getSourceBlock()?.workspace || Blockly.common.getMainWorkspace();
+      this.doValueUpdate_(Blockly.Variables.generateUniqueName(ws));
     }
   };
 
