@@ -281,7 +281,7 @@ suite ('FieldLexical', function() {
         '  <block type="controls_forRange">' +
         '    <field name="VAR">number</field>' +
         '    <value name="FROM">' +
-        '      <block type="logic_boolean" id="a"/>' +
+        '      <block type="math_number" id="a"/>' +
         '    </value>' +
         '  </block>' +
         '</xml>');
@@ -292,7 +292,7 @@ suite ('FieldLexical', function() {
         '  <block type="controls_forRange">' +
         '    <field name="VAR">number</field>' +
         '    <value name="TO">' +
-        '      <block type="logic_boolean" id="a"/>' +
+        '      <block type="math_number" id="a"/>' +
         '    </value>' +
         '  </block>' +
         '</xml>');
@@ -303,7 +303,7 @@ suite ('FieldLexical', function() {
         '  <block type="controls_forRange">' +
         '    <field name="VAR">number</field>' +
         '    <value name="BY">' +
-        '      <block type="logic_boolean" id="a"/>' +
+        '      <block type="math_number" id="a"/>' +
         '    </value>' +
         '  </block>' +
         '</xml>');
@@ -327,7 +327,7 @@ suite ('FieldLexical', function() {
         '  <block type="controls_forEach">' +
         '    <field name="VAR">item</field>' +
         '    <value name="LIST">' +
-        '      <block type="logic_boolean" id="a"/>' +
+        '      <block type="lists_create_empty" id="a"/>' +
         '    </value>' +
         '  </block>' +
         '</xml>');
