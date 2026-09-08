@@ -1,0 +1,311 @@
+/**
+ * @fileoverview Styles for workspace notes.
+ *
+ * Registered at module load: Blockly.Css.register only takes effect for
+ * injections that happen afterwards, so importing this plugin before calling
+ * Blockly.inject is required.
+ *
+ * A note is a plain rounded card. Almost everything here is a small
+ * adjustment to elements core already builds and already sizes - the card is
+ * core's own highlight rect, and the writing area is core's own textarea - so
+ * that resizing, collapsing and selection keep working without help.
+ *
+ * Colours come from the --commentFillColour / --commentBorderColour custom
+ * properties core's comment stylesheet reads, plus one of ours for the
+ * writing area's fill.
+ *
+ * NOTE: this stylesheet is a JavaScript template literal. A backtick anywhere
+ * inside it, including in a comment quoting a selector, silently ends the
+ * literal. npm run build will not catch that, because it is a runtime error
+ * rather than a syntax one; npm test will.
+ */
+
+import * as Blockly from 'blockly/core';
+
+import {
+  BODY_INSET,
+  NOTE_CLASS,
+  PINNED_CLASS,
+  RULE_CLASS,
+  SCROLLBAR_WIDTH,
+  TITLED_CLASS,
+  TITLE_CLASS,
+  TITLE_FONT_SIZE,
+  TOPBAR_HEIGHT,
+} from './constants';
+
+Blockly.Css.register(`
+/*
+ * The sheet of paper. This is core's own highlight rect, which it resizes on
+ * every pointer move of a drag and strokes when the note is selected; the
+ * rounded corners are set as attributes by the note itself.
+ */
+.${NOTE_CLASS} .blocklyCommentHighlight {
+  fill: var(--commentFillColour);
+  stroke: var(--commentBorderColour);
+  stroke-width: 1px;
+}
+
+/*
+ * A pinned note is locked in place, and says so with a heavier edge - the
+ * quietest mark available now that the bar carries no icons.
+ */
+.${NOTE_CLASS}.${PINNED_CLASS} .blocklyCommentHighlight {
+  stroke-width: 2px;
+}
+
+/*
+ * No header strip: the title sits on the paper. The rect stays, because core
+ * measures its rendered height and derives the writing area's offset from it.
+ */
+.${NOTE_CLASS} .blocklyCommentTopbarBackground {
+  fill: none;
+  height: ${TOPBAR_HEIGHT}px;
+}
+
+/*
+ * Every action is in the context menu, so the bar carries no buttons. CSS is
+ * how core hides one itself - it ships .blocklyDeleteIcon as display:none -
+ * and CommentBarButton.canBeFocused() defers to checkVisibility(), so
+ * keyboard navigation skips a hidden button rather than trapping on it.
+ */
+.${NOTE_CLASS} .blocklyFoldoutIcon,
+.${NOTE_CLASS} .blocklyDeleteIcon {
+  display: none;
+}
+
+/*
+ * You write on the paper, not in a box on it.
+ *
+ * Core gives its textarea a fill and a 1px border, which is what makes a
+ * comment read as a panel - and a lighter bordered panel inset in a coloured
+ * body is precisely how Blockly draws a field on a block. Both come off here,
+ * so the note stays one flat colour and only the rule under the title divides
+ * it. Core's own 5px padding goes too, so the body's first character lines up
+ * with the first letter of the title rather than sitting 5px right of it.
+ */
+.${NOTE_CLASS} .blocklyMinimalBody {
+  box-sizing: border-box;
+  padding: 0 ${BODY_INSET}px ${BODY_INSET}px;
+}
+
+/*
+ * The writing area itself: core's fill, border and padding off, and the
+ * scrollbar quietened.
+ *
+ * Core's textarea scrolls with the platform's own bar, and on a system set to
+ * show scrollbars always - rather than as an overlay that fades - that is a
+ * full-width white track down the side of the sheet: the one piece of
+ * furniture on a note that otherwise carries nothing but the words on it.
+ *
+ * So it is made quiet rather than removed. Removing it outright would take the
+ * only sign that there is more text below, on the one element of a note that
+ * can have more to show than fits. Instead the gutter is narrowed and always
+ * reserved - the text keeps its width whether the bar is painted or not, so
+ * nothing reflows - and the paint is what changes: nothing at rest, and while
+ * the pointer is on the note or the caret is in it, a thumb in the paper's own
+ * edge colour, the same hairline that draws the card and the rule.
+ */
+.${NOTE_CLASS} .blocklyTextarea {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.${NOTE_CLASS}:hover .blocklyTextarea,
+.${NOTE_CLASS} .blocklyTextarea:focus {
+  scrollbar-color: var(--commentBorderColour) transparent;
+}
+
+/*
+ * The same for engines without scrollbar-color (Safari, and Chrome before
+ * 121). Chrome 121+ ignores these once the standard properties above are set
+ * to anything but auto, so the two cannot both apply and disagree.
+ */
+.${NOTE_CLASS} .blocklyTextarea::-webkit-scrollbar {
+  width: ${SCROLLBAR_WIDTH}px;
+}
+
+.${NOTE_CLASS} .blocklyTextarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.${NOTE_CLASS} .blocklyTextarea::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: ${SCROLLBAR_WIDTH / 2}px;
+}
+
+.${NOTE_CLASS}:hover .blocklyTextarea::-webkit-scrollbar-thumb,
+.${NOTE_CLASS} .blocklyTextarea:focus::-webkit-scrollbar-thumb {
+  background: var(--commentBorderColour);
+}
+
+/*
+ * Where there is no pointer there is no hover, and a rule that only paints on
+ * hover would leave a touch device with a permanently invisible scrollbar -
+ * including while a finger is actually dragging the text. So on those the
+ * thumb is simply always painted; it is thin and in the paper's own colour,
+ * which was the point.
+ */
+@media (hover: none) {
+  .${NOTE_CLASS} .blocklyTextarea {
+    scrollbar-color: var(--commentBorderColour) transparent;
+  }
+
+  .${NOTE_CLASS} .blocklyTextarea::-webkit-scrollbar-thumb {
+    background: var(--commentBorderColour);
+  }
+}
+
+/*
+ * The hairline under the title. Hidden on a collapsed note, where the title
+ * row is the whole note and there is no body to divide it from.
+ */
+.${NOTE_CLASS} .${RULE_CLASS} {
+  stroke: var(--commentBorderColour);
+  stroke-width: 1px;
+}
+
+.${NOTE_CLASS}.blocklyCollapsed .${RULE_CLASS} {
+  display: none;
+}
+
+/* Bring the resize handle inside the sheet instead of over its corner. */
+.${NOTE_CLASS} .blocklyResizeHandle {
+  transform: translate(-${BODY_INSET}px, -${BODY_INSET}px);
+}
+
+.blocklyRTL .${NOTE_CLASS} .blocklyResizeHandle {
+  transform: scale(-1, 1) translate(-${BODY_INSET}px, -${BODY_INSET}px);
+}
+
+/*
+ * Title. A heading on the paper, so it takes the weight of one, and a click
+ * opens its editor the way a click on a field does.
+ *
+ * The type is set below rather than here: the renderer writes the font
+ * SHORTHAND, which resets weight and size, so a rule at this specificity
+ * would lose both.
+ */
+.${TITLE_CLASS} {
+  dominant-baseline: middle;
+  user-select: none;
+  cursor: text;
+}
+
+.blocklyReadonly.blocklyComment .${TITLE_CLASS} {
+  cursor: inherit;
+}
+
+/*
+ * The selectors below are deliberately over-specific. The renderer generates
+ * a .blocklyText rule with fill #fff at three classes
+ * (.thrasos-renderer.classic-theme .blocklyText), so a single-class rule
+ * loses to it and the title comes out white on pale paper; four here means
+ * the outcome does not depend on which stylesheet was injected last.
+ *
+ * The type has to be set here for the same reason, and it is the sharper of
+ * the two traps: alongside that fill rule the renderer writes
+ *
+ *   .thrasos-renderer.classic-theme .blocklyText { font: normal 11pt sans-serif; }
+ *
+ * and font is a SHORTHAND, so it resets font-weight and font-size to the
+ * theme's field values every time. A plain .blocklyNoteTitle { font-weight:
+ * bold } is therefore not merely outranked, it is overwritten - which is why
+ * the title rendered at body weight and body size, indistinguishable from the
+ * text it heads.
+ */
+.${NOTE_CLASS}.blocklyComment .${TITLE_CLASS}.blocklyText {
+  fill: #000;
+  font-size: ${TITLE_FONT_SIZE}px;
+  font-weight: bold;
+}
+
+/*
+ * An unnamed note shows a placeholder rather than an empty row, greyed so it
+ * reads as a prompt and not as a title someone typed.
+ */
+.${NOTE_CLASS}.blocklyComment:not(.${TITLED_CLASS}) .${TITLE_CLASS}.blocklyText {
+  fill: #999;
+}
+
+.blocklyRTL .${TITLE_CLASS} {
+  /* Revert the top bar's mirroring, matching core's .blocklyCommentPreview. */
+  transform: scale(-1, 1);
+  direction: rtl;
+}
+
+/*
+ * Core's truncated body preview never shows: the title stands in for it, both
+ * on an expanded note and on a collapsed one. The second selector is needed
+ * because core reveals the preview once a comment collapses, with
+ * .blocklyCollapsed.blocklyComment .blocklyCommentPreview, which outranks a
+ * two-class rule.
+ */
+.${NOTE_CLASS} .blocklyCommentPreview,
+.${NOTE_CLASS}.blocklyComment.blocklyCollapsed .blocklyCommentPreview {
+  visibility: hidden;
+}
+
+/*
+ * The title's editor, which is meant to be invisible.
+ *
+ * .blocklyHtmlInput is Blockly's field editor, and a field editor is supposed
+ * to announce itself - it sits centred in a white box over the block. On a
+ * note that reads as a mode: a panel opens on the paper. Everything that draws
+ * the box comes off, so clicking the title just puts a caret in it and the
+ * text carries on looking like the heading it already was.
+ *
+ * The background is the browser's own input default rather than anything
+ * Blockly sets, which is why it has to be cleared explicitly.
+ *
+ * The type is not here: the size is scaled by the workspace zoom, and the
+ * weight has to beat a three-class renderer rule, so title_editor.ts sets
+ * both inline where the scale is known.
+ */
+.blocklyNoteTitleInput {
+  background: transparent;
+  color: #000;
+  text-align: left;
+  padding: 0;
+}
+
+.blocklyNoteTitleInput::placeholder {
+  color: #999;
+  opacity: 1;
+}
+
+.blocklyRTL .blocklyNoteTitleInput {
+  text-align: right;
+}
+
+/* The title is hidden while its editor is open, as a field's label is. */
+.blocklyEditing .${TITLE_CLASS} {
+  visibility: hidden;
+}
+
+/*
+ * Selection, last in this sheet and over-specific on purpose.
+ *
+ * Core's ring is .blocklySelected .blocklyCommentHighlight - two classes,
+ * exactly what the card rule above is - and this stylesheet is registered
+ * after core's, so without a third class the card's own hairline would
+ * quietly win and a selected note would show no ring at all.
+ *
+ * The collapsed selectors undo core's own pair, which drops the ring from the
+ * highlight rect and moves it onto the top bar. That is right for a comment
+ * whose bar is its whole collapsed body; here the card is still the shape to
+ * outline, and the bar has no fill to carry a stroke.
+ */
+.blocklySelected.${NOTE_CLASS} .blocklyCommentHighlight,
+.blocklySelected.${NOTE_CLASS}.blocklyCollapsed .blocklyCommentHighlight {
+  stroke: #fc3;
+  stroke-width: 3px;
+}
+
+.blocklySelected.${NOTE_CLASS}.blocklyCollapsed .blocklyCommentTopbarBackground {
+  stroke: none;
+}
+`);

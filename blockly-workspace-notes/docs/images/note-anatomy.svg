@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="305" viewBox="0 0 780 305" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <rect width="780" height="305" fill="#ffffff"/>
+
+  <g stroke="#9aa0a6" stroke-width="1" fill="none">
+    <path d="M215 84 H 246"/>
+    <path d="M215 122 H 246"/>
+    <path d="M215 226 H 246 L 260 212"/>
+    <path d="M565 150 H 420"/>
+    <path d="M565 240 H 545 L 522 222"/>
+  </g>
+
+  <g font-size="12" fill="#3c4043">
+    <text x="208" y="88" text-anchor="end" font-weight="600">Title</text>
+    <text x="208" y="104" text-anchor="end" fill="#80868b">click it and type</text>
+    <text x="208" y="126" text-anchor="end" font-weight="600">Rule</text>
+    <text x="208" y="142" text-anchor="end" fill="#80868b">equal air above and below</text>
+    <text x="208" y="230" text-anchor="end" font-weight="600">Rounded card</text>
+    <text x="208" y="246" text-anchor="end" fill="#80868b">pale fill, hairline edge</text>
+    <text x="572" y="147" font-weight="600">The body</text>
+    <text x="572" y="163" fill="#80868b">written onto the paper, no box</text>
+    <text x="572" y="244" font-weight="600">Resize handle</text>
+  </g>
+
+  <!-- The note: 260 x 180, margin 16 on every side -->
+  <g transform="translate(260, 60)">
+    <rect width="260" height="180" rx="8" ry="8" fill="#f9edbb" stroke="#dbd0a4" stroke-width="1"/>
+    <text x="16" y="24" font-size="16" font-weight="bold" fill="#000000" dominant-baseline="middle">Shopping list</text>
+    <line x1="16" y1="40" x2="244" y2="40" stroke="#dbd0a4" stroke-width="1"/>
+    <g font-size="14.67" fill="#000000">
+      <text x="16" y="62">milk</text>
+      <text x="16" y="78">bread</text>
+      <text x="16" y="94">coffee</text>
+    </g>
+    <g stroke="#5f6368" stroke-width="1.2" fill="none" opacity="0.7">
+      <path d="M234 160 L 240 154"/>
+      <path d="M237 163 L 243 157"/>
+    </g>
+  </g>
+
+  <!-- The margin, called out once: it is the same on all four sides -->
+  <g stroke="#c8ccd0" stroke-width="1" fill="none">
+    <path d="M260 262 H 276"/>
+    <path d="M260 258 V 266"/>
+    <path d="M276 258 V 266"/>
+  </g>
+  <text x="284" y="266" font-size="10" fill="#9aa0a6">margin 16, the same on every side</text>
+</svg>
