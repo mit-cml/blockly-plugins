@@ -24,6 +24,20 @@ import {createSwatchRow} from './colour_swatches';
 
 const ScopeType = Blockly.ContextMenuRegistry.ScopeType;
 
+/**
+ * How many plugin instances are holding these items.
+ *
+ * The context menu registry is a global singleton while the plugin is
+ * per-workspace, so registration is reference-counted the same way the
+ * serializer, paster and XML wrappers are. Without it a second workspace - or
+ * a host that re-injects one - throws on the first duplicate item id, and the
+ * first one out would take the menu away from the ones still running.
+ *
+ * The palette belongs to whichever instance registers first, matching what
+ * `registerNoteSerializers` does with its own options.
+ */
+let registrationCount = 0;
+
 /** IDs of the items this module registers, in the order they are added. */
 const NOTE_ITEM_IDS = [
   'noteColour',
@@ -49,6 +63,7 @@ function noteFromScope(scope: Blockly.ContextMenuRegistry.Scope): Note | null {
  * @param options.palette The colour swatches to offer.
  */
 export function registerNoteContextMenu({palette = DEFAULT_PALETTE} = {}) {
+  if (registrationCount++) return;
   const registry = Blockly.ContextMenuRegistry.registry;
 
   // Core does not register these by default; without them there is no
@@ -214,6 +229,8 @@ export function registerNoteContextMenu({palette = DEFAULT_PALETTE} = {}) {
  * Removes the note items and restores core's `commentCreate`.
  */
 export function unregisterNoteContextMenu(): void {
+  if (--registrationCount > 0) return;
+  registrationCount = 0;
   const registry = Blockly.ContextMenuRegistry.registry;
 
   for (const id of NOTE_ITEM_IDS) {

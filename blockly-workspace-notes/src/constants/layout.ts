@@ -37,6 +37,36 @@ export const TITLE_LINE_HEIGHT = 16;
 export const TITLE_FONT_SIZE = TITLE_LINE_HEIGHT;
 
 /**
+ * The box the pin marker is drawn in.
+ *
+ * One line box, so a pinned title row is exactly as tall as an unpinned one and
+ * the row never needs remeasuring. The glyph itself is authored on a 24-unit
+ * grid and scaled to fit, which also thins its 2-unit stroke to about 1.3px -
+ * about right for a mark that should read as punctuation beside the heading
+ * rather than as a control.
+ */
+export const PIN_ICON_SIZE = TITLE_LINE_HEIGHT;
+
+/** The gap between the pin marker and the title it leads. */
+export const PIN_ICON_GAP = MEDIUM_PADDING;
+
+/**
+ * The grid the pin glyph is authored on, and where its ink actually sits
+ * within it.
+ *
+ * Tabler draws on 24 units but the pin only occupies x 7-17 and y 4-21, so
+ * roughly a third of the box is padding. Laying the marker out by that box
+ * would set it in from the note's margin by the padding and leave a gap to the
+ * title a third wider than asked for - which is exactly the sort of uneven
+ * spacing the rest of this layout is built to avoid. So the ink box is what
+ * gets positioned, and these are its numbers.
+ */
+export const PIN_GLYPH_GRID = 24;
+
+/** The pin glyph's ink, in grid units. */
+export const PIN_GLYPH_INK = {x: 7, y: 4, width: 10, height: 17};
+
+/**
  * The margin on every side of a note, and the single number the rest of the
  * layout is built from.
  *

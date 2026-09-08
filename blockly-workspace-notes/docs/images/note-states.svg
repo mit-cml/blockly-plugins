@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="920" height="600" viewBox="0 0 920 600" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
   <title>The states a note can be in</title>
-  <desc>Five notes at their default size: a named note, one not named yet, a collapsed one, a pinned one and a selected one.</desc>
+  <desc>Five notes at their default size: a named note, one not named yet, a collapsed one, a pinned one showing its pin marker, and a selected one.</desc>
 
   <rect width="920" height="600" fill="#ffffff"/>
 
@@ -15,7 +15,7 @@
     <text x="40" y="64">the title is what you scan for</text>
     <text x="330" y="64">greyed placeholders, both rows</text>
     <text x="620" y="64">the title row is the whole note</text>
-    <text x="40" y="364">locked in place, heavier edge</text>
+    <text x="40" y="364">a pin before the title, and a heavier edge</text>
     <text x="330" y="364">the ring follows the card</text>
   </g>
 
@@ -48,7 +48,16 @@
   <!-- Pinned: the same note with a 2px edge instead of 1px. -->
   <g transform="translate(40, 384)">
     <rect x="1" y="1" width="258" height="178" rx="8" ry="8" fill="#f9bbc5" stroke="#dba4ad" stroke-width="2"/>
-    <text x="16" y="24" font-size="16" font-weight="bold" fill="#000000" dominant-baseline="middle">Do not move</text>
+    <!-- The pin marker: Tabler's glyph on a 24 grid, scaled to a 16px line
+         box and offset so its ink starts on the note's 16px margin. -->
+    <g transform="translate(11.333, 15.667) scale(0.6667)" fill="none"
+       stroke="#000000" stroke-width="2" stroke-linecap="round"
+       stroke-linejoin="round">
+      <path d="M9 4v6l-2 4v2h10v-2l-2 -4v-6"/>
+      <path d="M12 16l0 5"/>
+      <path d="M8 4l8 0"/>
+    </g>
+    <text x="27.667" y="24" font-size="16" font-weight="bold" fill="#000000" dominant-baseline="middle">Do not move</text>
     <line x1="16" y1="40" x2="244" y2="40" stroke="#dba4ad" stroke-width="1"/>
     <text x="16" y="66" font-size="14.67" fill="#000000">Locked in place.</text>
   </g>

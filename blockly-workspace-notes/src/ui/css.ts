@@ -24,6 +24,7 @@ import * as Blockly from 'blockly/core';
 
 import {
   NOTE_CLASS,
+  PIN_CLASS,
   PINNED_CLASS,
   RULE_CLASS,
   TITLED_CLASS,
@@ -49,11 +50,41 @@ Blockly.Css.register(`
 }
 
 /*
- * A pinned note is locked in place, and says so with a heavier edge - the
- * quietest mark available now that the bar carries no icons.
+ * A pinned note is locked in place, and says so twice: a marker at the head of
+ * the title row, and a heavier edge.
+ *
+ * Two quiet signals rather than one loud one. The edge is what carries at a
+ * glance across a busy workspace, and it is still legible when a long title has
+ * pushed the marker to the very corner of the note.
  */
 .${NOTE_CLASS}.${PINNED_CLASS} .blocklyCommentHighlight {
   stroke-width: 2px;
+}
+
+/*
+ * The marker itself: Tabler's pin, stroked rather than filled so it sits at the
+ * weight of the heading it leads rather than as a solid blot on the paper.
+ *
+ * display:none rather than visibility, matching how core hides its own bar
+ * buttons - CommentBarButton.canBeFocused() defers to checkVisibility(), so a
+ * display:none element is skipped by keyboard navigation rather than trapped
+ * on. It is decoration either way, and aria-hidden in the markup.
+ *
+ * pointer-events:none because the title row is the note's drag handle. A note
+ * has to stay draggable by the part of the row the marker occupies.
+ */
+.${NOTE_CLASS} .${PIN_CLASS} {
+  display: none;
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.${NOTE_CLASS}.${PINNED_CLASS} .${PIN_CLASS} {
+  display: block;
 }
 
 /*
@@ -66,10 +97,12 @@ Blockly.Css.register(`
 }
 
 /*
- * Every action is in the context menu, so the bar carries no buttons. CSS is
- * how core hides one itself - it ships .blocklyDeleteIcon as display:none -
- * and CommentBarButton.canBeFocused() defers to checkVisibility(), so
- * keyboard navigation skips a hidden button rather than trapping on it.
+ * Every action is in the context menu, so the bar carries no buttons - the pin
+ * marker above is a state marker, not a control, and nothing on the row can be
+ * clicked. CSS is how core hides one itself - it ships .blocklyDeleteIcon as
+ * display:none - and CommentBarButton.canBeFocused() defers to
+ * checkVisibility(), so keyboard navigation skips a hidden button rather than
+ * trapping on it.
  */
 .${NOTE_CLASS} .blocklyFoldoutIcon,
 .${NOTE_CLASS} .blocklyDeleteIcon {

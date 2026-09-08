@@ -3,15 +3,17 @@
  * state `model/note_mixin.ts` defines.
  *
  * Everything here is SVG the note adds to, or takes away from, the comment
- * core already built — the card, the title and the rule under it — plus the
- * plumbing that keeps that chrome in step with a comment core is resizing,
- * collapsing and dragging underneath it.
+ * core already built — the card, the title, the rule under it, and the marker
+ * that shows a note is pinned — plus the plumbing that keeps that chrome in
+ * step with a comment core is resizing, collapsing and dragging underneath
+ * it.
  */
 
 import * as Blockly from 'blockly/core';
 
 import {
   NOTE_CLASS,
+  PIN_CLASS,
   PINNED_CLASS,
   RULE_CLASS,
   TITLED_CLASS,
@@ -22,6 +24,10 @@ import {
   FRAME_RADIUS,
   MIN_SIZE,
   NOTE_MARGIN,
+  PIN_GLYPH_GRID,
+  PIN_GLYPH_INK,
+  PIN_ICON_GAP,
+  PIN_ICON_SIZE,
   TITLE_RULE_Y,
   TOPBAR_HEIGHT,
 } from '../constants/layout';
@@ -53,6 +59,9 @@ export class Note extends RenderedNoteBase {
 
   /** The SVG text element holding the title. */
   private titleElement_?: SVGTextElement;
+
+  /** The marker shown while the note is pinned. */
+  private pin_?: SVGGElement;
 
   /** The text node inside `titleElement_`. */
   private titleNode_?: Text;
@@ -110,6 +119,42 @@ export class Note extends RenderedNoteBase {
      * @private
      */
     this.titlePressPoint_ = null;
+
+    /**
+     * The pin marker. Tabler's `pinned` glyph, authored on a 24-unit grid.
+     *
+     * It lives in the root group beside the rule, *not* in core's top bar.
+     * Core mirrors that bar wholesale in RTL and each of its children has to
+     * undo the mirror for itself; the root group is not mirrored, so the
+     * marker flips its own coordinates the way `renderRule` does and the two
+     * stay consistent.
+     *
+     * `aria-hidden` because it is decoration: it repeats what `setMovable`
+     * already tells assistive technology, and a second announcement of the
+     * same fact is noise. The stylesheet hides it entirely unless the note is
+     * pinned, and keeps it out of the way of pointer events.
+     * @private
+     */
+    this.pin_ = Blockly.utils.dom.createSvgElement(Blockly.utils.Svg.G, {
+      'class': PIN_CLASS,
+      'aria-hidden': 'true',
+    });
+    if (this.rule_) {
+      root.insertBefore(this.pin_, this.rule_.nextSibling);
+    } else {
+      root.appendChild(this.pin_);
+    }
+    for (const d of [
+      'M9 4v6l-2 4v2h10v-2l-2 -4v-6',
+      'M12 16l0 5',
+      'M8 4l8 0',
+    ]) {
+      Blockly.utils.dom.createSvgElement(
+        Blockly.utils.Svg.PATH,
+        {'d': d},
+        this.pin_,
+      );
+    }
 
     /**
      * The SVG text element showing the title above the writing area.
@@ -268,10 +313,12 @@ export class Note extends RenderedNoteBase {
   }
 
   /**
-   * Draws the title, truncated to the width of the note.
+   * Draws the title and the pin marker, truncating the title to what is left
+   * of the width.
    *
    * Called on every size change as well as every title change, since the
-   * truncation depends on both.
+   * truncation depends on both, and on pinning, which moves the title over to
+   * make room for the marker.
    */
   renderTitle() {
     if (!this.titleElement_ || this.isDeadOrDying()) return;
@@ -289,14 +336,26 @@ export class Note extends RenderedNoteBase {
     if (!this.titleNode_ || !this.titleElement_) return;
     this.titleNode_.textContent = title;
 
-    this.titleElement_.setAttribute(
-      'x',
-      `${this.workspace.RTL ? -NOTE_MARGIN : NOTE_MARGIN}`,
-    );
+    // The marker leads the title, so it is what the title is indented past.
+    // Nothing in core makes room for it: `calcMinSize` sums its own two bar
+    // buttons by name, so this offset is the only thing keeping the two from
+    // overlapping.
+    const indent = this.isPinned()
+      ? (PIN_GLYPH_INK.width * PIN_ICON_SIZE) / PIN_GLYPH_GRID + PIN_ICON_GAP
+      : 0;
+    // Inside core's top bar group, which it mirrors in RTL - so x counts
+    // inwards from the note's edge either way, and the sign follows.
+    const dir = this.workspace.RTL ? -1 : 1;
+    this.positionPin_(dir);
+
+    this.titleElement_.setAttribute('x', `${dir * (NOTE_MARGIN + indent)}`);
     this.titleElement_.setAttribute('y', `${TOPBAR_HEIGHT / 2}`);
 
     // Trim a character at a time; titles are short, so this settles fast.
-    const maxWidth = Math.max(0, this.view.getSize().width - NOTE_MARGIN * 2);
+    const maxWidth = Math.max(
+      0,
+      this.view.getSize().width - NOTE_MARGIN * 2 - indent,
+    );
     let text = title;
     while (
       text.length > 1 &&
@@ -307,6 +366,30 @@ export class Note extends RenderedNoteBase {
     }
   }
 
+  /**
+   * Places the pin marker at the start of the title row.
+   *
+   * The glyph is authored on a 24-unit grid, so it is scaled down to one line
+   * box. In RTL the whole top bar is mirrored by core, and the negative scale
+   * undoes that for the glyph itself - the same correction the title gets from
+   * the stylesheet.
+   *
+   * @param dir 1 in a left-to-right workspace, -1 in a right-to-left one.
+   */
+  private positionPin_(dir: number) {
+    if (!this.pin_) return;
+    const scale = PIN_ICON_SIZE / PIN_GLYPH_GRID;
+    // Offset by the glyph's own padding so it is the ink that lands on the
+    // margin, level with the body text below, rather than the box around it.
+    const x = dir * (NOTE_MARGIN - PIN_GLYPH_INK.x * scale);
+    const y =
+      TOPBAR_HEIGHT / 2 - (PIN_GLYPH_INK.y + PIN_GLYPH_INK.height / 2) * scale;
+    this.pin_.setAttribute(
+      'transform',
+      `translate(${x}, ${y}) scale(${dir * scale}, ${scale})`,
+    );
+  }
+
   /** Locks or unlocks the note, and marks it visually. */
   applyPinned() {
     super.applyPinned();
@@ -315,6 +398,9 @@ export class Note extends RenderedNoteBase {
       this.getSvgRoot(),
       PINNED_CLASS,
     );
+    // The marker takes room from the title, so the row has to be laid out
+    // again. Nothing else would do it until the next resize.
+    this.renderTitle();
     if (pinned) this.applyZIndex();
   }
 

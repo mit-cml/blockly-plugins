@@ -8,7 +8,7 @@ glance, a colour, and room to write.
 </p>
 
 Everything a note can do is in the right-click menu. Nothing sits on the paper
-except the words on it.
+except the words on it, and the pin marker on a note that has been pinned.
 
 ## Add one
 
@@ -41,8 +41,12 @@ picking a colour is one click and the menu stays short.
 
 ## Pin it
 
-Right-click → **Pin note**. A pinned note cannot be dragged, sits in front of
-its neighbours, and draws a heavier edge so you can see why it will not move.
+Right-click → **Pin note**. A pinned note cannot be dragged and sits in front
+of its neighbours. It says so twice: a pin at the head of the title row, and a
+heavier edge around the card.
+
+The pin is a marker, not a button — there is nothing to click, and it is only
+there while the note is pinned.
 
 Right-click → **Unpin note** to release it.
 
@@ -77,7 +81,7 @@ resizing, recolouring, renaming, pinning, reordering.
 ## The states you will see
 
 <p align="center">
-  <img src="./images/note-states.svg" width="100%" alt="A named note, one not named yet, a collapsed note, a pinned note and a selected note" />
+  <img src="./images/note-states.svg" width="100%" alt="A named note, one not named yet, a collapsed note, a pinned note showing its marker, and a selected note" />
 </p>
 
 | State             | How you can tell                                      |
@@ -85,7 +89,7 @@ resizing, recolouring, renaming, pinning, reordering.
 | **Named**         | The title is bold and black on the paper              |
 | **Not named yet** | A greyed `Title`, and a greyed prompt in the body     |
 | **Collapsed**     | Just the title row. The rule disappears with the body |
-| **Pinned**        | A heavier edge around the card                        |
+| **Pinned**        | A pin before the title, and a heavier edge            |
 | **Selected**      | Blockly's own gold ring, following the card's corners |
 
 ## Keyboard and screen readers

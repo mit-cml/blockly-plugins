@@ -45,6 +45,12 @@ right-click menu leaves nothing on the paper but the words on it.
 The cost is that collapsing is one click further away and slightly less
 discoverable.
 
+The one mark that did earn a place is the pin, and the distinction is that it
+is not a control. It does nothing when clicked, it appears only while a note is
+pinned, and it answers a question the note could not otherwise answer: why will
+this one not move? A strip of buttons that is always there reads as a block; a
+single mark that is usually absent reads as punctuation.
+
 ### Why the title is edited in place
 
 An earlier version asked for the title in a dialog. That was wrong twice over:
