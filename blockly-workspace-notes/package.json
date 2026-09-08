@@ -1,6 +1,6 @@
 {
   "name": "@mit-app-inventor/blockly-workspace-notes",
-  "version": "0.4.0",
+  "version": "0.1.0",
   "description": "Sticky notes for a Blockly workspace: draggable, resizable, colour-coded comments with a title, that round-trip through JSON and XML.",
   "scripts": {
     "audit:fix": "blockly-scripts auditFix",
