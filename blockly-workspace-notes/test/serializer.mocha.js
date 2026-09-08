@@ -9,11 +9,13 @@ import {assert} from 'chai';
 import {
   DEFAULT_COLOUR,
   NOTE_SERIALIZER_NAME,
+  NoteComment,
   SCHEMA_VERSION,
-} from '../src/constants';
-import {NoteComment, isNote} from '../src/note';
-import {WorkspaceNotes} from '../src/index';
-import {migrate, saveNote} from '../src/serializer';
+  WorkspaceNotes,
+  isNote,
+  migrate,
+  saveNote,
+} from '../src/index';
 
 /**
  * Blockly queues events and flushes them on a later macrotask, so the undo

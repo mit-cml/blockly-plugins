@@ -368,7 +368,48 @@ together: S 0.25 at V 0.98, against a block's S 0.45 at V 0.65.
 
 ---
 
-## 10. 🚧 Limits and future work
+## 10. 🗂️ How the code is laid out
+
+Each folder is one layer, and a file is named for the single thing it holds.
+Reading top to bottom is roughly reading the plugin's dependency order.
+
+```
+src/
+├── index.ts               The whole public surface. Re-exports only, no logic.
+├── plugin.ts              WorkspaceNotes: what a host constructs.
+├── model/                 What a note is. note_mixin applies to both classes.
+├── serialization/         JSON in and out, plus xml/ for the older format.
+├── events/                The undo event a note fires.
+├── clipboard/             Pasting a note with its title and colour intact.
+├── ui/                    Chrome the user touches: menu, title editor, CSS.
+├── utils/                 Pure helpers. No registration, no module state.
+├── constants/             Numbers and names, grouped by what they configure.
+└── types/                 The shapes that travel between the layers.
+```
+
+Four rules keep it that way:
+
+- **`index.ts` holds no logic.** Anything it does not re-export is internal and
+  free to move. It is also the build entry point, resolved by path, so it stays
+  where it is.
+- **No barrel files inside the folders.** Every import names the file it wants
+  (`../constants/layout`, never `../constants`). Longer to type, and the reason
+  the import graph stays legible as the code grows.
+- **`utils/` is inert.** Pure functions, no Blockly registration, no
+  module-level state — importable from a test with nothing set up.
+- **Registration lives in `registry.ts`.** Anything that mutates a global
+  Blockly registry does it in a file named `registry.ts` (or `xml/patch.ts`),
+  so the side effects are findable in one sweep and every one of them has a
+  matching `unregister`.
+
+One import cycle exists on purpose: `model/note.ts` and `model/stacking.ts`
+need each other, since a note restacks its neighbours when its z-index changes
+and restacking needs the class to recognise a note. Both uses sit inside
+function bodies, so neither runs while the modules are still evaluating.
+
+---
+
+## 11. 🚧 Limits and future work
 
 ### Known limits
 
@@ -390,7 +431,7 @@ together: S 0.25 at V 0.98, against a block's S 0.45 at V 0.65.
 
 ---
 
-## 11. ❓ Open questions
+## 12. ❓ Open questions
 
 1. Should pinned notes stay fixed on screen instead of on the canvas?
    (See section 9.)

@@ -12,7 +12,11 @@
 
 import * as Blockly from 'blockly/core';
 
-import {EDGE_VALUE_SCALE, NOTE_SATURATION, NOTE_VALUE} from './constants';
+import {
+  EDGE_VALUE_SCALE,
+  NOTE_SATURATION,
+  NOTE_VALUE,
+} from '../constants/colours';
 
 /**
  * Converts a hex colour to HSV.

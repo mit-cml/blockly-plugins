@@ -9,8 +9,8 @@
 
 import {assert} from 'chai';
 
-import {DEFAULT_PALETTE} from '../src/constants';
-import {colourForHue, edgeFor, hexToHsv} from '../src/colour';
+import {DEFAULT_PALETTE} from '../src/index';
+import {colourForHue, edgeFor, hexToHsv} from '../src/utils/colour';
 
 /**
  * @param {string} hex A hex colour.

@@ -1,93 +1,11 @@
 /**
- * @fileoverview Shared constants for the workspace notes plugin.
- */
-
-/**
- * The name the note serializer registers under. This doubles as the top-level
- * key in the JSON produced by `Blockly.serialization.workspaces.save()`.
- */
-export const NOTE_SERIALIZER_NAME = 'workspaceNotes';
-
-/**
- * The name of Blockly's built-in workspace comment serializer, which we
- * replace so that notes are not saved twice.
- */
-export const COMMENT_SERIALIZER_NAME = 'workspaceComments';
-
-/**
- * Current version of the `workspaceNotes` payload. Bump this whenever the
- * shape changes, and add a matching entry to MIGRATIONS in serializer.js.
- */
-export const SCHEMA_VERSION = 1;
-
-/**
- * The type string of the custom event used to make note-specific properties
- * undoable. Namespaced to avoid colliding with other plugins in the global
- * event registry.
- */
-export const NOTE_CHANGE_EVENT_TYPE = 'workspace_note_change';
-
-/**
- * A note is paper: a light colour carrying dark text.
+ * @fileoverview The geometry a note's chrome is built from.
  *
- * That is the real difference from a block. Blockly's block language is a
- * saturated fill with a white label — S 0.45 at V 0.65 via `hueToHex` — and
- * anything built that way reads as a block whatever hue it uses. Notes invert
- * it: a pale wash at V 0.98, with the text in black.
- *
- * It is also what Blockly's own comments do. Their default is `#FFFCC7`, a
- * pale yellow, and nothing about a comment borrows the block palette.
+ * Every number here is derived from one of two sources: Blockly's own renderer
+ * scale, so a note sits comfortably beside the blocks it annotates, or
+ * `TITLE_LINE_HEIGHT`, which is the single unit the note's own layout is
+ * measured in. Nothing in the chrome should introduce an ad-hoc number.
  */
-export const NOTE_SATURATION = 0.25;
-
-/** @type {number} */
-export const NOTE_VALUE = 0.98;
-
-/** Hue of the default note: the yellow a sticky note is expected to be. */
-export const DEFAULT_HUE = 48;
-
-/** The default note colour. */
-export const DEFAULT_COLOUR = '#f9edbb';
-
-/**
- * The swatches offered in the "Colour" context menu, in display order.
- *
- * Stationery colours rather than block colours. Each is stored as the hex the
- * palette's saturation and value produce, since that is what a note
- * serializes.
- */
-export const DEFAULT_PALETTE = [
-  {name: 'Yellow', hue: DEFAULT_HUE, fill: DEFAULT_COLOUR},
-  {name: 'Peach', hue: 28, fill: '#f9d8bb'},
-  {name: 'Pink', hue: 350, fill: '#f9bbc5'},
-  {name: 'Lilac', hue: 275, fill: '#dfbbf9'},
-  {name: 'Sky', hue: 200, fill: '#bbe5f9'},
-  {name: 'Mint', hue: 150, fill: '#bbf9da'},
-  {name: 'Grey', hue: 0, fill: '#f2f2f2'},
-];
-
-/** CSS class added to the root SVG group of every note. */
-export const NOTE_CLASS = 'blocklyNote';
-
-/** CSS class added to a note that has a non-empty title. */
-export const TITLED_CLASS = 'blocklyNoteTitled';
-
-/** CSS class added to a pinned note. */
-export const PINNED_CLASS = 'blocklyNotePinned';
-
-/** CSS class of the SVG text element that renders a note's title. */
-export const TITLE_CLASS = 'blocklyNoteTitle';
-
-/** CSS class of the hairline drawn under a note's title. */
-export const RULE_CLASS = 'blocklyNoteRule';
-
-/**
- * Shown in the title row of a note that has not been named yet.
- *
- * A note always has a title row, so an unnamed one is labelled rather than
- * left blank: the placeholder is what says the row can be clicked.
- */
-export const UNTITLED_TITLE_TEXT = 'Title';
 
 /**
  * Blockly's renderer padding scale, from `renderers/common/constants.ts`.
@@ -95,10 +13,10 @@ export const UNTITLED_TITLE_TEXT = 'Title';
  */
 export const SMALL_PADDING = 3;
 
-/** @type {number} */
+/** The middle step of Blockly's padding scale. */
 export const MEDIUM_PADDING = 5;
 
-/** @type {number} */
+/** The largest step of Blockly's padding scale. */
 export const LARGE_PADDING = 10;
 
 /**
@@ -152,6 +70,9 @@ export const SCROLLBAR_WIDTH = 8;
 /** Space between a note's edge and its writing area. */
 export const BODY_INSET = NOTE_MARGIN;
 
+/** The bottom of the title's line box, measured from the note's top. */
+const TITLE_BOTTOM = (TOPBAR_HEIGHT + TITLE_LINE_HEIGHT) / 2;
+
 /**
  * Where the hairline under the title sits, measured from the note's top.
  *
@@ -164,7 +85,6 @@ export const BODY_INSET = NOTE_MARGIN;
  * coloured body is exactly how Blockly draws a field on a block, so anything
  * built that way reads as a block however the note itself is shaped.
  */
-const TITLE_BOTTOM = (TOPBAR_HEIGHT + TITLE_LINE_HEIGHT) / 2;
 export const TITLE_RULE_Y = (TITLE_BOTTOM + TOPBAR_HEIGHT) / 2;
 
 /**
@@ -198,9 +118,3 @@ export const MIN_SIZE = {
   width: NOTE_MARGIN * 2 + TITLE_LINE_HEIGHT * 4,
   height: TOPBAR_HEIGHT + TITLE_LINE_HEIGHT + NOTE_MARGIN,
 };
-
-/**
- * How far a note's edge sits below its own colour: the same hue, a step down
- * in value. Used for the card's hairline and the writing area's border.
- */
-export const EDGE_VALUE_SCALE = 0.88;

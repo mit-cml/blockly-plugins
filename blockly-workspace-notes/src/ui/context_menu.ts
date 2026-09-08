@@ -15,9 +15,12 @@
 
 import * as Blockly from 'blockly/core';
 
-import {DEFAULT_PALETTE} from './constants';
-import type {PaletteEntry} from './types';
-import {Note, nextZIndex, previousZIndex} from './note';
+import {DEFAULT_PALETTE} from '../constants/colours';
+import {Note} from '../model/note';
+import {nextZIndex, previousZIndex} from '../model/stacking';
+import {msg} from '../utils/messages';
+import {asOneUndoStep} from '../utils/undo';
+import {createSwatchRow} from './colour_swatches';
 
 const ScopeType = Blockly.ContextMenuRegistry.ScopeType;
 
@@ -31,82 +34,12 @@ const NOTE_ITEM_IDS = [
 ];
 
 /**
- * Reads a Blockly message with a fallback, since `blockly/core` on its own
- * ships no message table.
- *
- * @param key The message key.
- * @param fallback The text to use when the key is unset.
- * @returns The message.
- */
-function msg(key: string, fallback: string): string {
-  return Blockly.Msg[key] || fallback;
-}
-
-/**
  * @param scope The menu scope.
  * @returns The note the menu was opened on, if any.
  */
 function noteFromScope(scope: Blockly.ContextMenuRegistry.Scope): Note | null {
   const comment = scope.comment;
   return comment instanceof Note ? comment : null;
-}
-
-/**
- * Runs a mutation as a single undoable step.
- *
- * @param mutate The mutation to perform.
- */
-function asOneUndoStep(mutate: () => void): void {
-  const existingGroup = Blockly.Events.getGroup();
-  if (!existingGroup) Blockly.Events.setGroup(true);
-  try {
-    mutate();
-  } finally {
-    Blockly.Events.setGroup(existingGroup);
-  }
-}
-
-/**
- * Builds the row of colour swatches used as a menu item's display text.
- *
- * Blockly's context menu has no notion of submenus, but `displayText` accepts
- * an HTMLElement — so the whole palette fits in one row rather than spilling
- * seven entries into the menu.
- *
- * @param note The note to recolour.
- * @param palette The
- *     swatches.
- * @returns The swatch row.
- */
-function createSwatchRow(note: Note, palette: PaletteEntry[]): HTMLElement {
-  const row = document.createElement('div');
-  row.className = 'blocklyNoteSwatchRow';
-
-  for (const {name, fill} of palette) {
-    const swatch = document.createElement('button');
-    swatch.type = 'button';
-    swatch.className = 'blocklyNoteSwatch';
-    // The swatch shows the note's colour itself, the way a block's colour
-    // reads in the toolbox.
-    swatch.style.backgroundColor = fill;
-    swatch.title = name;
-    swatch.setAttribute('aria-label', name);
-    if (note.getColour().toLowerCase() === fill.toLowerCase()) {
-      swatch.classList.add('blocklyNoteSwatchSelected');
-    }
-
-    swatch.addEventListener('pointerdown', (e) => {
-      // Stop the menu's own handler from also firing for this row.
-      e.stopPropagation();
-      e.preventDefault();
-      asOneUndoStep(() => note.setColour(fill));
-      Blockly.ContextMenu.hide();
-    });
-
-    row.appendChild(swatch);
-  }
-
-  return row;
 }
 
 /**
@@ -303,26 +236,3 @@ export function unregisterNoteContextMenu(): void {
     Blockly.ContextMenuItems.registerCommentCreate();
   }
 }
-
-Blockly.Css.register(`
-.blocklyNoteSwatchRow {
-  display: flex;
-  gap: 6px;
-  padding: 2px 0;
-}
-
-.blocklyNoteSwatch {
-  width: 18px;
-  height: 18px;
-  padding: 0;
-  border: 1px solid rgba(0, 0, 0, 0.25);
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-/* #fc3 is the selection colour core uses for comments and blocks. */
-.blocklyNoteSwatchSelected {
-  outline: 2px solid #fc3;
-  outline-offset: 1px;
-}
-`);

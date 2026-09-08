@@ -10,9 +10,8 @@
 import * as Blockly from 'blockly/core';
 import {assert} from 'chai';
 
-import {DEFAULT_COLOUR} from '../src/constants';
-import {NoteChange} from '../src/events';
-import {NoteComment, isNote, nextZIndex, previousZIndex} from '../src/note';
+import {DEFAULT_COLOUR, NoteChange, NoteComment, isNote} from '../src/index';
+import {nextZIndex, previousZIndex} from '../src/model/stacking';
 
 suite('Note model', function () {
   setup(function () {

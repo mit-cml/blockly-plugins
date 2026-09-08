@@ -10,9 +10,10 @@
 
 import * as Blockly from 'blockly/core';
 
-import type {NoteCopyData, SavedNote} from './types';
-import {Note} from './note';
-import {appendNote} from './serializer';
+import {Note} from '../model/note';
+import {appendNote} from '../serialization/state';
+import type {NoteCopyData} from '../types/clipboard';
+import type {SavedNote} from '../types/serialization';
 
 /**
  * The paster type core registers for workspace comments. Matching it means

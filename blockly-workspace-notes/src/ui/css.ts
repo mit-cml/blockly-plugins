@@ -23,16 +23,18 @@
 import * as Blockly from 'blockly/core';
 
 import {
-  BODY_INSET,
   NOTE_CLASS,
   PINNED_CLASS,
   RULE_CLASS,
-  SCROLLBAR_WIDTH,
   TITLED_CLASS,
   TITLE_CLASS,
+} from '../constants/dom';
+import {
+  BODY_INSET,
+  SCROLLBAR_WIDTH,
   TITLE_FONT_SIZE,
   TOPBAR_HEIGHT,
-} from './constants';
+} from '../constants/layout';
 
 Blockly.Css.register(`
 /*

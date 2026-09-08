@@ -20,13 +20,14 @@
 
 import * as Blockly from 'blockly/core';
 
-import type {Note} from './note';
+import {TITLE_CLASS, UNTITLED_TITLE_TEXT} from '../constants/dom';
 import {
   NOTE_MARGIN,
   TITLE_FONT_SIZE,
   TITLE_LINE_HEIGHT,
-  UNTITLED_TITLE_TEXT,
-} from './constants';
+} from '../constants/layout';
+import type {Note} from '../model/note';
+import {asOneUndoStep} from '../utils/undo';
 
 /**
  * Where the editor should sit, in viewport pixels.
@@ -50,7 +51,7 @@ interface EditorBox {
  * @returns A DOMRect-like box, or null if nothing is rendered.
  */
 function editorBox(note: Note): EditorBox | null {
-  const title = note.getSvgRoot().querySelector('.blocklyNoteTitle');
+  const title = note.getSvgRoot().querySelector(`.${TITLE_CLASS}`);
   const box = title?.getBoundingClientRect();
   if (!box?.width) return null;
 
@@ -94,13 +95,8 @@ export function editTitle(note: Note): void {
 
   const commit = () => {
     if (cancelled || !input) return;
-    const existingGroup = Blockly.Events.getGroup();
-    if (!existingGroup) Blockly.Events.setGroup(true);
-    try {
-      note.setTitle(input.value);
-    } finally {
-      Blockly.Events.setGroup(existingGroup);
-    }
+    const title = input.value;
+    asOneUndoStep(() => note.setTitle(title));
   };
 
   Blockly.WidgetDiv.show(

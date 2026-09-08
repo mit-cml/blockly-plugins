@@ -10,8 +10,9 @@
 
 import * as Blockly from 'blockly/core';
 
-import type {NoteChangeJson, NoteProperty, NotePropertyValue} from './types';
-import {NOTE_CHANGE_EVENT_TYPE} from './constants';
+import {NOTE_CHANGE_EVENT_TYPE} from '../constants/serialization';
+import type {NoteChangeJson} from '../types/events';
+import type {NoteProperty, NotePropertyValue} from '../types/note';
 
 /**
  * The part of a note this event needs in order to replay itself.
@@ -126,22 +127,5 @@ export class NoteChange extends Blockly.Events.CommentBase {
       this.property,
       forward ? this.newValue : this.oldValue,
     );
-  }
-}
-
-/**
- * Registers NoteChange so `Blockly.Events.fromJson` can rebuild it. Safe to
- * call repeatedly; re-registering the identical class is a no-op in Blockly's
- * registry, and a duplicate-name throw would only mean it is already present.
- */
-export function registerNoteChangeEvent(): void {
-  try {
-    Blockly.registry.register(
-      Blockly.registry.Type.EVENT,
-      NOTE_CHANGE_EVENT_TYPE,
-      NoteChange,
-    );
-  } catch {
-    // Already registered by another copy of the plugin.
   }
 }

@@ -9,10 +9,14 @@
 import * as Blockly from 'blockly/core';
 import {assert} from 'chai';
 
-import {DEFAULT_COLOUR} from '../src/constants';
-import {NoteComment, isNote} from '../src/note';
-import {WorkspaceNotes} from '../src/index';
-import {domToNoteState, noteToDom} from '../src/xml';
+import {
+  DEFAULT_COLOUR,
+  NoteComment,
+  WorkspaceNotes,
+  domToNoteState,
+  isNote,
+  noteToDom,
+} from '../src/index';
 
 /**
  * @param {!Element} dom An `<xml>` element.
