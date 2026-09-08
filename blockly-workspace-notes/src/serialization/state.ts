@@ -52,10 +52,12 @@ export function createNote(
  */
 export function saveNote(
   note: Note | NoteComment,
-  {addCoordinates = false, saveIds = false} = {},
+  {addCoordinates = false, saveIds = true} = {},
 ): SavedNote {
   const workspace = note.workspace;
-  const state: SavedNote = {} as SavedNote;
+  // Null-prototype, as core's own serializer builds it: the state is handed
+  // straight to JSON, and nothing inherited belongs in it.
+  const state: SavedNote = Object.create(null);
 
   state.height = note.getSize().height;
   state.width = note.getSize().width;
@@ -126,24 +128,36 @@ export function appendNote(
     if (state.text !== undefined) note.setText(state.text);
 
     if (state.x !== undefined || state.y !== undefined) {
-      const rawX = state.x ?? 0;
-      const x = workspace.RTL ? workspace.getWidth() - rawX : rawX;
-      note.moveTo(new Blockly.utils.Coordinate(x, state.y ?? 0));
+      // A missing coordinate keeps the one the note already has, rather than
+      // snapping it to the origin. The RTL flip applies only to a value that
+      // came out of the file — `getRelativeToSurfaceXY` is already in
+      // workspace coordinates, so flipping it would move the note.
+      const defaultLoc = note.getRelativeToSurfaceXY();
+      const x =
+        state.x === undefined
+          ? defaultLoc.x
+          : workspace.RTL
+            ? workspace.getWidth() - state.x
+            : state.x;
+      note.moveTo(new Blockly.utils.Coordinate(x, state.y ?? defaultLoc.y));
     }
 
     if (state.width !== undefined || state.height !== undefined) {
-      note.setSize(new Blockly.utils.Size(state.width ?? 0, state.height ?? 0));
+      // Likewise: half a size is not a reason to collapse the other half to
+      // zero, which would leave a note that is saved but invisible.
+      const defaultSize = note.getSize();
+      note.setSize(
+        new Blockly.utils.Size(
+          state.width ?? defaultSize.width,
+          state.height ?? defaultSize.height,
+        ),
+      );
     }
 
-    if (state.collapsed !== undefined) {
-      note.setCollapsed(state.collapsed as boolean);
-    }
-    if (state.editable !== undefined)
-      note.setEditable(state.editable as boolean);
-    if (state.movable !== undefined) note.setMovable(state.movable as boolean);
-    if (state.deletable !== undefined) {
-      note.setDeletable(state.deletable as boolean);
-    }
+    if (state.collapsed !== undefined) note.setCollapsed(state.collapsed);
+    if (state.editable !== undefined) note.setEditable(state.editable);
+    if (state.movable !== undefined) note.setMovable(state.movable);
+    if (state.deletable !== undefined) note.setDeletable(state.deletable);
 
     if (typeof note.setTitle === 'function') {
       if (state.colour !== undefined) note.setColour(state.colour);

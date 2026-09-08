@@ -51,7 +51,7 @@ export function decorateElement(elem: Element, state: SavedNote): void {
  * @returns The note state.
  */
 export function domToNoteState(elem: Element): SavedNote {
-  const state: SavedNote = {} as SavedNote;
+  const state: SavedNote = Object.create(null);
 
   const id = elem.getAttribute('id');
   if (id) state.id = id;

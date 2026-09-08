@@ -12,6 +12,7 @@ import {
   NoteComment,
   SCHEMA_VERSION,
   WorkspaceNotes,
+  appendNote,
   isNote,
   migrate,
   saveNote,
@@ -311,6 +312,89 @@ suite('Note serialization', function () {
         this.workspace,
       );
       assert.equal(this.workspace.getCommentById('bare').getTitle(), 'B');
+    });
+  });
+
+  suite('partial state', function () {
+    // A sparse file is the whole point of the format, so loading one must
+    // never invent a value. Core falls back to the object's own geometry;
+    // falling back to zero would leave a note that is saved but invisible.
+    test('a missing height keeps the note’s own height', function () {
+      const note = appendNote({width: 300}, this.workspace);
+      assert.equal(note.getSize().width, 300);
+      assert.isAbove(note.getSize().height, 0, 'height must not collapse');
+    });
+
+    test('a missing width keeps the note’s own width', function () {
+      const note = appendNote({height: 90}, this.workspace);
+      assert.equal(note.getSize().height, 90);
+      assert.isAbove(note.getSize().width, 0, 'width must not collapse');
+    });
+
+    test('an absent coordinate is not RTL-flipped', function () {
+      // The flip converts a saved x into a workspace x, so it only applies to
+      // a value the file actually carried. Applying it to the fallback sent
+      // the note to the far edge of an RTL workspace instead of leaving it
+      // where it was.
+      const rtl = new Blockly.Workspace(new Blockly.Options({rtl: true}));
+      // Headless workspaces report a width of 0, which hides the arithmetic.
+      rtl.getWidth = () => 500;
+      try {
+        const note = appendNote({y: 20}, rtl);
+        const loc = note.getRelativeToSurfaceXY();
+        assert.equal(loc.x, 0, 'x should not have moved');
+        assert.equal(loc.y, 20);
+      } finally {
+        rtl.dispose();
+      }
+    });
+
+    test('a coordinate that is present is still RTL-flipped', function () {
+      const rtl = new Blockly.Workspace(new Blockly.Options({rtl: true}));
+      rtl.getWidth = () => 500;
+      try {
+        const note = appendNote({x: 120, y: 20}, rtl);
+        assert.equal(note.getRelativeToSurfaceXY().x, 380);
+      } finally {
+        rtl.dispose();
+      }
+    });
+
+    test('no geometry at all leaves the defaults untouched', function () {
+      const note = appendNote({title: 'Bare'}, this.workspace);
+      assert.equal(note.getTitle(), 'Bare');
+      assert.isAbove(note.getSize().width, 0);
+      assert.isAbove(note.getSize().height, 0);
+    });
+
+    test('an unknown key is ignored rather than throwing', function () {
+      const note = appendNote(
+        {width: 200, height: 120, somethingNewer: 42},
+        this.workspace,
+      );
+      assert.isTrue(isNote(note));
+    });
+  });
+
+  suite('saveNote defaults', function () {
+    // The signature mirrors `Blockly.serialization.workspaceComments.save`,
+    // whose `saveIds` defaults to true. A different default here would lose
+    // ids for anyone porting a call across.
+    test('ids are written unless asked otherwise', function () {
+      const note = makeNote(this.workspace);
+      assert.equal(saveNote(note).id, note.id);
+      assert.isUndefined(saveNote(note, {saveIds: false}).id);
+    });
+
+    test('coordinates are omitted unless asked for', function () {
+      const note = makeNote(this.workspace, {x: 10, y: 20});
+      assert.isUndefined(saveNote(note).x);
+      assert.equal(saveNote(note, {addCoordinates: true}).x, 10);
+    });
+
+    test('the state carries no inherited properties', function () {
+      const state = saveNote(makeNote(this.workspace));
+      assert.isNull(Object.getPrototypeOf(state));
     });
   });
 

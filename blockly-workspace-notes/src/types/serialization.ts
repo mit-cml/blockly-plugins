@@ -17,17 +17,30 @@ import type {NoteMeta} from './note';
  * handful of keys.
  */
 export interface SavedNote {
-  width: number;
-  height: number;
+  // Geometry and the fields core's own comment format carries. Every one is
+  // optional, matching `Blockly.serialization.workspaceComments.State`: a
+  // sparse file may omit any of them, and `appendNote` falls back to the
+  // note's own defaults rather than assuming a value is present.
+  id?: string;
   x?: number;
   y?: number;
-  id?: string;
+  width?: number;
+  height?: number;
   text?: string;
+  collapsed?: boolean;
+  editable?: boolean;
+  movable?: boolean;
+  deletable?: boolean;
+
+  // What a note adds.
   title?: string;
   colour?: string;
   pinned?: boolean;
   zIndex?: number;
   meta?: Partial<NoteMeta>;
+
+  // Unknown keys are preserved rather than rejected, so a file written by a
+  // newer version of the plugin survives a load and re-save by an older one.
   [key: string]: unknown;
 }
 
