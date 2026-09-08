@@ -41,6 +41,7 @@ import {
   unregisterNoteContextMenu,
 } from './ui/context_menu';
 import {isNote} from './utils/guards';
+import {asOneUndoStep} from './utils/undo';
 
 /**
  * Adds note support to a workspace.
@@ -165,9 +166,7 @@ export class WorkspaceNotes {
    * @returns The new note.
    */
   createNote(state: Partial<SavedNote> = {}): Note | NoteComment {
-    const existingGroup = Blockly.Events.getGroup();
-    if (!existingGroup) Blockly.Events.setGroup(true);
-    try {
+    return asOneUndoStep(() => {
       const note = makeNote(this.workspace);
       if (state.text) note.setText(state.text);
       if (state.title) note.setTitle(state.title);
@@ -178,9 +177,7 @@ export class WorkspaceNotes {
       note.setZIndex(nextZIndex(this.workspace));
       note.restoreMeta({author: this.options.getAuthor()});
       return note;
-    } finally {
-      Blockly.Events.setGroup(existingGroup);
-    }
+    });
   }
 
   /**
