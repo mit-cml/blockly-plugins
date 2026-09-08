@@ -51,7 +51,7 @@
   "files": [
     "dist",
     "src",
-    "LICENSE",
+    "docs",
     "README.md"
   ],
   "devDependencies": {
