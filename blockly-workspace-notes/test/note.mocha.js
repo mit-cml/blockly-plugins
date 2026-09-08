@@ -148,7 +148,7 @@ suite('Note model', function () {
       assert.equal(this.note.getMeta().author, 'x');
     });
 
-    test("'*' with null is a no-op, so a delete snapshot replays safely", function () {
+    test("'*' with null is a no-op, so a delete snapshot replays", function () {
       this.note.setTitle('Keep me');
       this.note.applyNoteProperty('*', null);
       assert.equal(this.note.getTitle(), 'Keep me');

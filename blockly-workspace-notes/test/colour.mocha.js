@@ -83,7 +83,7 @@ suite('Note colours', function () {
     }
   });
 
-  test('the palette is stored as the colours its own hues produce', function () {
+  test('the palette stores the colours its own hues produce', function () {
     for (const {name, hue, fill} of DEFAULT_PALETTE) {
       // Grey is the exception: it is deliberately hueless, so no hue
       // reproduces it.

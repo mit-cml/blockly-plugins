@@ -108,7 +108,7 @@ suite('Note XML serialization', function () {
       assert.equal(elem.getAttribute('title'), 'T');
     });
 
-    test('attributes line up when several notes are saved at once', function () {
+    test('attributes line up when several notes are saved', function () {
       makeNote(this.workspace, {title: 'first', colour: '#ffd6a5'});
       makeNote(this.workspace, {title: 'second', colour: '#c7e4ff'});
       makeNote(this.workspace, {title: 'third'});
@@ -374,7 +374,7 @@ suite('Note XML serialization', function () {
       });
     });
 
-    test('malformed geometry is skipped rather than stored as NaN', function () {
+    test('malformed geometry is skipped, not stored as NaN', function () {
       const dom = Blockly.utils.xml.textToDom(
         '<xml><comment id="n1" x="oops" y="2" w="" h="4"/></xml>',
       );

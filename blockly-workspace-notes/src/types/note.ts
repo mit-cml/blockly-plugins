@@ -54,8 +54,9 @@ export type NotePropertyValue =
  * Everything the note mixin adds to a workspace comment.
  *
  * Declared separately from the mixin because TypeScript cannot name an
- * anonymous class expression in a `.d.ts`. Without this interface, `declaration:
- * true` fails on `NoteComment` and `Note` with "has or is using private name".
+ * anonymous class expression in a `.d.ts`. Without this interface,
+ * `declaration: true` fails on `NoteComment` and `Note` with "has or is using
+ * private name".
  */
 export interface NoteSurface {
   getNoteState(): NoteState;

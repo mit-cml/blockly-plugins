@@ -211,7 +211,9 @@ Blockly.Css.register(`
  * The type has to be set here for the same reason, and it is the sharper of
  * the two traps: alongside that fill rule the renderer writes
  *
- *   .thrasos-renderer.classic-theme .blocklyText { font: normal 11pt sans-serif; }
+ *   .thrasos-renderer.classic-theme .blocklyText {
+ *     font: normal 11pt sans-serif;
+ *   }
  *
  * and font is a SHORTHAND, so it resets font-weight and font-size to the
  * theme's field values every time. A plain .blocklyNoteTitle { font-weight:
@@ -229,7 +231,8 @@ Blockly.Css.register(`
  * An unnamed note shows a placeholder rather than an empty row, greyed so it
  * reads as a prompt and not as a title someone typed.
  */
-.${NOTE_CLASS}.blocklyComment:not(.${TITLED_CLASS}) .${TITLE_CLASS}.blocklyText {
+.${NOTE_CLASS}.blocklyComment:not(.${TITLED_CLASS})
+  .${TITLE_CLASS}.blocklyText {
   fill: #999;
 }
 
@@ -307,7 +310,8 @@ Blockly.Css.register(`
   stroke-width: 3px;
 }
 
-.blocklySelected.${NOTE_CLASS}.blocklyCollapsed .blocklyCommentTopbarBackground {
+.blocklySelected.${NOTE_CLASS}.blocklyCollapsed
+  .blocklyCommentTopbarBackground {
   stroke: none;
 }
 `);

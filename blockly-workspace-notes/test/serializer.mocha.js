@@ -264,7 +264,7 @@ suite('Note serialization', function () {
       assert.lengthOf(state[NOTE_SERIALIZER_NAME].notes, 1);
     });
 
-    test('a note already loaded wins over a duplicate legacy entry', function () {
+    test('a loaded note wins over a duplicate legacy entry', function () {
       Blockly.serialization.workspaces.load(
         {
           workspaceNotes: {
@@ -324,7 +324,7 @@ suite('Note serialization', function () {
       assert.isEmpty(this.workspace.getTopComments(false));
     });
 
-    test('plain comments are cleared too, so they cannot accumulate', function () {
+    test('plain comments are cleared too, so they cannot pile up', function () {
       new Blockly.comments.WorkspaceComment(this.workspace);
       Blockly.serialization.workspaces.load({}, this.workspace);
       assert.isEmpty(this.workspace.getTopComments(false));
