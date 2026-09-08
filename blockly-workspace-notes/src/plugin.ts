@@ -17,6 +17,10 @@ import * as Blockly from 'blockly/core';
 import './ui/css';
 import {DEFAULT_PALETTE} from './constants/colours';
 import {DEFAULT_SIZE} from './constants/layout';
+import {
+  applyDefaultNoteSize,
+  restoreDefaultNoteSize,
+} from './model/default_size';
 import {Note} from './model/note';
 import {NoteComment} from './model/note_comment';
 import {nextZIndex} from './model/stacking';
@@ -94,13 +98,7 @@ export class WorkspaceNotes {
     if (this.initialized_) return;
     this.initialized_ = true;
 
-    // Blockly's own default is sized for a comment whose whole chrome is a
-    // 24px bar; a note's margins would leave that barely two lines.
-    const {width, height} = this.options.defaultSize;
-    Blockly.comments.CommentView.defaultCommentSize = new Blockly.utils.Size(
-      width,
-      height,
-    );
+    applyDefaultNoteSize(this.options.defaultSize);
 
     // Patched on the instance rather than the prototype: scoped to this
     // workspace and trivially reversible. This is what makes undoing a delete
@@ -143,6 +141,8 @@ export class WorkspaceNotes {
       this.workspace.newComment = this.originalNewComment_;
       this.originalNewComment_ = null;
     }
+
+    restoreDefaultNoteSize();
 
     if (!this.options.skipSerializerRegistration) {
       unregisterNoteSerializers();
