@@ -6,7 +6,7 @@ Sticky notes for a Blockly workspace: draggable, resizable, colour-coded paper
 with a title, an author and a stacking order.
 
 <p align="center">
-  <img src="./docs/images/note-anatomy.svg" width="100%" alt="The parts of a note: title, rule, card, body and resize handle" />
+  <img src="./docs/images/note-anatomy.svg" width="100%" alt="The parts of a note: title bar, collapse and delete buttons, title, body and resize handle" />
 </p>
 
 Notes extend Blockly's own workspace comments, so dragging, resizing,

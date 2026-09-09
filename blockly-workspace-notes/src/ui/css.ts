@@ -26,11 +26,12 @@ import {
   NOTE_CLASS,
   PIN_CLASS,
   PINNED_CLASS,
-  RULE_CLASS,
   TITLED_CLASS,
   TITLE_CLASS,
 } from '../constants/dom';
 import {
+  BAR_ICON_MARGIN,
+  BAR_ICON_SIZE,
   BODY_INSET,
   SCROLLBAR_WIDTH,
   TITLE_FONT_SIZE,
@@ -76,7 +77,7 @@ Blockly.Css.register(`
 .${NOTE_CLASS} .${PIN_CLASS} {
   display: none;
   fill: none;
-  stroke: #000;
+  stroke: var(--noteInkColour);
   stroke-width: 2px;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -88,25 +89,57 @@ Blockly.Css.register(`
 }
 
 /*
- * No header strip: the title sits on the paper. The rect stays, because core
- * measures its rendered height and derives the writing area's offset from it.
+ * The title bar, in the same shade as the border.
+ *
+ * Core already paints this rect from --commentBorderColour and a note simply
+ * lets it, so the two-tone note is Blockly's own model rather than anything
+ * built on top of it. Only the height is ours: core's 24px bar is sized for a
+ * strip of icons, and a note needs a line of title between two margins. Core
+ * measures this rect's rendered height and derives the writing area's offset
+ * from it, so the number has to be set here rather than drawn around.
  */
 .${NOTE_CLASS} .blocklyCommentTopbarBackground {
-  fill: none;
   height: ${TOPBAR_HEIGHT}px;
 }
 
 /*
- * Every action is in the context menu, so the bar carries no buttons - the pin
- * marker above is a state marker, not a control, and nothing on the row can be
- * clicked. CSS is how core hides one itself - it ships .blocklyDeleteIcon as
- * display:none - and CommentBarButton.canBeFocused() defers to
- * checkVisibility(), so keyboard navigation skips a hidden button rather than
- * trapping on it.
+ * Core's two bar buttons, collapse and delete.
+ *
+ * Core ships the delete button display:none, so showing it is the whole of
+ * that. Both keep everything core gives them - position, focus, ARIA, the
+ * collapse button's relabelling between "Collapse Comment" and "Expand
+ * Comment" - because they are still core's buttons; only their artwork is
+ * swapped, in renderColour, for a copy drawn in this note's ink.
+ *
+ * The size is core's own 20px. Its transform-origin is not: core hardcodes
+ * 12px 12px so the collapsed rule can rotate the chevron about its middle.
+ * That number is in user space, not relative to the icon's own box - it works
+ * for core because core's 24px bar leaves a margin of 2, putting a 20px icon's
+ * centre at 12. A 48px bar leaves a margin of 14, so the centre is 24, and
+ * using core's number would swing the chevron off the note entirely.
  */
 .${NOTE_CLASS} .blocklyFoldoutIcon,
 .${NOTE_CLASS} .blocklyDeleteIcon {
-  display: none;
+  display: block;
+  width: ${BAR_ICON_SIZE}px;
+  height: ${BAR_ICON_SIZE}px;
+}
+
+.${NOTE_CLASS} .blocklyFoldoutIcon {
+  transform-origin: ${BAR_ICON_MARGIN + BAR_ICON_SIZE / 2}px
+    ${BAR_ICON_MARGIN + BAR_ICON_SIZE / 2}px;
+}
+
+/*
+ * Core styles no focus ring for these, so a keyboard user would otherwise get
+ * the browser's default outline on a bare <image>. The note's own edge colour
+ * keeps it in the same family as everything else on the card.
+ */
+.${NOTE_CLASS} .blocklyFoldoutIcon:focus-visible,
+.${NOTE_CLASS} .blocklyDeleteIcon:focus-visible {
+  outline: 2px solid var(--noteInkColour);
+  outline-offset: 1px;
+  border-radius: 2px;
 }
 
 /*
@@ -143,6 +176,7 @@ Blockly.Css.register(`
  */
 .${NOTE_CLASS} .blocklyTextarea {
   background-color: transparent;
+  color: var(--noteInkColour);
   border: none;
   padding: 0;
   scrollbar-width: thin;
@@ -194,19 +228,6 @@ Blockly.Css.register(`
   }
 }
 
-/*
- * The hairline under the title. Hidden on a collapsed note, where the title
- * row is the whole note and there is no body to divide it from.
- */
-.${NOTE_CLASS} .${RULE_CLASS} {
-  stroke: var(--commentBorderColour);
-  stroke-width: 1px;
-}
-
-.${NOTE_CLASS}.blocklyCollapsed .${RULE_CLASS} {
-  display: none;
-}
-
 /* Bring the resize handle inside the sheet instead of over its corner. */
 .${NOTE_CLASS} .blocklyResizeHandle {
   transform: translate(-${BODY_INSET}px, -${BODY_INSET}px);
@@ -255,7 +276,7 @@ Blockly.Css.register(`
  * text it heads.
  */
 .${NOTE_CLASS}.blocklyComment .${TITLE_CLASS}.blocklyText {
-  fill: #000;
+  fill: var(--noteInkColour);
   font-size: ${TITLE_FONT_SIZE}px;
   font-weight: bold;
 }
@@ -266,7 +287,8 @@ Blockly.Css.register(`
  */
 .${NOTE_CLASS}.blocklyComment:not(.${TITLED_CLASS})
   .${TITLE_CLASS}.blocklyText {
-  fill: #999;
+  fill: var(--noteInkColour);
+  opacity: 0.55;
 }
 
 .blocklyRTL .${TITLE_CLASS} {
@@ -305,14 +327,18 @@ Blockly.Css.register(`
  */
 .blocklyNoteTitleInput {
   background: transparent;
-  color: #000;
   text-align: left;
   padding: 0;
 }
 
+/*
+ * Only the fade is set here. The colour itself is applied inline by
+ * title_editor.ts, because the editor lives in Blockly's WidgetDiv - a
+ * sibling of the workspace, not a descendant of the note - so the note's own
+ * --noteInkColour never reaches it.
+ */
 .blocklyNoteTitleInput::placeholder {
-  color: #999;
-  opacity: 1;
+  opacity: 0.55;
 }
 
 .blocklyRTL .blocklyNoteTitleInput {

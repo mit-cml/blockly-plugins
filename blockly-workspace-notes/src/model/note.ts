@@ -3,10 +3,9 @@
  * state `model/note_mixin.ts` defines.
  *
  * Everything here is SVG the note adds to, or takes away from, the comment
- * core already built — the card, the title, the rule under it, and the marker
- * that shows a note is pinned — plus the plumbing that keeps that chrome in
- * step with a comment core is resizing, collapsing and dragging underneath
- * it.
+ * core already built — the card, the title, and the marker that shows a note
+ * is pinned — plus the plumbing that keeps that chrome in step with a comment
+ * core is resizing, collapsing and dragging underneath it.
  */
 
 import * as Blockly from 'blockly/core';
@@ -15,24 +14,28 @@ import {
   NOTE_CLASS,
   PIN_CLASS,
   PINNED_CLASS,
-  RULE_CLASS,
   TITLED_CLASS,
   TITLE_CLASS,
   UNTITLED_TITLE_TEXT,
 } from '../constants/dom';
 import {
-  FRAME_RADIUS,
+  BAR_LEADING_INSET,
+  BAR_TRAILING_INSET,
   MIN_SIZE,
-  NOTE_MARGIN,
   PIN_GLYPH_GRID,
   PIN_GLYPH_INK,
   PIN_ICON_GAP,
   PIN_ICON_SIZE,
-  TITLE_RULE_Y,
   TOPBAR_HEIGHT,
 } from '../constants/layout';
 import type {NoteCopyData} from '../types/clipboard';
-import {edgeFor} from '../utils/colour';
+import {edgeFor, inkFor} from '../utils/colour';
+import {
+  CHEVRON_GLYPH,
+  PIN_GLYPH,
+  TRASH_GLYPH,
+  glyphToDataUri,
+} from '../ui/icons';
 import {editTitle} from '../ui/title_editor';
 import {RenderedNoteBase} from './note_mixin';
 import {restackNotes} from './stacking';
@@ -51,9 +54,6 @@ export class Note extends RenderedNoteBase {
    */
   private card_?: SVGRectElement | null;
 
-  /** The rule under the title. */
-  private rule_?: SVGLineElement;
-
   /** Where a press on the title started, while one is in progress. */
   private titlePressPoint_?: {x: number; y: number} | null;
 
@@ -62,6 +62,18 @@ export class Note extends RenderedNoteBase {
 
   /** The marker shown while the note is pinned. */
   private pin_?: SVGGElement;
+
+  /**
+   * Core's two bar buttons.
+   *
+   * Kept only so their artwork can be retinted when the note is recoloured.
+   * Everything else about them - where they sit, what they do, their focus and
+   * ARIA - stays core's business.
+   */
+  private foldoutIcon_?: SVGImageElement | null;
+
+  /** See `foldoutIcon_`. */
+  private deleteIcon_?: SVGImageElement | null;
 
   /** The text node inside `titleElement_`. */
   private titleNode_?: Text;
@@ -79,6 +91,8 @@ export class Note extends RenderedNoteBase {
     const root = this.getSvgRoot();
     Blockly.utils.dom.addClass(root, NOTE_CLASS);
     const topBar = root.querySelector('.blocklyCommentTopbar');
+    this.foldoutIcon_ = root.querySelector('.blocklyFoldoutIcon');
+    this.deleteIcon_ = root.querySelector('.blocklyDeleteIcon');
 
     /**
      * The card itself: core's own highlight rect, which a note fills rather
@@ -86,48 +100,19 @@ export class Note extends RenderedNoteBase {
      * a drag and strokes it when the note is selected, so borrowing it keeps
      * both for free.
      *
-     * The corners are set once. Core only ever writes height, width and x to
-     * this rect, so the radii survive every resize.
+     * Square, like Blockly's own comment: core leaves this rect unrounded and
+     * a note no longer overrides that.
      * @private
      */
     this.card_ = root.querySelector('.blocklyCommentHighlight');
-    this.card_?.setAttribute('rx', `${FRAME_RADIUS}`);
-    this.card_?.setAttribute('ry', `${FRAME_RADIUS}`);
-
-    /**
-     * The hairline under the title.
-     *
-     * The heading needs separating from the body, and a box around the body
-     * is the one thing that cannot do it: a lighter bordered panel inset in a
-     * coloured body is exactly how Blockly draws a field on a block, so a
-     * note built that way reads as a block however it is shaped. A rule reads
-     * as an index card instead.
-     * @private
-     */
-    this.rule_ = Blockly.utils.dom.createSvgElement(Blockly.utils.Svg.LINE, {
-      'class': RULE_CLASS,
-    });
-    if (this.card_) {
-      root.insertBefore(this.rule_, this.card_.nextSibling);
-    } else {
-      root.appendChild(this.rule_);
-    }
-
-    /**
-     * Where the pointer went down on the title, so a press that turns into a
-     * drag can be told apart from a click.
-     * @private
-     */
-    this.titlePressPoint_ = null;
 
     /**
      * The pin marker. Tabler's `pinned` glyph, authored on a 24-unit grid.
      *
-     * It lives in the root group beside the rule, *not* in core's top bar.
-     * Core mirrors that bar wholesale in RTL and each of its children has to
-     * undo the mirror for itself; the root group is not mirrored, so the
-     * marker flips its own coordinates the way `renderRule` does and the two
-     * stay consistent.
+     * It lives in the root group, *not* in core's top bar. Core mirrors that
+     * bar wholesale in RTL and each of its children has to undo the mirror for
+     * itself; the root group is not mirrored, so the marker flips its own
+     * coordinates instead.
      *
      * `aria-hidden` because it is decoration: it repeats what `setMovable`
      * already tells assistive technology, and a second announcement of the
@@ -139,16 +124,14 @@ export class Note extends RenderedNoteBase {
       'class': PIN_CLASS,
       'aria-hidden': 'true',
     });
-    if (this.rule_) {
-      root.insertBefore(this.pin_, this.rule_.nextSibling);
+    // After the top bar in document order, so it paints on top of it. The bar
+    // is opaque now, and anything inserted before it is simply covered.
+    if (topBar) {
+      root.insertBefore(this.pin_, topBar.nextSibling);
     } else {
       root.appendChild(this.pin_);
     }
-    for (const d of [
-      'M9 4v6l-2 4v2h10v-2l-2 -4v-6',
-      'M12 16l0 5',
-      'M8 4l8 0',
-    ]) {
+    for (const d of PIN_GLYPH) {
       Blockly.utils.dom.createSvgElement(
         Blockly.utils.Svg.PATH,
         {'d': d},
@@ -260,7 +243,6 @@ export class Note extends RenderedNoteBase {
   renderChrome() {
     if (this.isDeadOrDying()) return;
     this.renderCard();
-    this.renderRule();
     this.renderTitle();
   }
 
@@ -280,24 +262,6 @@ export class Note extends RenderedNoteBase {
   }
 
   /**
-   * Stretches the hairline to the width of the note.
-   *
-   * It is inset to the title's own gutter rather than running edge to edge,
-   * so it starts where the heading starts. The stylesheet hides it on a
-   * collapsed note, where there is no body left to divide it from.
-   */
-  renderRule() {
-    if (!this.rule_) return;
-    const {width} = this.view.getSize();
-    const dir = this.workspace.RTL ? -1 : 1;
-    const inset = Math.min(NOTE_MARGIN, width / 2);
-    this.rule_.setAttribute('x1', `${dir * inset}`);
-    this.rule_.setAttribute('x2', `${dir * Math.max(inset, width - inset)}`);
-    this.rule_.setAttribute('y1', `${TITLE_RULE_Y}`);
-    this.rule_.setAttribute('y2', `${TITLE_RULE_Y}`);
-  }
-
-  /**
    * Paints the note by overriding the CSS custom properties core's comment
    * stylesheet already reads, which avoids restyling its elements directly.
    *
@@ -307,9 +271,19 @@ export class Note extends RenderedNoteBase {
    */
   renderColour() {
     const colour = this.getColour();
+    const ink = inkFor(colour);
     const style = this.getSvgRoot().style;
     style.setProperty('--commentFillColour', colour);
     style.setProperty('--commentBorderColour', edgeFor(colour));
+    style.setProperty('--noteInkColour', ink);
+
+    // Core's bar buttons are <image> elements, which no amount of CSS can
+    // tint, so the artwork is swapped for one already drawn in this note's
+    // ink. Core reads nothing back off them but their bounding box, id and
+    // visibility - none of which the picture affects - so the buttons stay
+    // entirely core's, keyboard handling and all.
+    this.foldoutIcon_?.setAttribute('href', glyphToDataUri(CHEVRON_GLYPH, ink));
+    this.deleteIcon_?.setAttribute('href', glyphToDataUri(TRASH_GLYPH, ink));
   }
 
   /**
@@ -336,25 +310,28 @@ export class Note extends RenderedNoteBase {
     if (!this.titleNode_ || !this.titleElement_) return;
     this.titleNode_.textContent = title;
 
-    // The marker leads the title, so it is what the title is indented past.
-    // Nothing in core makes room for it: `calcMinSize` sums its own two bar
-    // buttons by name, so this offset is the only thing keeping the two from
-    // overlapping.
-    const indent = this.isPinned()
+    // The title is boxed in on both sides: the collapse button before it, the
+    // delete button after it, and the pin marker in between when there is one.
+    // Core makes room for none of that - `calcMinSize` sums only its own two
+    // buttons, and nothing at all knows about the marker - so these insets are
+    // the only thing keeping the four from overlapping.
+    const pinAdvance = this.isPinned()
       ? (PIN_GLYPH_INK.width * PIN_ICON_SIZE) / PIN_GLYPH_GRID + PIN_ICON_GAP
       : 0;
+    const leading = BAR_LEADING_INSET + pinAdvance;
+
     // Inside core's top bar group, which it mirrors in RTL - so x counts
     // inwards from the note's edge either way, and the sign follows.
     const dir = this.workspace.RTL ? -1 : 1;
     this.positionPin_(dir);
 
-    this.titleElement_.setAttribute('x', `${dir * (NOTE_MARGIN + indent)}`);
+    this.titleElement_.setAttribute('x', `${dir * leading}`);
     this.titleElement_.setAttribute('y', `${TOPBAR_HEIGHT / 2}`);
 
     // Trim a character at a time; titles are short, so this settles fast.
     const maxWidth = Math.max(
       0,
-      this.view.getSize().width - NOTE_MARGIN * 2 - indent,
+      this.view.getSize().width - leading - BAR_TRAILING_INSET,
     );
     let text = title;
     while (
@@ -367,7 +344,7 @@ export class Note extends RenderedNoteBase {
   }
 
   /**
-   * Places the pin marker at the start of the title row.
+   * Places the pin marker between the collapse button and the title.
    *
    * The glyph is authored on a 24-unit grid, so it is scaled down to one line
    * box. In RTL the whole top bar is mirrored by core, and the negative scale
@@ -379,9 +356,9 @@ export class Note extends RenderedNoteBase {
   private positionPin_(dir: number) {
     if (!this.pin_) return;
     const scale = PIN_ICON_SIZE / PIN_GLYPH_GRID;
-    // Offset by the glyph's own padding so it is the ink that lands on the
-    // margin, level with the body text below, rather than the box around it.
-    const x = dir * (NOTE_MARGIN - PIN_GLYPH_INK.x * scale);
+    // Offset by the glyph's own padding so it is the ink that starts where the
+    // title row's contents do, rather than the empty box around it.
+    const x = dir * (BAR_LEADING_INSET - PIN_GLYPH_INK.x * scale);
     const y =
       TOPBAR_HEIGHT / 2 - (PIN_GLYPH_INK.y + PIN_GLYPH_INK.height / 2) * scale;
     this.pin_.setAttribute(

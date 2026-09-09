@@ -14,6 +14,9 @@ import * as Blockly from 'blockly/core';
 
 import {
   EDGE_VALUE_SCALE,
+  INK_SATURATION_MAX,
+  INK_SATURATION_SCALE,
+  INK_VALUE,
   NOTE_SATURATION,
   NOTE_VALUE,
 } from '../constants/colours';
@@ -65,6 +68,26 @@ export function edgeFor(colour: string): string {
     hue,
     saturation,
     value * EDGE_VALUE_SCALE,
+  );
+}
+
+/**
+ * Derives the colour everything written on a note is drawn in.
+ *
+ * The same hue, pushed dark and saturated enough to read on both the note's
+ * body and its title bar. Used for the title, the body text and the glyphs in
+ * the bar, so a note is one colour throughout rather than a coloured card with
+ * black furniture on it.
+ *
+ * @param colour The note's colour, as a hex string.
+ * @returns The ink colour as hex.
+ */
+export function inkFor(colour: string): string {
+  const [hue, saturation] = hexToHsv(colour);
+  return Blockly.utils.colour.hsvToHex(
+    hue,
+    Math.min(saturation * INK_SATURATION_SCALE, INK_SATURATION_MAX),
+    INK_VALUE * 255,
   );
 }
 

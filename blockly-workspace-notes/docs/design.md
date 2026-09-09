@@ -35,21 +35,27 @@ fixed.
 The cost is that the design is tied to how Blockly's comments behave. If
 Blockly changes them, this has to follow.
 
-### Why a note has no buttons
+### Why the note looks like a Blockly comment
 
-Every early round put icons in the title row — collapse, delete, pin — and
-every round the note read as a _block_, because a strip of icons across the top
-of a rectangle is exactly what a block looks like. Moving all of it into the
-right-click menu leaves nothing on the paper but the words on it.
+A note is a Blockly workspace comment, so it looks like one: square, thin
+bordered, with a title bar in its own colour and its controls in that bar.
 
-The cost is that collapsing is one click further away and slightly less
-discoverable.
+An earlier design went the other way — a rounded card with no bar and no
+buttons, everything in the right-click menu — on the theory that a rectangle
+with a strip of icons across the top is what a block looks like. It read well,
+but it made a note something you had to learn. Following the pattern people
+already know is worth more than avoiding a family resemblance, and the colour
+does the work of telling a note from a block.
 
-The one mark that did earn a place is the pin, and the distinction is that it
-is not a control. It does nothing when clicked, it appears only while a note is
-pinned, and it answers a question the note could not otherwise answer: why will
-this one not move? A strip of buttons that is always there reads as a block; a
-single mark that is usually absent reads as punctuation.
+Collapse and delete are Blockly's own buttons, not copies. They are hidden by
+default and this simply shows them, which is why they arrive with keyboard
+navigation, focus handling, ARIA labels and the collapse button's automatic
+relabelling between "Collapse Comment" and "Expand Comment" already working. All
+that is replaced is the artwork, redrawn in the note's own ink.
+
+The pin beside them is a marker rather than a control: it does nothing when
+clicked, and it is there only while a note is pinned, answering the one question
+the note could not otherwise answer — why will this one not move?
 
 ### Why the title is edited in place
 
@@ -74,16 +80,25 @@ heads-up display. Locked won: a note that floats over your blocks wherever you
 pan is more annoying than helpful, and the screen-fixed version fights the way
 a workspace scrolls and zooms.
 
-### Why colours are pale
+### Why every colour comes from one
 
-Notes sit among coloured blocks. A saturated note would compete with them and
-make the workspace harder to read.
+A note stores a single colour. Everything else is derived from it: the title bar
+and border a step darker, and the ink — the title, the body text and all three
+glyphs — the same hue taken dark and saturated.
 
-Colour alone was not enough, though. Several rounds of tuning hue, icon colour
-and text colour all failed, because what reads as a block is the _shape_. Once
-the shape was fixed — rounded card, no header strip, no boxed text — the
-palette could be pulled paler still. The two work together: a note is S 0.25 at
-V 0.98, against a block's S 0.45 at V 0.65.
+Nothing is hardcoded black, and that is the point. Black furniture on a coloured
+card looks like a coloured card with black furniture on it; a green note whose
+text and icons are deep green reads as one object. It also means a host can
+supply any palette it likes and the whole note follows.
+
+The one thing derivation cannot guarantee is readability, so that is tested
+rather than trusted: across the palette the worst contrast is 5.79:1 for ink on
+the bar and 7.67:1 on the body, both clear of the 4.5:1 that body text needs,
+and `test/colour.mocha.js` asserts it.
+
+The fills themselves stay pale because notes sit among coloured blocks, and a
+saturated note would compete with them: S 0.25 at V 0.98, against a block's
+S 0.45 at V 0.65.
 
 ### Why notes get their own place in the save file
 

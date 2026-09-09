@@ -21,9 +21,6 @@ export const PIN_CLASS = 'blocklyNotePin';
 /** CSS class of the SVG text element that renders a note's title. */
 export const TITLE_CLASS = 'blocklyNoteTitle';
 
-/** CSS class of the hairline drawn under a note's title. */
-export const RULE_CLASS = 'blocklyNoteRule';
-
 /**
  * Shown in the title row of a note that has not been named yet.
  *

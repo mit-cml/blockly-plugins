@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="920" height="600" viewBox="0 0 920 600" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
   <title>The states a note can be in</title>
-  <desc>Five notes at their default size: a named note, one not named yet, a collapsed one, a pinned one showing its pin marker, and a selected one.</desc>
+  <desc>Five notes at their default size: a named note, one not named yet, a collapsed one, a pinned one showing its marker, and a selected one.</desc>
 
   <rect width="920" height="600" fill="#ffffff"/>
 
@@ -13,61 +13,99 @@
   </g>
   <g font-size="12.5" fill="#5f6368">
     <text x="40" y="64">the title is what you scan for</text>
-    <text x="330" y="64">greyed placeholders, both rows</text>
-    <text x="620" y="64">the title row is the whole note</text>
-    <text x="40" y="364">a pin before the title, and a heavier edge</text>
+    <text x="330" y="64">faded placeholders, both rows</text>
+    <text x="620" y="64">the bar is the whole note</text>
+    <text x="40" y="364">a pin in the bar, and a heavier edge</text>
     <text x="330" y="364">the ring follows the card</text>
   </g>
 
-  <!-- Named: the default note, 260 x 180. -->
+  <!-- Named: the default note. -->
   <g transform="translate(40, 84)">
-    <rect width="260" height="180" rx="8" ry="8" fill="#f9edbb" stroke="#dbd0a4" stroke-width="1"/>
-    <text x="16" y="24" font-size="16" font-weight="bold" fill="#000000" dominant-baseline="middle">Shopping list</text>
-    <line x1="16" y1="40" x2="244" y2="40" stroke="#dbd0a4" stroke-width="1"/>
-    <g font-size="14.67" fill="#000000">
-      <text x="16" y="66">milk</text>
-      <text x="16" y="86">bread</text>
-      <text x="16" y="106">coffee</text>
+    <rect x="0.5" y="0.5" width="259" height="179" fill="#f9edbb" stroke="#dbd0a4" stroke-width="1"/>
+    <rect x="0.5" y="0.5" width="259" height="47" fill="#dbd0a4"/>
+    <g transform="translate(14, 14) scale(0.8333)" fill="none" stroke="#4c4217"
+       stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <g transform="translate(0,0)"><path d="M6 9l6 6l6 -6"/></g>
     </g>
+    <g transform="translate(212, 14) scale(0.8333)" fill="none" stroke="#4c4217"
+       stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 7l16 0"/><path d="M10 11l0 6"/><path d="M14 11l0 6"/>
+      <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/>
+      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
+    </g>
+    <text x="39" y="24" font-size="16" font-weight="bold" fill="#4c4217" dominant-baseline="middle">Shopping list</text>
+    <text x="16" y="78" font-size="14.67" fill="#4c4217">milk</text>
   </g>
-
-  <!-- Not named yet: the title placeholder, and core's own body placeholder. -->
+  <!-- Not named yet: title and body both show their prompt. -->
   <g transform="translate(330, 84)">
-    <rect width="260" height="180" rx="8" ry="8" fill="#bbe5f9" stroke="#a4c9db" stroke-width="1"/>
-    <text x="16" y="24" font-size="16" font-weight="bold" fill="#999999" dominant-baseline="middle">Title</text>
-    <line x1="16" y1="40" x2="244" y2="40" stroke="#a4c9db" stroke-width="1"/>
-    <text x="16" y="66" font-size="14.67" fill="#999999">Say something...</text>
-  </g>
-
-  <!-- Collapsed: 48px, the title row alone. No rule — nothing to divide. -->
-  <g transform="translate(620, 84)">
-    <rect width="260" height="48" rx="8" ry="8" fill="#bbf9da" stroke="#a4dbbf" stroke-width="1"/>
-    <text x="16" y="24" font-size="16" font-weight="bold" fill="#000000" dominant-baseline="middle">Release checklist</text>
-  </g>
-
-  <!-- Pinned: the same note with a 2px edge instead of 1px. -->
-  <g transform="translate(40, 384)">
-    <rect x="1" y="1" width="258" height="178" rx="8" ry="8" fill="#f9bbc5" stroke="#dba4ad" stroke-width="2"/>
-    <!-- The pin marker: Tabler's glyph on a 24 grid, scaled to a 16px line
-         box and offset so its ink starts on the note's 16px margin. -->
-    <g transform="translate(11.333, 15.667) scale(0.6667)" fill="none"
-       stroke="#000000" stroke-width="2" stroke-linecap="round"
-       stroke-linejoin="round">
-      <path d="M9 4v6l-2 4v2h10v-2l-2 -4v-6"/>
-      <path d="M12 16l0 5"/>
-      <path d="M8 4l8 0"/>
+    <rect x="0.5" y="0.5" width="259" height="179" fill="#bbe5f9" stroke="#a4c9db" stroke-width="1"/>
+    <rect x="0.5" y="0.5" width="259" height="47" fill="#a4c9db"/>
+    <g transform="translate(14, 14) scale(0.8333)" fill="none" stroke="#173b4c"
+       stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <g transform="translate(0,0)"><path d="M6 9l6 6l6 -6"/></g>
     </g>
-    <text x="27.667" y="24" font-size="16" font-weight="bold" fill="#000000" dominant-baseline="middle">Do not move</text>
-    <line x1="16" y1="40" x2="244" y2="40" stroke="#dba4ad" stroke-width="1"/>
-    <text x="16" y="66" font-size="14.67" fill="#000000">Locked in place.</text>
+    <g transform="translate(212, 14) scale(0.8333)" fill="none" stroke="#173b4c"
+       stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 7l16 0"/><path d="M10 11l0 6"/><path d="M14 11l0 6"/>
+      <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/>
+      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
+    </g>
+    <text x="39" y="24" font-size="16" font-weight="bold" fill="#173b4c" opacity="0.55" dominant-baseline="middle">Title</text>
+    <text x="16" y="78" font-size="14.67" fill="#173b4c" opacity="0.55">Say something...</text>
   </g>
-
-  <!-- Selected: Blockly's own 3px #fc3 ring, drawn on the card. -->
+  <!-- Collapsed: the bar alone, chevron turned to point right. -->
+  <g transform="translate(620, 84)">
+    <rect x="0.5" y="0.5" width="259" height="47" fill="#bbf9da" stroke="#a4dbbf" stroke-width="1"/>
+    <rect x="0.5" y="0.5" width="259" height="47" fill="#a4dbbf"/>
+    <g transform="translate(14, 14) scale(0.8333)" fill="none" stroke="#174c31"
+       stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <g transform="rotate(-90 12 12)"><path d="M6 9l6 6l6 -6"/></g>
+    </g>
+    <g transform="translate(212, 14) scale(0.8333)" fill="none" stroke="#174c31"
+       stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 7l16 0"/><path d="M10 11l0 6"/><path d="M14 11l0 6"/>
+      <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/>
+      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
+    </g>
+    <text x="39" y="24" font-size="16" font-weight="bold" fill="#174c31" dominant-baseline="middle">Release checklist</text>
+  </g>
+  <!-- Pinned: the marker, and a 2px edge instead of 1px. -->
+  <g transform="translate(40, 384)">
+    <rect x="1.0" y="1.0" width="258" height="178" fill="#f9bbc5" stroke="#dba4ad" stroke-width="2"/>
+    <rect x="1.0" y="1.0" width="258" height="46" fill="#dba4ad"/>
+    <g transform="translate(14, 14) scale(0.8333)" fill="none" stroke="#4c171f"
+       stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <g transform="translate(0,0)"><path d="M6 9l6 6l6 -6"/></g>
+    </g>
+    <g transform="translate(212, 14) scale(0.8333)" fill="none" stroke="#4c171f"
+       stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 7l16 0"/><path d="M10 11l0 6"/><path d="M14 11l0 6"/>
+      <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/>
+      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
+    </g>
+    <g transform="translate(34.333, 15.667) scale(0.6667)" fill="none"
+       stroke="#4c171f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 4v6l-2 4v2h10v-2l-2 -4v-6"/><path d="M12 16l0 5"/><path d="M8 4l8 0"/>
+    </g>
+    <text x="50.667" y="24" font-size="16" font-weight="bold" fill="#4c171f" dominant-baseline="middle">Do not move</text>
+    <text x="16" y="78" font-size="14.67" fill="#4c171f">Locked in place.</text>
+  </g>
+  <!-- Selected: Blockly's own 3px #fc3 ring. -->
   <g transform="translate(330, 384)">
-    <rect x="1.5" y="1.5" width="257" height="177" rx="8" ry="8" fill="#dfbbf9" stroke="#c4a4db" stroke-width="1"/>
-    <rect x="1.5" y="1.5" width="257" height="177" rx="8" ry="8" fill="none" stroke="#ffcc33" stroke-width="3"/>
-    <text x="16" y="24" font-size="16" font-weight="bold" fill="#000000" dominant-baseline="middle">Ideas</text>
-    <line x1="16" y1="40" x2="244" y2="40" stroke="#c4a4db" stroke-width="1"/>
-    <text x="16" y="66" font-size="14.67" fill="#000000">Try a smaller step.</text>
+    <rect x="0.5" y="0.5" width="259" height="179" fill="#dfbbf9" stroke="#c4a4db" stroke-width="1"/>
+    <rect x="0.5" y="0.5" width="259" height="47" fill="#c4a4db"/>
+    <rect x="1.5" y="1.5" width="257" height="177" fill="none" stroke="#ffcc33" stroke-width="3"/>
+    <g transform="translate(14, 14) scale(0.8333)" fill="none" stroke="#36174c"
+       stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <g transform="translate(0,0)"><path d="M6 9l6 6l6 -6"/></g>
+    </g>
+    <g transform="translate(212, 14) scale(0.8333)" fill="none" stroke="#36174c"
+       stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 7l16 0"/><path d="M10 11l0 6"/><path d="M14 11l0 6"/>
+      <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/>
+      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
+    </g>
+    <text x="39" y="24" font-size="16" font-weight="bold" fill="#36174c" dominant-baseline="middle">Ideas</text>
+    <text x="16" y="78" font-size="14.67" fill="#36174c">Try a smaller step.</text>
   </g>
 </svg>

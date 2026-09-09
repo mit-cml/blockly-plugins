@@ -87,6 +87,44 @@ export const NOTE_MARGIN = TITLE_LINE_HEIGHT;
  */
 export const TOPBAR_HEIGHT = TITLE_LINE_HEIGHT + NOTE_MARGIN * 2;
 
+/**
+ * The box each of core's bar buttons is drawn in. Core's own default, kept.
+ */
+export const BAR_ICON_SIZE = 20;
+
+/** The gap between a bar button and whatever it sits next to. */
+export const BAR_ICON_GAP = MEDIUM_PADDING;
+
+/**
+ * The inset core leaves around a bar button.
+ *
+ * Not ours to choose: `CommentBarButton.getMargin()` computes exactly this,
+ * half the difference between the bar's height and the icon's, and both
+ * buttons are positioned with it. Repeating the arithmetic here is what lets
+ * the title know where they are without measuring them every time it redraws.
+ */
+export const BAR_ICON_MARGIN = (TOPBAR_HEIGHT - BAR_ICON_SIZE) / 2;
+
+/**
+ * Where the title row's contents begin, past the collapse button.
+ *
+ * Core puts that button at `BAR_ICON_MARGIN` from the leading edge, so this is
+ * its far side plus a gap. The pin marker starts here when there is one, and
+ * the title follows it.
+ */
+export const BAR_LEADING_INSET = BAR_ICON_MARGIN + BAR_ICON_SIZE + BAR_ICON_GAP;
+
+/**
+ * How much room the delete button needs at the trailing edge.
+ *
+ * Core sets its x to the bar's width minus the button's size *including both
+ * margins*, so the icon's near edge is one full margin further in than the
+ * collapse button's - hence the doubled margin here rather than a single one.
+ * This is what the title's truncation has to stop short of.
+ */
+export const BAR_TRAILING_INSET =
+  BAR_ICON_MARGIN * 2 + BAR_ICON_SIZE + BAR_ICON_GAP;
+
 /** Corner radius of a note's card; Blockly's own CORNER_RADIUS. */
 export const FRAME_RADIUS = 8;
 
@@ -99,23 +137,6 @@ export const SCROLLBAR_WIDTH = 8;
 
 /** Space between a note's edge and its writing area. */
 export const BODY_INSET = NOTE_MARGIN;
-
-/** The bottom of the title's line box, measured from the note's top. */
-const TITLE_BOTTOM = (TOPBAR_HEIGHT + TITLE_LINE_HEIGHT) / 2;
-
-/**
- * Where the hairline under the title sits, measured from the note's top.
- *
- * Exactly midway between the bottom of the title's line box and the top of
- * the body, so it has equal air above and below and does not read as
- * belonging to either one.
- *
- * It separates the heading from the body the way the rule on an index card
- * does. A box around the body would not: a lighter bordered panel inset in a
- * coloured body is exactly how Blockly draws a field on a block, so anything
- * built that way reads as a block however the note itself is shaped.
- */
-export const TITLE_RULE_Y = (TITLE_BOTTOM + TOPBAR_HEIGHT) / 2;
 
 /**
  * The size a note is created at when the host sets no `defaultSize`.

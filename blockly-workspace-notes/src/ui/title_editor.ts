@@ -22,11 +22,12 @@ import * as Blockly from 'blockly/core';
 
 import {TITLE_CLASS, UNTITLED_TITLE_TEXT} from '../constants/dom';
 import {
-  NOTE_MARGIN,
+  BAR_TRAILING_INSET,
   TITLE_FONT_SIZE,
   TITLE_LINE_HEIGHT,
 } from '../constants/layout';
 import type {Note} from '../model/note';
+import {inkFor} from '../utils/colour';
 import {asOneUndoStep} from '../utils/undo';
 
 /**
@@ -60,11 +61,12 @@ function editorBox(note: Note): EditorBox | null {
   const scale = note.workspace.getAbsoluteScale();
   // Room to type past the end of the current title, but never past the paper:
   // the editor is transparent, so anything overflowing would be text floating
-  // on the canvas.
+  // on the canvas. It stops at the delete button rather than the note's edge,
+  // for the same reason the title itself truncates there.
   const room =
     note.getSvgRoot().getBoundingClientRect().right -
     box.left -
-    NOTE_MARGIN * scale;
+    BAR_TRAILING_INSET * scale;
   return {
     left: box.left,
     top: box.top,
@@ -143,6 +145,10 @@ export function editTitle(note: Note): void {
   // .blocklyNoteTitleInput. Left to CSS the heading would drop to book weight
   // the instant the caret landed in it.
   input.style.fontWeight = 'bold';
+  // Inline for the same reason as the type above, and one of its own: the
+  // editor is in WidgetDiv, outside the note's SVG, so it inherits none of the
+  // note's colour custom properties.
+  input.style.color = inkFor(note.getColour());
   input.value = note.getTitle();
   div.appendChild(input);
 
