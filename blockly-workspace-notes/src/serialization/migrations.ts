@@ -3,9 +3,16 @@
  * version of this plugin.
  *
  * Every save file ever written has to keep loading, so this is the one place
- * that knows what earlier versions looked like. Adding a field to `SavedNote`
- * needs a `SCHEMA_VERSION` bump in `constants/serialization.ts` and an entry
- * in `MIGRATIONS` below, keyed by the version it upgrades *from*.
+ * that knows what earlier versions looked like. A change that an older file
+ * cannot be read through — a renamed or retyped field, a moved one, or a new
+ * required one — needs a `SCHEMA_VERSION` bump in `constants/serialization.ts`
+ * and an entry in `MIGRATIONS` below, keyed by the version it upgrades *from*.
+ *
+ * A new *optional* field needs neither. Its absence is already its default, so
+ * the migration would be the identity function — and bumping is not free:
+ * `migrate` warns whenever a file's version runs ahead of the plugin reading
+ * it, so every file written by the new build would make an older deployed
+ * build complain about a field it was never going to honour anyway.
  */
 
 import {SCHEMA_VERSION} from '../constants/serialization';

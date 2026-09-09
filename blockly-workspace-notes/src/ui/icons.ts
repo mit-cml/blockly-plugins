@@ -59,6 +59,18 @@ export const PIN_GLYPH = [
 ];
 
 /**
+ * Tabler's `lock`, for the marker on a locked note.
+ *
+ * Drawn inline for the same reason as the pin: it is the plugin's own element
+ * rather than one of core's, so CSS can stroke it in the note's ink directly.
+ */
+export const LOCK_GLYPH = [
+  'M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6',
+  'M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0',
+  'M8 11v-4a4 4 0 1 1 8 0v4',
+];
+
+/**
  * Renders a glyph as a `data:` URI, stroked in the given colour.
  *
  * Percent-encoded rather than base64: it stays readable in the DOM inspector,

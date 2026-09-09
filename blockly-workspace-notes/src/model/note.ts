@@ -3,9 +3,9 @@
  * state `model/note_mixin.ts` defines.
  *
  * Everything here is SVG the note adds to, or takes away from, the comment
- * core already built — the card, the title, and the marker that shows a note
- * is pinned — plus the plumbing that keeps that chrome in step with a comment
- * core is resizing, collapsing and dragging underneath it.
+ * core already built — the card, the title, and the markers that show a note
+ * is pinned or locked — plus the plumbing that keeps that chrome in step with
+ * a comment core is resizing, collapsing and dragging underneath it.
  */
 
 import * as Blockly from 'blockly/core';
@@ -14,6 +14,8 @@ import {
   NOTE_CLASS,
   FOOTER_CLASS,
   FOOTER_TEXT_CLASS,
+  LOCK_CLASS,
+  LOCKED_CLASS,
   PIN_CLASS,
   SELECTION_CLASS,
   PINNED_CLASS,
@@ -22,6 +24,7 @@ import {
   UNTITLED_TITLE_TEXT,
 } from '../constants/dom';
 import {
+  BAR_EMPTY_INSET,
   BAR_INSET,
   BODY_INSET,
   FOOTER_HANDLE_CLEARANCE,
@@ -31,23 +34,27 @@ import {
   FOOTER_LABEL_GAP,
   MIN_FOOTER_AUTHOR_CHARS,
   MIN_SIZE,
-  PIN_GLYPH_GRID,
+  GLYPH_GRID,
+  LOCK_GLYPH_INK,
+  MARKER_ICON_GAP,
+  MARKER_ICON_SIZE,
   PIN_GLYPH_INK,
-  PIN_ICON_GAP,
-  PIN_ICON_SIZE,
   TOPBAR_HEIGHT,
 } from '../constants/layout';
+import type {GlyphInk} from '../constants/layout';
 import type {NoteCopyData} from '../types/clipboard';
 import {edgeFor, inkFor} from '../utils/colour';
 import {
   CALENDAR_GLYPH,
   CHEVRON_GLYPH,
+  LOCK_GLYPH,
   PIN_GLYPH,
   TRASH_GLYPH,
   USER_GLYPH,
   glyphToDataUri,
 } from '../ui/icons';
 import {editTitle} from '../ui/title_editor';
+import {msg} from '../utils/messages';
 import {RenderedNoteBase} from './note_mixin';
 import {restackNotes} from './stacking';
 
@@ -73,6 +80,9 @@ export class Note extends RenderedNoteBase {
 
   /** The marker shown while the note is pinned. */
   private pin_?: SVGGElement;
+
+  /** The marker shown while the note is locked. */
+  private lock_?: SVGGElement;
 
   /** The rect that draws the selection ring. */
   private selection_?: SVGRectElement;
@@ -136,30 +146,54 @@ export class Note extends RenderedNoteBase {
     this.card_ = root.querySelector('.blocklyCommentHighlight');
 
     /**
-     * The pin marker. Tabler's `pinned` glyph, authored on a 24-unit grid.
+     * The two title bar markers: Tabler's `pinned` and `lock`, both authored
+     * on a 24-unit grid, and both drawn into the same slot between the
+     * collapse button and the title. The stylesheet shows at most one, so the
+     * slot never carries two and the title's offset stays a single term.
      *
-     * It lives in the root group, *not* in core's top bar. Core mirrors that
+     * They live in the root group, *not* in core's top bar. Core mirrors that
      * bar wholesale in RTL and each of its children has to undo the mirror for
-     * itself; the root group is not mirrored, so the marker flips its own
-     * coordinates instead.
+     * itself; the root group is not mirrored, so a marker flips its own
+     * coordinates instead. Both are inserted after the bar in document order
+     * so they paint on top of it - the bar is opaque, and anything before it
+     * is simply covered.
      *
-     * `aria-hidden` because it is decoration: it repeats what `setMovable`
-     * already tells assistive technology, and a second announcement of the
-     * same fact is noise. The stylesheet hides it entirely unless the note is
-     * pinned, and keeps it out of the way of pointer events.
+     * They differ in what they tell assistive technology. The pin is
+     * decoration: pinning takes away one thing, the menu says so plainly, and
+     * anyone can undo it in a click. Locking takes away four at once, removes
+     * a visible button from the bar, and in the case this was built for cannot
+     * be undone by the person reading it - and core's only signal is the
+     * readonly attribute on the body, which is reached after focus is already
+     * inside it and says nothing about the title or the missing bin. So the
+     * lock is labelled and the pin is not.
      * @private
      */
-    this.pin_ = Blockly.utils.dom.createSvgElement(Blockly.utils.Svg.G, {
-      'class': PIN_CLASS,
-      'aria-hidden': 'true',
+    let after: Element | null = topBar;
+    const marker = (
+      cls: string,
+      paths: string[],
+      aria: Record<string, string>,
+    ) => {
+      const g = Blockly.utils.dom.createSvgElement(Blockly.utils.Svg.G, {
+        'class': cls,
+        ...aria,
+      });
+      for (const d of paths) {
+        Blockly.utils.dom.createSvgElement(Blockly.utils.Svg.PATH, {'d': d}, g);
+      }
+      if (after) {
+        root.insertBefore(g, after.nextSibling);
+        after = g;
+      } else {
+        root.appendChild(g);
+      }
+      return g;
+    };
+    this.pin_ = marker(PIN_CLASS, PIN_GLYPH, {'aria-hidden': 'true'});
+    this.lock_ = marker(LOCK_CLASS, LOCK_GLYPH, {
+      'role': 'img',
+      'aria-label': msg('NOTE_LOCKED_LABEL', 'Locked'),
     });
-    // After the top bar in document order, so it paints on top of it. The bar
-    // is opaque now, and anything inserted before it is simply covered.
-    if (topBar) {
-      root.insertBefore(this.pin_, topBar.nextSibling);
-    } else {
-      root.appendChild(this.pin_);
-    }
 
     /**
      * The footer: who wrote the note, and when it last changed.
@@ -212,14 +246,6 @@ export class Note extends RenderedNoteBase {
       {'class': SELECTION_CLASS, 'aria-hidden': 'true'},
       root,
     );
-    for (const d of PIN_GLYPH) {
-      Blockly.utils.dom.createSvgElement(
-        Blockly.utils.Svg.PATH,
-        {'d': d},
-        this.pin_,
-      );
-    }
-
     /**
      * The SVG text element showing the title above the writing area.
      * @private
@@ -252,6 +278,8 @@ export class Note extends RenderedNoteBase {
     this.titleElement_.addEventListener('pointerup', (e) => {
       const press = this.titlePressPoint_;
       this.titlePressPoint_ = null;
+      // The editable check is also what keeps a locked note's title from
+      // opening, which is why the inline editor itself needs no lock handling.
       if (!press || !this.isEditable()) return;
       const travelled = Math.hypot(e.clientX - press.x, e.clientY - press.y);
       if (travelled > Blockly.config.dragRadius) return;
@@ -377,12 +405,12 @@ export class Note extends RenderedNoteBase {
   }
 
   /**
-   * Draws the title and the pin marker, truncating the title to what is left
-   * of the width.
+   * Draws the title and its marker, truncating the title to what is left of
+   * the width.
    *
    * Called on every size change as well as every title change, since the
-   * truncation depends on both, and on pinning, which moves the title over to
-   * make room for the marker.
+   * truncation depends on both - and on pinning and locking, either of which
+   * moves the title over to make room for a marker.
    */
   renderTitle() {
     if (!this.titleElement_ || this.isDeadOrDying()) return;
@@ -405,23 +433,35 @@ export class Note extends RenderedNoteBase {
     // Core makes room for none of that - `calcMinSize` sums only its own two
     // buttons, and nothing at all knows about the marker - so these insets are
     // the only thing keeping the four from overlapping.
-    const pinAdvance = this.isPinned()
-      ? (PIN_GLYPH_INK.width * PIN_ICON_SIZE) / PIN_GLYPH_GRID + PIN_ICON_GAP
-      : 0;
-    const leading = BAR_INSET + pinAdvance;
+    // One marker slot, and a lock takes it from a pin: a note that cannot be
+    // edited is the more urgent of the two facts, and the pin comes back the
+    // moment it is unlocked. So the leading offset stays one term however many
+    // states the note is in at once.
+    const marker = this.isLocked()
+      ? LOCK_GLYPH_INK
+      : this.isPinned()
+        ? PIN_GLYPH_INK
+        : null;
+    const leading = BAR_INSET + (marker ? markerAdvance(marker) : 0);
 
     // Inside core's top bar group, which it mirrors in RTL - so x counts
     // inwards from the note's edge either way, and the sign follows.
     const dir = this.workspace.RTL ? -1 : 1;
-    this.positionPin_(dir);
+    this.positionMarker_(this.pin_, PIN_GLYPH_INK, dir);
+    this.positionMarker_(this.lock_, LOCK_GLYPH_INK, dir);
 
     this.titleElement_.setAttribute('x', `${dir * leading}`);
     this.titleElement_.setAttribute('y', `${TOPBAR_HEIGHT / 2}`);
 
+    // A locked note has no delete button, so the far end of its bar holds
+    // nothing but the margin. Reserving a button's worth there would leave the
+    // title stopping short of an empty gap.
+    const trailing = this.isLocked() ? BAR_EMPTY_INSET : BAR_INSET;
+
     // Trim a character at a time; titles are short, so this settles fast.
     const maxWidth = Math.max(
       0,
-      this.view.getSize().width - leading - BAR_INSET,
+      this.view.getSize().width - leading - trailing,
     );
     let text = title;
     while (
@@ -457,7 +497,7 @@ export class Note extends RenderedNoteBase {
     const dir = this.workspace.RTL ? -1 : 1;
     const {width, height} = this.view.getSize();
     const y = height - BODY_INSET - FOOTER_HEIGHT / 2;
-    const scale = FOOTER_ICON_SIZE / PIN_GLYPH_GRID;
+    const scale = FOOTER_ICON_SIZE / GLYPH_GRID;
 
     // `offset` is measured from the note's leading edge. The footer sits in
     // the root group, which core does not mirror - unlike the title bar - so
@@ -530,30 +570,39 @@ export class Note extends RenderedNoteBase {
   }
 
   /**
-   * Places the pin marker between the collapse button and the title.
+   * Places a marker in the slot between the collapse button and the title.
    *
-   * The glyph is authored on a 24-unit grid, so it is scaled down to one line
-   * box. In RTL the whole top bar is mirrored by core, and the negative scale
-   * undoes that for the glyph itself - the same correction the title gets from
-   * the stylesheet.
+   * Both markers are positioned unconditionally, hidden or not: the stylesheet
+   * decides which one paints, and writing one attribute to a hidden group is
+   * cheaper than working out whether it was worth skipping.
    *
+   * The glyphs are authored on a 24-unit grid, so they are scaled down to one
+   * line box. In RTL the whole top bar is mirrored by core, and the negative
+   * scale undoes that for the glyph itself - the same correction the title
+   * gets from the stylesheet.
+   *
+   * @param el The marker group, if it has been built yet.
+   * @param ink Where the glyph's ink sits in its grid.
    * @param dir 1 in a left-to-right workspace, -1 in a right-to-left one.
    */
-  private positionPin_(dir: number) {
-    if (!this.pin_) return;
-    const scale = PIN_ICON_SIZE / PIN_GLYPH_GRID;
+  private positionMarker_(
+    el: SVGGElement | undefined,
+    ink: GlyphInk,
+    dir: number,
+  ) {
+    if (!el) return;
+    const scale = MARKER_ICON_SIZE / GLYPH_GRID;
     // Offset by the glyph's own padding so it is the ink that starts where the
     // title row's contents do, rather than the empty box around it.
-    const x = dir * (BAR_INSET - PIN_GLYPH_INK.x * scale);
-    const y =
-      TOPBAR_HEIGHT / 2 - (PIN_GLYPH_INK.y + PIN_GLYPH_INK.height / 2) * scale;
-    this.pin_.setAttribute(
+    const x = dir * (BAR_INSET - ink.x * scale);
+    const y = TOPBAR_HEIGHT / 2 - (ink.y + ink.height / 2) * scale;
+    el.setAttribute(
       'transform',
       `translate(${x}, ${y}) scale(${dir * scale}, ${scale})`,
     );
   }
 
-  /** Locks or unlocks the note, and marks it visually. */
+  /** Holds or releases the note, and marks it visually. */
   applyPinned() {
     super.applyPinned();
     const pinned = this.isPinned();
@@ -567,6 +616,20 @@ export class Note extends RenderedNoteBase {
     if (pinned) this.applyZIndex();
   }
 
+  /** Marks the note read-only, and gives the lock the marker slot. */
+  applyLocked() {
+    super.applyLocked();
+    Blockly.utils.dom[this.isLocked() ? 'addClass' : 'removeClass'](
+      this.getSvgRoot(),
+      LOCKED_CLASS,
+    );
+    // Mandatory, not defensive. Locking changes which marker shows and takes
+    // the delete button out of the bar, but `setEditable` fires no event and
+    // touches no size attribute, so the size observer never wakes and nothing
+    // else would lay the row out again.
+    this.renderTitle();
+  }
+
   /** Restacks every note on the workspace to match their z-indices. */
   applyZIndex() {
     restackNotes(this.workspace);
@@ -578,11 +641,28 @@ export class Note extends RenderedNoteBase {
    * @returns The copy data, or null if the note is not copyable.
    */
   toCopyData(): NoteCopyData | null {
+    // Core's own version does not check this, so without it a locked note
+    // could still be copied by anything reaching past the context menu.
+    if (!this.isCopyable()) return null;
     const data = super.toCopyData() as NoteCopyData | null;
     if (!data) return null;
     data.noteState = this.saveNoteState();
     return data;
   }
+}
+
+/**
+ * How much of the title row a marker takes, its gap included.
+ *
+ * Measured across the ink rather than the glyph's box, matching where
+ * `positionMarker_` puts it - the two have to agree or the title either
+ * collides with the marker or floats away from it.
+ *
+ * @param ink Where the glyph's ink sits in its grid.
+ * @returns The width to give the marker, in workspace units.
+ */
+function markerAdvance(ink: GlyphInk): number {
+  return (ink.width * MARKER_ICON_SIZE) / GLYPH_GRID + MARKER_ICON_GAP;
 }
 
 /**

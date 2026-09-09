@@ -27,17 +27,30 @@ notes.getNotes().filter((note) => note.isPinned());
 headless, which is what you get on a workspace with no renderer. Both carry the
 same note-specific methods on top of Blockly's own comment API.
 
-| Method                         | What it does                            |
-| ------------------------------ | --------------------------------------- |
-| `getTitle()` / `setTitle(s)`   | The heading                             |
-| `getColour()` / `setColour(c)` | Any CSS colour; stored as hex           |
-| `isPinned()` / `setPinned(b)`  | Locked in place and raised to the front |
-| `getZIndex()` / `setZIndex(n)` | Stacking order; higher is nearer front  |
-| `getMeta()`                    | `{author, createdAt, updatedAt}`        |
-| `saveNoteState()`              | A plain copy of all of the above        |
+| Method                         | What it does                           |
+| ------------------------------ | -------------------------------------- |
+| `getTitle()` / `setTitle(s)`   | The heading                            |
+| `getColour()` / `setColour(c)` | Any CSS colour; stored as hex          |
+| `isPinned()` / `setPinned(b)`  | Held in place and raised to the front  |
+| `isLocked()` / `setLocked(b)`  | Read-only, undeletable, uncopyable     |
+| `getZIndex()` / `setZIndex(n)` | Stacking order; higher is nearer front |
+| `getMeta()`                    | `{author, createdAt, updatedAt}`       |
+| `saveNoteState()`              | A plain copy of all of the above       |
 
 Everything else — `getText`, `setText`, `moveTo`, `setSize`, `setCollapsed`,
 `dispose` — is Blockly's, and documented there.
+
+Two things about `setLocked` are worth knowing before you build on it.
+
+**Locking owns `editable` and `deletable` outright.** Unlocking sets both back
+to `true`, so if your app had independently made a note read-only and you then
+lock and unlock it, that read-only state is gone. Drive one or the other, not
+both. Pinning owns `movable` the same way, which is why the two compose
+cleanly.
+
+**`canToggleLock` gates the menu, not the model.** `setLocked` always works
+from code — undo, paste and loading a file all go through it. Locking states
+intent and stops accidents; it is not a security boundary.
 
 ## Helpers
 

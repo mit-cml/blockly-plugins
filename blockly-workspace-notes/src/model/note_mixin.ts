@@ -73,6 +73,7 @@ const NoteMixin = <TBase extends CommentConstructor>(Base: TBase) =>
           title: '',
           colour: DEFAULT_COLOUR,
           pinned: false,
+          locked: false,
           zIndex: 0,
           meta: {author: '', createdAt: now, updatedAt: now},
         };
@@ -113,12 +114,26 @@ const NoteMixin = <TBase extends CommentConstructor>(Base: TBase) =>
     }
 
     /**
-     * Pins or unpins the note. A pinned note is locked in place and kept in
+     * Pins or unpins the note. A pinned note is held in place and kept in
      * front of its neighbours.
      * @param pinned Whether the note should be pinned.
      */
     setPinned(pinned: boolean): void {
       this.changeNoteProperty_('pinned', !!pinned);
+    }
+
+    /** @returns Whether the note is locked. */
+    isLocked(): boolean {
+      return this.getNoteState().locked;
+    }
+
+    /**
+     * Locks or unlocks the note. A locked note is read-only and cannot be
+     * deleted, but can still be moved, collapsed and restacked.
+     * @param locked Whether the note should be locked.
+     */
+    setLocked(locked: boolean): void {
+      this.changeNoteProperty_('locked', !!locked);
     }
 
     /** @returns The note's stacking order; higher is nearer front. */
@@ -184,6 +199,7 @@ const NoteMixin = <TBase extends CommentConstructor>(Base: TBase) =>
         title: state.title,
         colour: state.colour,
         pinned: state.pinned,
+        locked: state.locked,
         zIndex: state.zIndex,
         meta: {...state.meta},
       };
@@ -217,6 +233,10 @@ const NoteMixin = <TBase extends CommentConstructor>(Base: TBase) =>
           state.pinned = value as boolean;
           this.applyPinned();
           break;
+        case 'locked':
+          state.locked = value as boolean;
+          this.applyLocked();
+          break;
         case 'zIndex':
           state.zIndex = value as number;
           this.applyZIndex();
@@ -232,10 +252,20 @@ const NoteMixin = <TBase extends CommentConstructor>(Base: TBase) =>
           state.title = whole.title;
           state.colour = whole.colour;
           state.pinned = whole.pinned;
+          // Coerced, unlike its neighbours: '*' also replays a NoteChange
+          // serialized before locking existed, where the key is simply absent.
+          // Left undefined it would survive into `saveNoteState`, and the
+          // JSON.stringify comparison in `changeNoteProperty_` would then treat
+          // a real lock as no change at all.
+          state.locked = !!whole.locked;
           state.zIndex = whole.zIndex;
           state.meta = {...whole.meta};
           this.renderTitle();
           this.renderColour();
+          // Before `applyPinned`, which ends by laying the title row out again:
+          // that pass should see both markers' final state, not one of them
+          // mid-flight.
+          this.applyLocked();
           this.applyPinned();
           this.applyZIndex();
           break;
@@ -282,9 +312,28 @@ const NoteMixin = <TBase extends CommentConstructor>(Base: TBase) =>
     /** Reflects the colour in the DOM. Overridden by the rendered subclass. */
     renderColour(): void {}
 
-    /** Applies the pinned flag. Locking works headlessly too. */
+    /** Applies the pinned flag. Holding a note in place works headlessly. */
     applyPinned(): void {
       this.setMovable(!this.getNoteState().pinned);
+    }
+
+    /**
+     * Applies the locked flag, which is what actually makes a note read-only.
+     *
+     * Locking owns `editable` and `deletable`; pinning owns `movable`. Neither
+     * ever writes the other's flag, and that is the whole reason the two
+     * compose: if both drove `movable`, unpinning a locked note would quietly
+     * hand its movement back.
+     *
+     * Unlocking sets both flags to true unconditionally, so a host that had
+     * independently called `setEditable(false)` loses that when a note it
+     * locked is unlocked. Locking owns those two flags outright; a host that
+     * needs its own read-only state should not also drive them.
+     */
+    applyLocked(): void {
+      const locked = this.getNoteState().locked;
+      this.setEditable(!locked);
+      this.setDeletable(!locked);
     }
 
     /** Applies the stacking order. Overridden by the rendered subclass. */

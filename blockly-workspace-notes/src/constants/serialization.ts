@@ -20,9 +20,12 @@ export const NOTE_SERIALIZER_NAME = 'workspaceNotes';
 export const COMMENT_SERIALIZER_NAME = 'workspaceComments';
 
 /**
- * Current version of the `workspaceNotes` payload. Bump this whenever the
- * shape changes, and add a matching entry to MIGRATIONS in
- * `serialization/migrations.ts`.
+ * Current version of the `workspaceNotes` payload.
+ *
+ * Bump this when an older file cannot simply be read by the current code — a
+ * field renamed, retyped, moved or newly required — and add a matching entry
+ * to MIGRATIONS in `serialization/migrations.ts`. A new optional field is not
+ * such a change; see the note there.
  */
 export const SCHEMA_VERSION = 1;
 

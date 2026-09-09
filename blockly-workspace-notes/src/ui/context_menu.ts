@@ -19,6 +19,7 @@ import {DEFAULT_PALETTE} from '../constants/colours';
 import {Note} from '../model/note';
 import {nextZIndex, previousZIndex} from '../model/stacking';
 import {msg} from '../utils/messages';
+import {canToggleLock} from './lock_permission';
 import {asOneUndoStep} from '../utils/undo';
 import {createSwatchRow} from './colour_swatches';
 
@@ -42,6 +43,7 @@ let registrationCount = 0;
 const NOTE_ITEM_IDS = [
   'noteColour',
   'notePin',
+  'noteLock',
   'noteCollapse',
   'noteBringToFront',
   'noteSendToBack',
@@ -87,8 +89,13 @@ export function registerNoteContextMenu({palette = DEFAULT_PALETTE} = {}) {
       noteFromScope(scope)
         ? msg('DUPLICATE_NOTE', 'Duplicate note')
         : msg('DUPLICATE_COMMENT', 'Duplicate Comment'),
+    // isCopyable, not isMovable: core defines the first as movable *and*
+    // deletable, so a locked note is already not copyable and this is what
+    // takes the item away. It also closes a smaller gap - on a note that was
+    // undeletable for any other reason the item used to show and then quietly
+    // do nothing, because the paste had no data to work from.
     preconditionFn: (scope) =>
-      scope.comment?.isMovable() ? 'enabled' : 'hidden',
+      scope.comment?.isCopyable() ? 'enabled' : 'hidden',
     callback: (scope) => {
       const comment = scope.comment;
       const data = comment?.toCopyData();
@@ -167,7 +174,14 @@ export function registerNoteContextMenu({palette = DEFAULT_PALETTE} = {}) {
       noteFromScope(scope)?.isPinned()
         ? msg('UNPIN_NOTE', 'Unpin note')
         : msg('PIN_NOTE', 'Pin note'),
-    preconditionFn: (scope) => (noteFromScope(scope) ? 'enabled' : 'hidden'),
+    // A locked note nobody here may unlock must not be unpinnable either, or
+    // a note held in place deliberately can still be released and dragged off.
+    // This gates the item, not the flag: locking never writes `movable`.
+    preconditionFn: (scope) => {
+      const note = noteFromScope(scope);
+      if (!note) return 'hidden';
+      return note.isLocked() && !canToggleLock(note) ? 'disabled' : 'enabled';
+    },
     callback: (scope) => {
       const note = noteFromScope(scope);
       if (!note) return;
@@ -176,6 +190,33 @@ export function registerNoteContextMenu({palette = DEFAULT_PALETTE} = {}) {
         if (pinning) note.setZIndex(nextZIndex(note.workspace));
         note.setPinned(pinning);
       });
+    },
+  });
+
+  registry.register({
+    id: 'noteLock',
+    scopeType: ScopeType.COMMENT,
+    weight: 5,
+    displayText: (scope) =>
+      noteFromScope(scope)?.isLocked()
+        ? msg('UNLOCK_NOTE', 'Unlock note')
+        : msg('LOCK_NOTE', 'Lock note'),
+    // The two refusals are not symmetric, and collapsing them loses the half
+    // that matters. A greyed "Unlock note" answers the question someone
+    // actually has in front of a note they cannot edit - it is locked,
+    // unlocking exists, it is not theirs to do - where hiding the item
+    // explains nothing and reads as a bug. A greyed "Lock note" on every
+    // unlocked note explains nothing either, and says it constantly.
+    preconditionFn: (scope) => {
+      const note = noteFromScope(scope);
+      if (!note) return 'hidden';
+      if (canToggleLock(note)) return 'enabled';
+      return note.isLocked() ? 'disabled' : 'hidden';
+    },
+    callback: (scope) => {
+      const note = noteFromScope(scope);
+      if (!note) return;
+      asOneUndoStep(() => note.setLocked(!note.isLocked()));
     },
   });
 

@@ -34,6 +34,7 @@ import {
   unregisterNoteSerializers,
 } from './serialization/registry';
 import {createNote as makeNote} from './serialization/state';
+import {clearLockPermission, setLockPermission} from './ui/lock_permission';
 import {
   registerXmlSupport,
   unregisterXmlSupport,
@@ -87,6 +88,7 @@ export class WorkspaceNotes {
       emitLegacyComments: false,
       xmlSupport: true,
       getAuthor: () => '',
+      canToggleLock: () => true,
       ...options,
     };
   }
@@ -108,6 +110,11 @@ export class WorkspaceNotes {
     this.workspace.newComment = (id) => makeNote(this.workspace, id);
 
     registerNoteChangeEvent();
+
+    // Outside the contextMenu guard below: who may unlock a note is a fact
+    // about the workspace, not about whether this plugin drew the menu that
+    // asks. A host driving its own menu still needs to be able to ask.
+    setLockPermission(this.workspace, this.options.canToggleLock);
 
     if (!this.options.skipSerializerRegistration) {
       registerNoteSerializers({
@@ -154,6 +161,8 @@ export class WorkspaceNotes {
       unregisterXmlSupport();
     }
 
+    clearLockPermission(this.workspace);
+
     if (this.options.contextMenu) {
       unregisterNoteContextMenu();
     }
@@ -175,6 +184,9 @@ export class WorkspaceNotes {
         note.moveTo(new Blockly.utils.Coordinate(state.x ?? 0, state.y ?? 0));
       }
       note.setZIndex(nextZIndex(this.workspace));
+      // After the z-index, which pinning would otherwise raise a second time.
+      if (state.pinned) note.setPinned(true);
+      if (state.locked) note.setLocked(true);
       note.restoreMeta({author: this.options.getAuthor()});
       return note;
     });

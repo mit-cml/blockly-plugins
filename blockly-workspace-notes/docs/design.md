@@ -13,14 +13,15 @@ because people will trust it and then lose work.
 Blockly already has workspace comments — a plain box you can type into. They
 already handle a great deal:
 
-| Already in Blockly                           | New here                |
-| -------------------------------------------- | ----------------------- |
-| A box you can type into                      | A title                 |
-| Drag to move, drag a corner to resize        | A colour per note       |
-| Collapse, delete, copy and paste             | Pinning — lock in place |
-| Keyboard navigation and screen-reader labels | Stacking order          |
-| Undo and redo                                | Author and dates        |
-|                                              | A versioned save format |
+| Already in Blockly                           | New here                 |
+| -------------------------------------------- | ------------------------ |
+| A box you can type into                      | A title                  |
+| Drag to move, drag a corner to resize        | A colour per note        |
+| Collapse, delete, copy and paste             | Pinning — hold in place  |
+| Keyboard navigation and screen-reader labels | Locking — make read-only |
+| Undo and redo                                | Stacking order           |
+|                                              | Author and dates         |
+|                                              | A versioned save format  |
 
 Everything in the left column keeps working exactly as people already expect.
 
@@ -73,12 +74,52 @@ The cost is that a click on the title does two things depending on whether it
 moved. Blockly's own gesture code draws that line at the drag radius, and this
 follows it, so dragging a note by its title still works.
 
-### Why "pinned" means locked, not fixed to the screen
+### Why "pinned" means held to the canvas, not fixed to the screen
 
-Pinned could mean locked to the canvas, or fixed to the screen like a
-heads-up display. Locked won: a note that floats over your blocks wherever you
-pan is more annoying than helpful, and the screen-fixed version fights the way
-a workspace scrolls and zooms.
+Pinned could mean held to the canvas, or fixed to the screen like a heads-up
+display. Held won: a note that floats over your blocks wherever you pan is more
+annoying than helpful, and the screen-fixed version fights the way a workspace
+scrolls and zooms.
+
+### Why locking is not pinning
+
+They sound alike and they are not. Pinning is about _where a note is_ — it stops
+being dragged and comes to the front. Locking is about _what a note says_ — it
+stops being edited and cannot be deleted.
+
+Underneath, Blockly gives a comment three independent flags, and each of the two
+features owns a disjoint set: locking drives `editable` and `deletable`, pinning
+drives `movable`, and neither ever writes the other's. That is not tidiness for
+its own sake. If both wrote `movable`, unpinning a locked note would quietly
+hand its movement back, and which behaviour you got would depend on the order
+you happened to do things in. Keeping them disjoint is what makes all four
+combinations mean exactly what they look like.
+
+The cost accepted in exchange: unlocking sets both of its flags to `true`
+outright, so locking owns them. A host wanting its own read-only notion should
+not also drive those two.
+
+The title bar has one marker slot, and a lock takes it from a pin. A note that
+cannot be edited is the more urgent of the two facts to convey, and the pin
+comes back the moment it is unlocked. The alternative — showing both — costs the
+title a fifth of its width on the notes most likely to have something to say.
+
+### Why the host decides who can unlock
+
+Locking exists because someone wants a note to survive being read by someone
+else: a teacher's instructions on a student's workspace. That only works if the
+student cannot simply unlock it, and the plugin has no idea who is looking. So
+the host supplies a predicate and the plugin asks it.
+
+It is held per workspace rather than captured once, because every other
+registration here is first-registration-wins — harmless for a palette, wrong
+for a permission, since a host running two workspaces would otherwise let
+whichever loaded first decide for both.
+
+And it gates the menu, not the model. `setLocked` has to keep working from code
+or undo, paste and loading a file would all break. Locking states intent and
+stops accidents; it is not a security boundary, and anything that depends on it
+should be checked where the file is saved.
 
 ### Why every colour comes from one
 

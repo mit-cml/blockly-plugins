@@ -43,6 +43,7 @@ new WorkspaceNotes(workspace, {
 | `palette`                    | 7 stationery colours | The swatches offered in the Colour menu         |
 | `defaultSize`                | `260 × 180`          | The size a new note is created at               |
 | `getAuthor`                  | `() => ''`           | Names the note's author, shown along its foot   |
+| `canToggleLock`              | `() => true`         | Decides who may lock and unlock a note          |
 | `contextMenu`                | `true`               | Adds the note items to the right-click menu     |
 | `xmlSupport`                 | `true`               | Keeps notes intact through the older XML format |
 | `skipSerializerRegistration` | `false`              | Leaves saving and loading entirely to your app  |
@@ -60,6 +61,22 @@ new WorkspaceNotes(workspace, {
   ],
 }).init();
 ```
+
+### Who may unlock a note
+
+A locked note is read-only and cannot be deleted. By default anyone can lock
+and unlock one; pass `canToggleLock` when that is somebody's decision to make:
+
+```js
+new WorkspaceNotes(workspace, {
+  canToggleLock: () => currentUser.isTeacher,
+}).init();
+```
+
+The predicate is given the note, so it can answer differently for different
+ones. It gates the menu, not the model — `note.setLocked(false)` still works
+from code, because undo, paste and loading a file all depend on it. If the
+guarantee matters, enforce it where you save.
 
 ## Turning it off
 

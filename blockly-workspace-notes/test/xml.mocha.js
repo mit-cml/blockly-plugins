@@ -47,6 +47,7 @@ suite('Note XML serialization', function () {
    */
   function makeNote(workspace, overrides = {}) {
     const note = new NoteComment(workspace);
+    if (overrides.locked) note.setLocked(true);
     if (overrides.text) note.setText(overrides.text);
     if (overrides.title) note.setTitle(overrides.title);
     if (overrides.colour) note.setColour(overrides.colour);
@@ -93,7 +94,7 @@ suite('Note XML serialization', function () {
     test('a plain note writes no note-specific attributes', function () {
       makeNote(this.workspace);
       const [elem] = comments(Blockly.Xml.workspaceToDom(this.workspace));
-      for (const name of ['title', 'colour', 'pinned', 'z']) {
+      for (const name of ['title', 'colour', 'pinned', 'locked', 'z']) {
         assert.isNull(
           elem.getAttribute(name),
           `expected ${name} to be omitted`,
@@ -155,7 +156,7 @@ suite('Note XML serialization', function () {
       assert.equal(note.getSize().width, 250);
     });
 
-    test('a pinned note comes back locked', function () {
+    test('a pinned note comes back held in place', function () {
       const dom = Blockly.utils.xml.textToDom(
         '<xml><comment id="n1" x="0" y="0" w="200" h="100" ' +
           'pinned="true"></comment></xml>',
@@ -164,6 +165,18 @@ suite('Note XML serialization', function () {
       const note = this.workspace.getCommentById('n1');
       assert.isTrue(note.isPinned());
       assert.isFalse(note.isOwnMovable());
+    });
+
+    test('a locked note comes back read-only and undeletable', function () {
+      const dom = Blockly.utils.xml.textToDom(
+        '<xml><comment id="n1" x="0" y="0" w="200" h="100" ' +
+          'locked="true"></comment></xml>',
+      );
+      Blockly.Xml.domToWorkspace(dom, this.workspace);
+      const note = this.workspace.getCommentById('n1');
+      assert.isTrue(note.isLocked());
+      assert.isFalse(note.isOwnEditable());
+      assert.isFalse(note.isOwnDeletable());
     });
 
     test('a plain old <comment> still loads, with defaults', function () {
@@ -351,7 +364,7 @@ suite('Note XML serialization', function () {
       const dom = Blockly.utils.xml.textToDom(
         '<xml><comment id="n1" x="1" y="2" w="3" h="4" collapsed="true" ' +
           'editable="false" movable="false" deletable="false" title="T" ' +
-          'colour="#ffd6a5" pinned="true" z="7" author="ada" ' +
+          'colour="#ffd6a5" pinned="true" locked="true" z="7" author="ada" ' +
           'created="c" updated="u">body</comment></xml>',
       );
       const [elem] = comments(dom);
@@ -369,6 +382,7 @@ suite('Note XML serialization', function () {
         title: 'T',
         colour: '#ffd6a5',
         pinned: true,
+        locked: true,
         zIndex: 7,
         meta: {author: 'ada', createdAt: 'c', updatedAt: 'u'},
       });

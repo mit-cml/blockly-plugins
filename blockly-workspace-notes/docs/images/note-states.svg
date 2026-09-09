@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="920" height="540" viewBox="0 0 920 540" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
   <title>The states a note can be in</title>
-  <desc>Five notes: a named note, one not named yet, a collapsed one, a pinned one showing its marker, and a selected one.</desc>
+  <desc>Six notes: a named note, one not named yet, a collapsed one, a pinned one showing its marker, a selected one, and a locked one showing a padlock and no delete button.</desc>
 
   <rect width="920" height="540" fill="#ffffff"/>
 
@@ -76,7 +76,7 @@
        stroke="#4c171f" stroke-width="2" stroke-linecap="round"
        stroke-linejoin="round"><path d="M9 4v6l-2 4v2h10v-2l-2 -4v-6"/><path d="M12 16l0 5"/><path d="M8 4l8 0"/></g>
     <text x="42.667" y="18.0" font-size="16" font-weight="bold" fill="#4c171f" dominant-baseline="central">Do not move</text>
-    <text x="10" y="58" font-size="14.67" fill="#4c171f">Locked in place.</text>
+    <text x="10" y="58" font-size="14.67" fill="#4c171f">Held in place.</text>
     <g transform="translate(10.000, 156.000) scale(0.5000)" fill="none"
        stroke="#4c171f" stroke-width="2" stroke-linecap="round"
        stroke-linejoin="round" opacity="0.6"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/></g>
@@ -109,6 +109,29 @@
        stroke-linejoin="round" opacity="0.6"><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12"/><path d="M16 3l0 4"/><path d="M8 3l0 4"/><path d="M4 11l16 0"/><path d="M8 15h2v2h-2l0 -2"/></g>
     <text x="66.8" y="162.0" font-size="11" fill="#36174c" opacity="0.6" dominant-baseline="central">9 Sep 2026</text>
     <rect x="1.5" y="1.5" width="257" height="177" fill="none" stroke="#ffcc33" stroke-width="3"/>
+  </g>
+
+  <text x="620" y="294" font-size="14" fill="#202124" font-weight="600">Locked</text>
+  <text x="620" y="314" font-size="12.5" fill="#5f6368">a padlock in the bar, and no bin</text>
+  <g transform="translate(620, 330)">
+    <rect x="0.5" y="0.5" width="259" height="179" fill="#f9d8bb" stroke="#dbbea4" stroke-width="1"/>
+    <rect x="0.5" y="0.5" width="259" height="35" fill="#dbbea4"/>
+    <g transform="translate(10.000, 10.000) scale(0.6667)" fill="none"
+       stroke="#4c3017" stroke-width="2" stroke-linecap="round"
+       stroke-linejoin="round"><path d="M6 9l6 6l6 -6"/></g>
+    <g transform="translate(27.667, 10.000) scale(0.6667)" fill="none"
+       stroke="#4c3017" stroke-width="2" stroke-linecap="round"
+       stroke-linejoin="round"><path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6"/><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"/><path d="M8 11v-4a4 4 0 1 1 8 0v4"/></g>
+    <text x="45.333" y="18.0" font-size="16" font-weight="bold" fill="#4c3017" dominant-baseline="central">Read the brief</text>
+    <text x="10" y="58" font-size="14.67" fill="#4c3017">Written by your teacher.</text>
+    <g transform="translate(10.000, 156.000) scale(0.5000)" fill="none"
+       stroke="#4c3017" stroke-width="2" stroke-linecap="round"
+       stroke-linejoin="round" opacity="0.6"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/></g>
+    <text x="25" y="162.0" font-size="11" fill="#4c3017" opacity="0.6" dominant-baseline="central">ada</text>
+    <g transform="translate(51.800, 156.000) scale(0.5000)" fill="none"
+       stroke="#4c3017" stroke-width="2" stroke-linecap="round"
+       stroke-linejoin="round" opacity="0.6"><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12"/><path d="M16 3l0 4"/><path d="M8 3l0 4"/><path d="M4 11l16 0"/><path d="M8 15h2v2h-2l0 -2"/></g>
+    <text x="66.8" y="162.0" font-size="11" fill="#4c3017" opacity="0.6" dominant-baseline="central">9 Sep 2026</text>
   </g>
 
 </svg>

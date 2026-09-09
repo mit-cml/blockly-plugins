@@ -28,6 +28,7 @@ suite('Note model', function () {
       assert.equal(note.getTitle(), '');
       assert.equal(note.getColour(), DEFAULT_COLOUR);
       assert.isFalse(note.isPinned());
+      assert.isFalse(note.isLocked());
       assert.equal(note.getZIndex(), 0);
     });
 
@@ -135,7 +136,7 @@ suite('Note model', function () {
   });
 
   suite('pinning', function () {
-    test('pinning locks the note in place', function () {
+    test('pinning holds the note in place', function () {
       const note = new NoteComment(this.workspace);
       assert.isTrue(note.isOwnMovable());
       note.setPinned(true);
@@ -149,6 +150,59 @@ suite('Note model', function () {
       note.setPinned(false);
       assert.isFalse(note.isPinned());
       assert.isTrue(note.isOwnMovable());
+    });
+  });
+
+  suite('locking', function () {
+    test('locking makes the note read-only and undeletable', function () {
+      const note = new NoteComment(this.workspace);
+      assert.isTrue(note.isOwnEditable());
+      assert.isTrue(note.isOwnDeletable());
+      note.setLocked(true);
+      assert.isTrue(note.isLocked());
+      assert.isFalse(note.isOwnEditable());
+      assert.isFalse(note.isOwnDeletable());
+    });
+
+    test('unlocking restores both', function () {
+      const note = new NoteComment(this.workspace);
+      note.setLocked(true);
+      note.setLocked(false);
+      assert.isFalse(note.isLocked());
+      assert.isTrue(note.isOwnEditable());
+      assert.isTrue(note.isOwnDeletable());
+    });
+
+    // Locking owns editable and deletable, pinning owns movable, and neither
+    // writes the other's. Without this the two can silently merge, and
+    // unpinning a locked note would hand its movement back.
+    test('locking never touches movability', function () {
+      const note = new NoteComment(this.workspace);
+      note.setLocked(true);
+      assert.isTrue(note.isOwnMovable());
+      note.setLocked(false);
+      assert.isTrue(note.isOwnMovable());
+    });
+
+    test('locking and pinning compose', function () {
+      const note = new NoteComment(this.workspace);
+      note.setPinned(true);
+      note.setLocked(true);
+      assert.isFalse(note.isOwnMovable());
+      assert.isFalse(note.isOwnEditable());
+      assert.isFalse(note.isOwnDeletable());
+
+      note.setLocked(false);
+      assert.isTrue(note.isPinned());
+      assert.isFalse(note.isOwnMovable());
+      assert.isTrue(note.isOwnEditable());
+      assert.isTrue(note.isOwnDeletable());
+    });
+
+    test('saveNoteState carries the flag', function () {
+      const note = new NoteComment(this.workspace);
+      note.setLocked(true);
+      assert.isTrue(note.saveNoteState().locked);
     });
   });
 
@@ -177,14 +231,32 @@ suite('Note model', function () {
         title: 'All',
         colour: '#c7e4ff',
         pinned: true,
+        locked: true,
         zIndex: 3,
         meta: {author: 'x', createdAt: 'a', updatedAt: 'b'},
       });
       assert.equal(this.note.getTitle(), 'All');
       assert.equal(this.note.getColour(), '#c7e4ff');
       assert.isTrue(this.note.isPinned());
+      assert.isTrue(this.note.isLocked());
       assert.equal(this.note.getZIndex(), 3);
       assert.equal(this.note.getMeta().author, 'x');
+    });
+
+    // A state object written before locking existed has no `locked` key at
+    // all. It has to read as false, not undefined, or it survives into
+    // saveNoteState and the change comparison stops seeing a real lock.
+    test("'*' without a locked key reads as unlocked", function () {
+      this.note.setLocked(true);
+      this.note.applyNoteProperty('*', {
+        title: '',
+        colour: DEFAULT_COLOUR,
+        pinned: false,
+        zIndex: 0,
+        meta: {author: '', createdAt: 'a', updatedAt: 'b'},
+      });
+      assert.isFalse(this.note.isLocked());
+      assert.isFalse(this.note.saveNoteState().locked);
     });
 
     test("'*' with null is a no-op, so a delete snapshot replays", function () {

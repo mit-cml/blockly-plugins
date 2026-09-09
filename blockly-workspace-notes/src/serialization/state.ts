@@ -73,13 +73,18 @@ export function saveNote(
   if (note.getText()) state.text = note.getText();
   if (note.isCollapsed()) state.collapsed = true;
 
-  // `isOwn*` rather than `is*`: a read-only *workspace* must not poison the
-  // per-note flags we persist.
-  if (!note.isOwnEditable()) state.editable = false;
-  if (!note.isOwnDeletable()) state.deletable = false;
-
+  // Read here rather than below with the rest of the note's own fields,
+  // because the three core flags underneath them are what these two imply.
+  // A plain comment made outside the plugin has neither accessor.
+  const locked = typeof note.isLocked === 'function' && note.isLocked();
   const pinned = typeof note.isPinned === 'function' && note.isPinned();
-  // A pinned note is immovable by definition, so `movable` would be noise.
+
+  // `isOwn*` rather than `is*`: a read-only *workspace* must not poison the
+  // per-note flags we persist. A locked note is read-only and undeletable by
+  // definition, and a pinned one immovable, so writing those out as well would
+  // be noise - and would make a file say twice what it means once.
+  if (!note.isOwnEditable() && !locked) state.editable = false;
+  if (!note.isOwnDeletable() && !locked) state.deletable = false;
   if (!note.isOwnMovable() && !pinned) state.movable = false;
 
   // Note-specific fields. A plain comment created outside the plugin has
@@ -93,6 +98,7 @@ export function saveNote(
     state.colour = note.getColour();
   }
   if (pinned) state.pinned = true;
+  if (locked) state.locked = true;
   if (note.getZIndex()) state.zIndex = note.getZIndex();
 
   const meta = note.getMeta();
@@ -165,6 +171,11 @@ export function appendNote(
       if (state.zIndex !== undefined) note.setZIndex(state.zIndex);
       // Applied after `movable`, which it overrides.
       if (state.pinned) note.setPinned(true);
+      // Likewise for `editable` and `deletable`. Truthy-gated rather than
+      // tested against undefined, unlike the fields above: `setLocked(false)`
+      // would restore both flags and undo an explicit `editable: false`
+      // applied a few lines up, and false is the default in any case.
+      if (state.locked) note.setLocked(true);
       // Last, and deliberately not through a setter: restoring metadata must
       // not stamp a fresh `updatedAt` over the one we just loaded.
       if (state.meta) note.restoreMeta(state.meta);

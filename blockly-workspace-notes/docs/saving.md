@@ -27,6 +27,7 @@ Notes get their own key in the file, beside `blocks`:
         "title": "TODO",
         "colour": "#f9bbc5",
         "pinned": true,
+        "locked": true,
         "zIndex": 3,
         "meta": {
           "author": "ada",
@@ -49,6 +50,7 @@ Everything that gets remembered:
 | The title             | Only if it has one                                                                                       |
 | The colour            | Only if it is not the default                                                                            |
 | Pinned                | Only if pinned                                                                                           |
+| Locked                | Only if locked; it implies neither editable nor deletable, so neither is written                         |
 | Stacking order        | So overlapping notes come back in the same order                                                         |
 | Collapsed             | Only if collapsed                                                                                        |
 | Author and timestamps | Author comes from `getAuthor`; dates are automatic, and `updatedAt` moves on any edit including the body |
@@ -59,8 +61,11 @@ Everything that gets remembered:
 neither. Files stay small, and a change to one note shows up as a small diff
 rather than a wall of text.
 
-**The payload carries a version.** If the format ever gains a field, files
-saved today are quietly upgraded as they load.
+**The payload carries a version.** It moves when a file written by an older
+release cannot simply be read by a newer one — a field renamed, retyped or
+moved — and such files are then upgraded quietly as they load. Adding an
+optional field is not that: it is absent from older files, which is exactly
+what its default means, so the version stays where it is.
 
 **Old files still open.** A workspace saved before this plugin existed, with
 plain Blockly comments in it, loads correctly — each comment becomes a note
@@ -80,7 +85,7 @@ A note is written as a `<comment>` element with a few extra attributes:
 
 ```xml
 <comment id="n1qX" x="40" y="20" w="240" h="140"
-         title="TODO" colour="#f9bbc5" pinned="true" z="3"
+         title="TODO" colour="#f9bbc5" pinned="true" locked="true" z="3"
          author="ada" created="2026-09-07T16:07:09Z"
          updated="2026-09-07T16:09:41Z">Refactor this loop</comment>
 ```

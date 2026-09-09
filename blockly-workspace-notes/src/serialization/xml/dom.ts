@@ -33,6 +33,7 @@ export function decorateElement(elem: Element, state: SavedNote): void {
   if (state.title) elem.setAttribute('title', state.title);
   if (state.colour) elem.setAttribute('colour', state.colour);
   if (state.pinned) elem.setAttribute('pinned', 'true');
+  if (state.locked) elem.setAttribute('locked', 'true');
   // `z` rather than `zIndex`, grouping it with core's terse x/y/w/h geometry.
   if (state.zIndex) elem.setAttribute('z', `${state.zIndex}`);
   if (state.meta?.author) elem.setAttribute('author', state.meta.author);
@@ -83,6 +84,7 @@ export function domToNoteState(elem: Element): SavedNote {
   if (colour) state.colour = colour;
 
   if (elem.getAttribute('pinned') === 'true') state.pinned = true;
+  if (elem.getAttribute('locked') === 'true') state.locked = true;
 
   const zIndex = parseInt(elem.getAttribute('z') ?? '', 10);
   if (!isNaN(zIndex)) state.zIndex = zIndex;

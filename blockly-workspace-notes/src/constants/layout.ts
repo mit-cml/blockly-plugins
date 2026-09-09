@@ -37,34 +37,45 @@ export const TITLE_LINE_HEIGHT = 16;
 export const TITLE_FONT_SIZE = TITLE_LINE_HEIGHT;
 
 /**
- * The box the pin marker is drawn in.
+ * The box a title bar marker is drawn in.
  *
- * One line box, so a pinned title row is exactly as tall as an unpinned one and
- * the row never needs remeasuring. The glyph itself is authored on a 24-unit
- * grid and scaled to fit, which also thins its 2-unit stroke to about 1.3px -
- * about right for a mark that should read as punctuation beside the heading
+ * One line box, so a marked title row is exactly as tall as an unmarked one
+ * and the row never needs remeasuring. The glyphs are authored on a 24-unit
+ * grid and scaled to fit, which also thins their 2-unit stroke to about 1.3px
+ * - about right for a mark that should read as punctuation beside the heading
  * rather than as a control.
  */
-export const PIN_ICON_SIZE = TITLE_LINE_HEIGHT;
+export const MARKER_ICON_SIZE = TITLE_LINE_HEIGHT;
 
-/** The gap between the pin marker and the title it leads. */
-export const PIN_ICON_GAP = MEDIUM_PADDING;
+/** The gap between a marker and the title it leads. */
+export const MARKER_ICON_GAP = MEDIUM_PADDING;
+
+/** Where a glyph's ink sits inside the grid it is authored on. */
+export interface GlyphInk {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 
 /**
- * The grid the pin glyph is authored on, and where its ink actually sits
- * within it.
+ * The grid every glyph in this plugin is authored on.
  *
- * Tabler draws on 24 units but the pin only occupies x 7-17 and y 4-21, so
- * roughly a third of the box is padding. Laying the marker out by that box
- * would set it in from the note's margin by the padding and leave a gap to the
- * title a third wider than asked for - which is exactly the sort of uneven
- * spacing the rest of this layout is built to avoid. So the ink box is what
- * gets positioned, and these are its numbers.
+ * Tabler draws on 24 units, but none of the glyphs fills that box - the pin
+ * takes x 7-17, the lock x 5-19 - so a fifth to a third of each one is
+ * padding. Laying a marker out by that box would set it in from the note's
+ * margin by the padding and leave a gap to the title wider than was asked for,
+ * which is exactly the sort of uneven spacing the rest of this layout is built
+ * to avoid. So the ink box is what gets positioned, and the two below are its
+ * numbers.
  */
-export const PIN_GLYPH_GRID = 24;
+export const GLYPH_GRID = 24;
 
 /** The pin glyph's ink, in grid units. */
-export const PIN_GLYPH_INK = {x: 7, y: 4, width: 10, height: 17};
+export const PIN_GLYPH_INK: GlyphInk = {x: 7, y: 4, width: 10, height: 17};
+
+/** The lock glyph's ink, in grid units. */
+export const LOCK_GLYPH_INK: GlyphInk = {x: 5, y: 3, width: 14, height: 18};
 
 /**
  * The margin on every side of a note, and the single number the rest of the
@@ -116,6 +127,15 @@ export const BAR_ICON_MARGIN = (TOPBAR_HEIGHT - BAR_ICON_SIZE) / 2;
  * and the title follows it.
  */
 export const BAR_INSET = BAR_ICON_MARGIN + BAR_ICON_SIZE + BAR_ICON_GAP;
+
+/**
+ * The inset at an end of the title row that carries no button.
+ *
+ * A locked note has no delete button, so the far end of its bar holds nothing
+ * but the note's own margin. Reserving a whole `BAR_INSET` there would leave
+ * the title stopping short of a gap with nothing in it.
+ */
+export const BAR_EMPTY_INSET = NOTE_MARGIN;
 
 /**
  * How far the delete button moves to line up with the collapse button.

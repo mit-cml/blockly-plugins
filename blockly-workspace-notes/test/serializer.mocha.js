@@ -54,6 +54,7 @@ suite('Note serialization', function () {
     if (overrides.colour) note.setColour(overrides.colour);
     if (overrides.zIndex) note.setZIndex(overrides.zIndex);
     if (overrides.pinned) note.setPinned(true);
+    if (overrides.locked) note.setLocked(true);
     if (overrides.collapsed) note.setCollapsed(true);
     note.moveTo(
       new Blockly.utils.Coordinate(overrides.x ?? 0, overrides.y ?? 0),
@@ -97,6 +98,7 @@ suite('Note serialization', function () {
         'colour',
         'collapsed',
         'pinned',
+        'locked',
         'zIndex',
         'editable',
         'movable',
@@ -130,6 +132,14 @@ suite('Note serialization', function () {
       const saved = saveNote(note, {saveIds: true});
       assert.isTrue(saved.pinned);
       assert.notProperty(saved, 'movable');
+    });
+
+    test('a locked note omits the two flags it implies', function () {
+      const note = makeNote(this.workspace, {locked: true});
+      const saved = saveNote(note, {saveIds: true});
+      assert.isTrue(saved.locked);
+      assert.notProperty(saved, 'editable');
+      assert.notProperty(saved, 'deletable');
     });
 
     test('the default colour is treated as "no colour"', function () {
@@ -181,11 +191,18 @@ suite('Note serialization', function () {
         height: 160,
       });
       makeNote(this.workspace, {
-        text: 'Locked',
+        text: 'Held in place',
         pinned: true,
         collapsed: true,
         x: 400,
         y: 20,
+      });
+      makeNote(this.workspace, {
+        text: 'Read only',
+        title: 'Brief',
+        locked: true,
+        x: 400,
+        y: 220,
       });
 
       const first = Blockly.serialization.workspaces.save(this.workspace);
@@ -331,6 +348,13 @@ suite('Note serialization', function () {
       assert.isAbove(note.getSize().width, 0, 'width must not collapse');
     });
 
+    test('a locked note loads locked', function () {
+      const note = appendNote({locked: true}, this.workspace);
+      assert.isTrue(note.isLocked());
+      assert.isFalse(note.isOwnEditable());
+      assert.isFalse(note.isOwnDeletable());
+    });
+
     test('an absent coordinate is not RTL-flipped', function () {
       // The flip converts a saved x into a workspace x, so it only applies to
       // a value the file actually carried. Applying it to the fallback sent
@@ -450,6 +474,22 @@ suite('Note serialization', function () {
       this.workspace.undo(false);
       await flushEvents();
       assert.equal(note.getTitle(), 'Before');
+    });
+
+    test('undoing a lock releases the note again', async function () {
+      const note = makeNote(this.workspace);
+      await flushEvents();
+
+      note.setLocked(true);
+      await flushEvents();
+      assert.isFalse(note.isOwnEditable());
+      assert.isFalse(note.isOwnDeletable());
+
+      this.workspace.undo(false);
+      await flushEvents();
+      assert.isFalse(note.isLocked());
+      assert.isTrue(note.isOwnEditable());
+      assert.isTrue(note.isOwnDeletable());
     });
 
     test('undoing a colour change reverts it', async function () {

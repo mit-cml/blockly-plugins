@@ -3,6 +3,8 @@
  * and the palette entries it may supply.
  */
 
+import type {LockPredicate} from '../ui/lock_permission';
+
 /**
  * One entry in a note palette.
  *
@@ -22,6 +24,7 @@ export interface WorkspaceNotesOptions {
   palette?: PaletteEntry[];
   defaultSize?: {width: number; height: number};
   getAuthor?: () => string;
+  canToggleLock?: LockPredicate;
   contextMenu?: boolean;
   skipSerializerRegistration?: boolean;
   emitLegacyComments?: boolean;

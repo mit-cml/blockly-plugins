@@ -56,4 +56,5 @@ export type {
   NoteSurface,
 } from './types/note';
 export type {NotesPayload, SavedNote} from './types/serialization';
+export type {LockPredicate} from './ui/lock_permission';
 export type {PaletteEntry, WorkspaceNotesOptions} from './types/options';

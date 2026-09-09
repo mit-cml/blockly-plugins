@@ -27,6 +27,7 @@ export interface NoteState {
   title: string;
   colour: string;
   pinned: boolean;
+  locked: boolean;
   zIndex: number;
   meta: NoteMeta;
 }
@@ -38,7 +39,7 @@ export interface NoteState {
  * restore a note in one step.
  */
 export type NoteProperty =
-  'title' | 'colour' | 'pinned' | 'zIndex' | 'meta' | '*';
+  'title' | 'colour' | 'pinned' | 'locked' | 'zIndex' | 'meta' | '*';
 
 /**
  * The value that goes with each `NoteProperty`.
@@ -66,6 +67,8 @@ export interface NoteSurface {
   setColour(colour: string): void;
   isPinned(): boolean;
   setPinned(pinned: boolean): void;
+  isLocked(): boolean;
+  setLocked(locked: boolean): void;
   getZIndex(): number;
   setZIndex(zIndex: number): void;
   getMeta(): NoteMeta;
@@ -76,5 +79,6 @@ export interface NoteSurface {
   renderTitle(): void;
   renderColour(): void;
   applyPinned(): void;
+  applyLocked(): void;
   applyZIndex(): void;
 }

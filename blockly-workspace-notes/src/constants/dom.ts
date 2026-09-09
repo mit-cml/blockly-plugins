@@ -18,6 +18,12 @@ export const PINNED_CLASS = 'blocklyNotePinned';
 /** CSS class of the group holding the marker drawn on a pinned note. */
 export const PIN_CLASS = 'blocklyNotePin';
 
+/** CSS class added to a locked note. */
+export const LOCKED_CLASS = 'blocklyNoteLocked';
+
+/** CSS class of the group holding the marker drawn on a locked note. */
+export const LOCK_CLASS = 'blocklyNoteLock';
+
 /** CSS class of the SVG text element that renders a note's title. */
 export const TITLE_CLASS = 'blocklyNoteTitle';
 

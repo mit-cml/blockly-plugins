@@ -28,6 +28,8 @@ import {
   NOTE_CLASS,
   FOOTER_CLASS,
   FOOTER_TEXT_CLASS,
+  LOCK_CLASS,
+  LOCKED_CLASS,
   PIN_CLASS,
   SELECTION_CLASS,
   PINNED_CLASS,
@@ -59,7 +61,7 @@ Blockly.Css.register(`
 }
 
 /*
- * A pinned note is locked in place, and says so twice: a marker at the head of
+ * A pinned note is held in place, and says so twice: a marker at the head of
  * the title row, and a heavier edge.
  *
  * Two quiet signals rather than one loud one. The edge is what carries at a
@@ -71,18 +73,22 @@ Blockly.Css.register(`
 }
 
 /*
- * The marker itself: Tabler's pin, stroked rather than filled so it sits at the
- * weight of the heading it leads rather than as a solid blot on the paper.
+ * The markers themselves: Tabler's pin and lock, stroked rather than filled so
+ * they sit at the weight of the heading they lead rather than as solid blots
+ * on the paper.
  *
  * display:none rather than visibility, matching how core hides its own bar
  * buttons - CommentBarButton.canBeFocused() defers to checkVisibility(), so a
  * display:none element is skipped by keyboard navigation rather than trapped
- * on. It is decoration either way, and aria-hidden in the markup.
+ * on. It also keeps whichever marker is hidden out of the accessibility tree
+ * altogether, which matters here because the lock, unlike the pin, is
+ * labelled.
  *
  * pointer-events:none because the title row is the note's drag handle. A note
- * has to stay draggable by the part of the row the marker occupies.
+ * has to stay draggable by the part of the row a marker occupies.
  */
-.${NOTE_CLASS} .${PIN_CLASS} {
+.${NOTE_CLASS} .${PIN_CLASS},
+.${NOTE_CLASS} .${LOCK_CLASS} {
   display: none;
   fill: none;
   stroke: var(--noteInkColour);
@@ -92,7 +98,25 @@ Blockly.Css.register(`
   pointer-events: none;
 }
 
-.${NOTE_CLASS}.${PINNED_CLASS} .${PIN_CLASS} {
+/*
+ * One slot, and a lock takes it from a pin: a note that cannot be edited is
+ * the more urgent of the two facts, and the pin comes back the moment it is
+ * unlocked.
+ *
+ * The :not() carries its argument's specificity, so at four classes this is
+ * the single rule deciding when a pin paints - rather than a show rule and a
+ * second one undoing it, which is the arrangement that goes wrong later.
+ */
+.${NOTE_CLASS}.${PINNED_CLASS}:not(.${LOCKED_CLASS}) .${PIN_CLASS} {
+  display: block;
+}
+
+/*
+ * A locked note gets no third border weight to go with this. Pinning already
+ * doubles the edge, and a note that is both would then be indistinguishable
+ * from one that is only pinned. The glyph and the missing bin say it instead.
+ */
+.${NOTE_CLASS}.${LOCKED_CLASS} .${LOCK_CLASS} {
   display: block;
 }
 
@@ -145,6 +169,33 @@ Blockly.Css.register(`
  */
 .${NOTE_CLASS} .blocklyDeleteIcon {
   transform: translateX(${BAR_DELETE_NUDGE}px);
+}
+
+/*
+ * A locked note cannot be deleted, and this is what enforces it in the bar.
+ *
+ * Core's delete button does not check isDeletable() before acting: the menu
+ * item and the keyboard shortcut both do, but the button calls dispose on the
+ * comment view outright. So hiding it is not decoration.
+ *
+ * display, not visibility, and for a sharper reason than the markers above.
+ * CommentBarButton.isVisible() is checkVisibility(), which by default ignores
+ * the visibility property - so a button hidden that way would still report
+ * itself visible, stay in the keyboard tab order, and still delete the note.
+ *
+ * Three classes, because the rule showing both bar buttons is two.
+ */
+.${NOTE_CLASS}.${LOCKED_CLASS} .blocklyDeleteIcon {
+  display: none;
+}
+
+/*
+ * The resize handle goes with it. Core already refuses to act on the handle -
+ * onResizePointerDown is gated on isEditable - so all this stops is a locked
+ * note offering a grab handle that does nothing when you pull it.
+ */
+.${NOTE_CLASS}.${LOCKED_CLASS} .blocklyResizeHandle {
+  display: none;
 }
 
 /*

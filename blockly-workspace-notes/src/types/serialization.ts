@@ -2,9 +2,12 @@
  * @fileoverview The on-disk shapes: one note, and the plugin's slice of a save
  * file.
  *
- * These are a persisted format. A change here is a change to files already
- * written by earlier versions, so it needs a `SCHEMA_VERSION` bump and a
- * matching entry in `serialization/migrations.ts`.
+ * These are a persisted format, so a change here is a change to files already
+ * written by earlier versions. Adding an optional field whose default is its
+ * own absence is not one: older files simply lack it and read as the default.
+ * Changing what an existing field means, its type or where it lives — or
+ * making one required — needs a `SCHEMA_VERSION` bump and a matching entry in
+ * `serialization/migrations.ts`.
  */
 
 import type {NoteMeta} from './note';
@@ -36,6 +39,7 @@ export interface SavedNote {
   title?: string;
   colour?: string;
   pinned?: boolean;
+  locked?: boolean;
   zIndex?: number;
   meta?: Partial<NoteMeta>;
 
