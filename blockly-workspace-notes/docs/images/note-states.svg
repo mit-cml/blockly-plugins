@@ -15,17 +15,17 @@
     <g transform="translate(234.000, 10.000) scale(0.6667)" fill="none"
        stroke="#4c4217" stroke-width="2" stroke-linecap="round"
        stroke-linejoin="round"><path d="M4 7l16 0"/><path d="M10 11l0 6"/><path d="M14 11l0 6"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/></g>
-    <text x="31.000" y="18.0" font-size="16" font-weight="bold" fill="#4c4217" dominant-baseline="middle">Shopping list</text>
+    <text x="31.000" y="18.0" font-size="16" font-weight="bold" fill="#4c4217" dominant-baseline="central">Shopping list</text>
     <text x="10" y="58" font-size="14.67" fill="#4c4217">milk</text>
     <text x="10" y="78" font-size="14.67" fill="#4c4217">bread</text>
     <g transform="translate(10.000, 156.000) scale(0.5000)" fill="none"
        stroke="#4c4217" stroke-width="2" stroke-linecap="round"
        stroke-linejoin="round" opacity="0.6"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/></g>
-    <text x="25" y="162.0" font-size="11" fill="#4c4217" opacity="0.6" dominant-baseline="middle">ada</text>
+    <text x="25" y="162.0" font-size="11" fill="#4c4217" opacity="0.6" dominant-baseline="central">ada</text>
     <g transform="translate(51.800, 156.000) scale(0.5000)" fill="none"
        stroke="#4c4217" stroke-width="2" stroke-linecap="round"
        stroke-linejoin="round" opacity="0.6"><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12"/><path d="M16 3l0 4"/><path d="M8 3l0 4"/><path d="M4 11l16 0"/><path d="M8 15h2v2h-2l0 -2"/></g>
-    <text x="66.8" y="162.0" font-size="11" fill="#4c4217" opacity="0.6" dominant-baseline="middle">9 Sep 2026</text>
+    <text x="66.8" y="162.0" font-size="11" fill="#4c4217" opacity="0.6" dominant-baseline="central">9 Sep 2026</text>
   </g>
 
   <text x="330" y="44" font-size="14" fill="#202124" font-weight="600">Not named yet</text>
@@ -39,12 +39,12 @@
     <g transform="translate(234.000, 10.000) scale(0.6667)" fill="none"
        stroke="#173b4c" stroke-width="2" stroke-linecap="round"
        stroke-linejoin="round"><path d="M4 7l16 0"/><path d="M10 11l0 6"/><path d="M14 11l0 6"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/></g>
-    <text x="31.000" y="18.0" font-size="16" font-weight="bold" fill="#173b4c" opacity="0.55" dominant-baseline="middle">Title</text>
+    <text x="31.000" y="18.0" font-size="16" font-weight="bold" fill="#173b4c" opacity="0.55" dominant-baseline="central">Title</text>
     <text x="10" y="58" font-size="14.67" fill="#173b4c" opacity="0.55">Say something...</text>
     <g transform="translate(10.000, 156.000) scale(0.5000)" fill="none"
        stroke="#173b4c" stroke-width="2" stroke-linecap="round"
        stroke-linejoin="round" opacity="0.6"><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12"/><path d="M16 3l0 4"/><path d="M8 3l0 4"/><path d="M4 11l16 0"/><path d="M8 15h2v2h-2l0 -2"/></g>
-    <text x="25" y="162.0" font-size="11" fill="#173b4c" opacity="0.6" dominant-baseline="middle">9 Sep 2026</text>
+    <text x="25" y="162.0" font-size="11" fill="#173b4c" opacity="0.6" dominant-baseline="central">9 Sep 2026</text>
   </g>
 
   <text x="620" y="44" font-size="14" fill="#202124" font-weight="600">Collapsed</text>
@@ -58,7 +58,7 @@
     <g transform="translate(234.000, 10.000) scale(0.6667)" fill="none"
        stroke="#174c31" stroke-width="2" stroke-linecap="round"
        stroke-linejoin="round"><path d="M4 7l16 0"/><path d="M10 11l0 6"/><path d="M14 11l0 6"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/></g>
-    <text x="31.000" y="18.0" font-size="16" font-weight="bold" fill="#174c31" dominant-baseline="middle">Release checklist</text>
+    <text x="31.000" y="18.0" font-size="16" font-weight="bold" fill="#174c31" dominant-baseline="central">Release checklist</text>
   </g>
 
   <text x="40" y="294" font-size="14" fill="#202124" font-weight="600">Pinned</text>
@@ -75,16 +75,16 @@
     <g transform="translate(26.333, 9.667) scale(0.6667)" fill="none"
        stroke="#4c171f" stroke-width="2" stroke-linecap="round"
        stroke-linejoin="round"><path d="M9 4v6l-2 4v2h10v-2l-2 -4v-6"/><path d="M12 16l0 5"/><path d="M8 4l8 0"/></g>
-    <text x="42.667" y="18.0" font-size="16" font-weight="bold" fill="#4c171f" dominant-baseline="middle">Do not move</text>
+    <text x="42.667" y="18.0" font-size="16" font-weight="bold" fill="#4c171f" dominant-baseline="central">Do not move</text>
     <text x="10" y="58" font-size="14.67" fill="#4c171f">Locked in place.</text>
     <g transform="translate(10.000, 156.000) scale(0.5000)" fill="none"
        stroke="#4c171f" stroke-width="2" stroke-linecap="round"
        stroke-linejoin="round" opacity="0.6"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/></g>
-    <text x="25" y="162.0" font-size="11" fill="#4c171f" opacity="0.6" dominant-baseline="middle">ada</text>
+    <text x="25" y="162.0" font-size="11" fill="#4c171f" opacity="0.6" dominant-baseline="central">ada</text>
     <g transform="translate(51.800, 156.000) scale(0.5000)" fill="none"
        stroke="#4c171f" stroke-width="2" stroke-linecap="round"
        stroke-linejoin="round" opacity="0.6"><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12"/><path d="M16 3l0 4"/><path d="M8 3l0 4"/><path d="M4 11l16 0"/><path d="M8 15h2v2h-2l0 -2"/></g>
-    <text x="66.8" y="162.0" font-size="11" fill="#4c171f" opacity="0.6" dominant-baseline="middle">9 Sep 2026</text>
+    <text x="66.8" y="162.0" font-size="11" fill="#4c171f" opacity="0.6" dominant-baseline="central">9 Sep 2026</text>
   </g>
 
   <text x="330" y="294" font-size="14" fill="#202124" font-weight="600">Selected</text>
@@ -98,16 +98,16 @@
     <g transform="translate(234.000, 10.000) scale(0.6667)" fill="none"
        stroke="#36174c" stroke-width="2" stroke-linecap="round"
        stroke-linejoin="round"><path d="M4 7l16 0"/><path d="M10 11l0 6"/><path d="M14 11l0 6"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/></g>
-    <text x="31.000" y="18.0" font-size="16" font-weight="bold" fill="#36174c" dominant-baseline="middle">Ideas</text>
+    <text x="31.000" y="18.0" font-size="16" font-weight="bold" fill="#36174c" dominant-baseline="central">Ideas</text>
     <text x="10" y="58" font-size="14.67" fill="#36174c">Try a smaller step.</text>
     <g transform="translate(10.000, 156.000) scale(0.5000)" fill="none"
        stroke="#36174c" stroke-width="2" stroke-linecap="round"
        stroke-linejoin="round" opacity="0.6"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/></g>
-    <text x="25" y="162.0" font-size="11" fill="#36174c" opacity="0.6" dominant-baseline="middle">ada</text>
+    <text x="25" y="162.0" font-size="11" fill="#36174c" opacity="0.6" dominant-baseline="central">ada</text>
     <g transform="translate(51.800, 156.000) scale(0.5000)" fill="none"
        stroke="#36174c" stroke-width="2" stroke-linecap="round"
        stroke-linejoin="round" opacity="0.6"><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12"/><path d="M16 3l0 4"/><path d="M8 3l0 4"/><path d="M4 11l16 0"/><path d="M8 15h2v2h-2l0 -2"/></g>
-    <text x="66.8" y="162.0" font-size="11" fill="#36174c" opacity="0.6" dominant-baseline="middle">9 Sep 2026</text>
+    <text x="66.8" y="162.0" font-size="11" fill="#36174c" opacity="0.6" dominant-baseline="central">9 Sep 2026</text>
     <rect x="1.5" y="1.5" width="257" height="177" fill="none" stroke="#ffcc33" stroke-width="3"/>
   </g>
 

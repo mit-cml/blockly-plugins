@@ -189,7 +189,7 @@ export class Note extends RenderedNoteBase {
     const label = () =>
       Blockly.utils.dom.createSvgElement(
         Blockly.utils.Svg.TEXT,
-        {'class': FOOTER_TEXT_CLASS},
+        {'class': `${FOOTER_TEXT_CLASS} blocklyText`},
         this.footer_,
       );
     this.authorIcon_ = glyph(USER_GLYPH);

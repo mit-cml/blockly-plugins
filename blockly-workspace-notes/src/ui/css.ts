@@ -256,15 +256,21 @@ Blockly.Css.register(`
 }
 
 /*
- * Title. A heading on the paper, so it takes the weight of one, and a click
+ * Title. A heading on the card, so it takes the weight of one, and a click
  * opens its editor the way a click on a field does.
+ *
+ * central rather than middle: middle sits the text half an x-height above
+ * the baseline, which leaves it about a pixel high of the row it shares with
+ * the two glyphs. Both keywords are independent of the letters used - a title
+ * full of descenders lands where an all-caps one does - so this is simply the
+ * one that centres.
  *
  * The type is set below rather than here: the renderer writes the font
  * SHORTHAND, which resets weight and size, so a rule at this specificity
  * would lose both.
  */
 .${TITLE_CLASS} {
-  dominant-baseline: middle;
+  dominant-baseline: central;
   user-select: none;
   cursor: text;
 }
@@ -408,11 +414,19 @@ Blockly.Css.register(`
   pointer-events: none;
 }
 
-.${NOTE_CLASS} .${FOOTER_TEXT_CLASS} {
+/*
+ * Carries blocklyText so it inherits the workspace's font rather than falling
+ * through to the SVG default, which is a serif. That means the renderer's own
+ * .blocklyText rule applies too, and it sets font - a shorthand, so it
+ * resets size and weight - at three classes. Hence four here, the same
+ * arithmetic the title rule above is doing and for the same reason.
+ */
+.${NOTE_CLASS}.blocklyComment .${FOOTER_TEXT_CLASS}.blocklyText {
   fill: var(--noteInkColour);
   stroke: none;
   font-size: ${FOOTER_FONT_SIZE}px;
-  dominant-baseline: middle;
+  font-weight: normal;
+  dominant-baseline: central;
 }
 
 .${NOTE_CLASS}.blocklyCollapsed .${FOOTER_CLASS},

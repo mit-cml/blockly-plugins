@@ -25,7 +25,7 @@
       <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
     </g>
 
-    <text x="31" y="18" font-size="16" font-weight="bold" fill="#4c4217" dominant-baseline="middle">Shopping list</text>
+    <text x="31" y="18" font-size="16" font-weight="bold" fill="#4c4217" dominant-baseline="central">Shopping list</text>
 
     <g font-size="14.67" fill="#4c4217">
       <text x="10" y="58">milk</text>
@@ -42,7 +42,7 @@
         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>
       </g>
     </g>
-    <text x="25" y="162" font-size="11" fill="#4c4217" opacity="0.6" dominant-baseline="middle">ada</text>
+    <text x="25" y="162" font-size="11" fill="#4c4217" opacity="0.6" dominant-baseline="central">ada</text>
     <g transform="translate(52, 156)" fill="none" stroke="#4c4217" stroke-width="2"
        stroke-linecap="round" stroke-linejoin="round" opacity="0.6">
       <g transform="scale(0.5)">
@@ -51,7 +51,7 @@
         <path d="M8 15h2v2h-2l0 -2"/>
       </g>
     </g>
-    <text x="67" y="162" font-size="11" fill="#4c4217" opacity="0.6" dominant-baseline="middle">9 Sep 2026</text>
+    <text x="67" y="162" font-size="11" fill="#4c4217" opacity="0.6" dominant-baseline="central">9 Sep 2026</text>
 
     <g stroke="#4c4217" stroke-width="1.4" fill="none" opacity="0.6" stroke-linecap="round">
       <path d="M238 162 L 250 150"/>
