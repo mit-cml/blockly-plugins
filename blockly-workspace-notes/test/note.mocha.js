@@ -95,6 +95,45 @@ suite('Note model', function () {
     });
   });
 
+  suite('metadata', function () {
+    test('a body edit is recorded as a change', function () {
+      const note = new NoteComment(this.workspace);
+      const before = note.getMeta().updatedAt;
+      note.restoreMeta({updatedAt: '2000-01-01T00:00:00.000Z'});
+
+      note.setText('written just now');
+
+      assert.notEqual(
+        note.getMeta().updatedAt,
+        '2000-01-01T00:00:00.000Z',
+        'writing in a note should count as changing it',
+      );
+      assert.isString(before);
+    });
+
+    test('setting the same text again changes nothing', function () {
+      const note = new NoteComment(this.workspace);
+      note.setText('same');
+      note.restoreMeta({updatedAt: '2000-01-01T00:00:00.000Z'});
+
+      note.setText('same');
+
+      assert.equal(note.getMeta().updatedAt, '2000-01-01T00:00:00.000Z');
+    });
+
+    test('restoring metadata does not stamp a new time', function () {
+      const note = new NoteComment(this.workspace);
+      note.restoreMeta({
+        author: 'ada',
+        createdAt: '2020-05-05T00:00:00.000Z',
+        updatedAt: '2020-05-05T00:00:00.000Z',
+      });
+
+      assert.equal(note.getMeta().author, 'ada');
+      assert.equal(note.getMeta().updatedAt, '2020-05-05T00:00:00.000Z');
+    });
+  });
+
   suite('pinning', function () {
     test('pinning locks the note in place', function () {
       const note = new NoteComment(this.workspace);

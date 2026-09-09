@@ -42,7 +42,7 @@ new WorkspaceNotes(workspace, {
 | ---------------------------- | -------------------- | ----------------------------------------------- |
 | `palette`                    | 7 stationery colours | The swatches offered in the Colour menu         |
 | `defaultSize`                | `260 × 180`          | The size a new note is created at               |
-| `getAuthor`                  | `() => ''`           | Called once per note to record who made it      |
+| `getAuthor`                  | `() => ''`           | Names the note's author, shown along its foot   |
 | `contextMenu`                | `true`               | Adds the note items to the right-click menu     |
 | `xmlSupport`                 | `true`               | Keeps notes intact through the older XML format |
 | `skipSerializerRegistration` | `false`              | Leaves saving and loading entirely to your app  |

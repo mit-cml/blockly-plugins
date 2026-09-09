@@ -4,12 +4,13 @@ A note is a card on the workspace: a title bar you can read at a glance, a
 colour of its own, and room to write underneath.
 
 <p align="center">
-  <img src="./images/note-anatomy.svg" width="100%" alt="The parts of a note: title bar, collapse and delete buttons, title, body and resize handle" />
+  <img src="./images/note-anatomy.svg" width="100%" alt="The parts of a note: title bar, collapse and delete buttons, title, body, author and date, and resize handle" />
 </p>
 
 The title bar carries two buttons — collapse on the left, delete on the right —
-and a pin marker appears between them when a note is pinned. Everything else a
-note can do is in the right-click menu.
+and a pin marker appears between them when a note is pinned. Along the foot,
+a small line records who wrote the note and when it last changed. Everything
+else a note can do is in the right-click menu.
 
 ## Add one
 
@@ -56,6 +57,16 @@ or right-click → **Collapse note**. The title stays readable, and the chevron
 turns to point right. Press it again to open the note back up.
 
 This is how you keep a long note around without it covering your blocks.
+
+## Who wrote it, and when
+
+Along the bottom of every note is a quiet line showing its author and the date
+it last changed. Both are recorded automatically — the date every time you
+edit, and the author from the `getAuthor` option your app supplies. Without
+that option there is no name to show, so the line falls back to the date alone.
+
+On a narrow note the name gives way first, since the date is short and the name
+can be cut to nothing useful. A collapsed note hides the line with its body.
 
 ## Order them
 

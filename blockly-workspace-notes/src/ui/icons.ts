@@ -31,6 +31,21 @@ export const TRASH_GLYPH = [
   'M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3',
 ];
 
+/** Tabler's `user`, for the author in the footer. */
+export const USER_GLYPH = [
+  'M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0',
+  'M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2',
+];
+
+/** Tabler's `calendar-event`, for the date in the footer. */
+export const CALENDAR_GLYPH = [
+  'M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12',
+  'M16 3l0 4',
+  'M8 3l0 4',
+  'M4 11l16 0',
+  'M8 15h2v2h-2l0 -2',
+];
+
 /**
  * Tabler's `pinned`, for the marker on a pinned note.
  *

@@ -33,6 +33,26 @@
       <text x="10" y="98">coffee</text>
     </g>
 
+    <!-- The footer: author and last-changed date, at 12px glyphs and 11px
+         text, faded so it reads as a caption. -->
+    <g transform="translate(10, 156)" fill="none" stroke="#4c4217" stroke-width="2"
+       stroke-linecap="round" stroke-linejoin="round" opacity="0.6">
+      <g transform="scale(0.5)">
+        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/>
+        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>
+      </g>
+    </g>
+    <text x="25" y="162" font-size="11" fill="#4c4217" opacity="0.6" dominant-baseline="middle">ada</text>
+    <g transform="translate(52, 156)" fill="none" stroke="#4c4217" stroke-width="2"
+       stroke-linecap="round" stroke-linejoin="round" opacity="0.6">
+      <g transform="scale(0.5)">
+        <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12"/>
+        <path d="M16 3l0 4"/><path d="M8 3l0 4"/><path d="M4 11l16 0"/>
+        <path d="M8 15h2v2h-2l0 -2"/>
+      </g>
+    </g>
+    <text x="67" y="162" font-size="11" fill="#4c4217" opacity="0.6" dominant-baseline="middle">9 Sep 2026</text>
+
     <g stroke="#4c4217" stroke-width="1.4" fill="none" opacity="0.6" stroke-linecap="round">
       <path d="M238 162 L 250 150"/>
       <path d="M244 168 L 250 162"/>
@@ -41,7 +61,7 @@
 
   <g stroke="#9aa0a6" stroke-width="1" fill="none" stroke-linecap="round">
     <path d="M258 73 H 300 L 326 73"/>
-    <path d="M258 200 H 300 L 326 220"/>
+    <path d="M258 205 H 300 L 326 216"/>
     <path d="M652 73 H 620 L 600 73"/>
     <path d="M652 140 H 596"/>
     <path d="M652 214 H 600 L 584 210"/>
@@ -51,8 +71,8 @@
     <text x="250" y="69" text-anchor="end" font-weight="600">Collapse</text>
     <text x="250" y="87" text-anchor="end" font-size="12.5" fill="#5f6368">folds the note to its bar</text>
 
-    <text x="250" y="196" text-anchor="end" font-weight="600">The card</text>
-    <text x="250" y="214" text-anchor="end" font-size="12.5" fill="#5f6368">square, thin border</text>
+    <text x="250" y="201" text-anchor="end" font-weight="600">Author and date</text>
+    <text x="250" y="219" text-anchor="end" font-size="12.5" fill="#5f6368">recorded automatically</text>
 
     <text x="664" y="69" font-weight="600">Delete</text>
     <text x="664" y="87" font-size="12.5" fill="#5f6368">one undo brings it back</text>

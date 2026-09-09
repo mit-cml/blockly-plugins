@@ -41,17 +41,17 @@ Notes get their own key in the file, beside `blocks`:
 
 Everything that gets remembered:
 
-| Saved                 | Notes                                              |
-| --------------------- | -------------------------------------------------- |
-| Position              | Exact, including right-to-left layouts             |
-| Width and height      | Exactly as you left them                           |
-| The text              |                                                    |
-| The title             | Only if it has one                                 |
-| The colour            | Only if it is not the default                      |
-| Pinned                | Only if pinned                                     |
-| Stacking order        | So overlapping notes come back in the same order   |
-| Collapsed             | Only if collapsed                                  |
-| Author and timestamps | Author comes from `getAuthor`; dates are automatic |
+| Saved                 | Notes                                                                                                    |
+| --------------------- | -------------------------------------------------------------------------------------------------------- |
+| Position              | Exact, including right-to-left layouts                                                                   |
+| Width and height      | Exactly as you left them                                                                                 |
+| The text              |                                                                                                          |
+| The title             | Only if it has one                                                                                       |
+| The colour            | Only if it is not the default                                                                            |
+| Pinned                | Only if pinned                                                                                           |
+| Stacking order        | So overlapping notes come back in the same order                                                         |
+| Collapsed             | Only if collapsed                                                                                        |
+| Author and timestamps | Author comes from `getAuthor`; dates are automatic, and `updatedAt` moves on any edit including the body |
 
 ## Three things about the format
 

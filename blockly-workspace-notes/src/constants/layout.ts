@@ -148,6 +148,45 @@ export const BODY_INSET = NOTE_MARGIN;
 export const DEFAULT_SIZE = {width: 260, height: 180};
 
 /**
+ * The strip along the foot of a note carrying its author and date.
+ *
+ * One line box again, so the note has the same rhythm top and bottom. The body
+ * gives up this much height for it - see the padding in `ui/css.ts` - which is
+ * why it is reserved as a constant rather than drawn wherever it lands.
+ */
+export const FOOTER_HEIGHT = TITLE_LINE_HEIGHT;
+
+/** The glyphs in the footer, smaller than the bar's since the text is too. */
+export const FOOTER_ICON_SIZE = 12;
+
+/** Footer type size: small enough to read as a caption, not as content. */
+export const FOOTER_FONT_SIZE = 11;
+
+/** Between a footer glyph and the text it labels. */
+export const FOOTER_LABEL_GAP = SMALL_PADDING;
+
+/**
+ * The shortest an author's name is worth showing.
+ *
+ * Truncation is what gives the date room on a narrow note, but a name cut to
+ * one or two letters conveys nothing while still spending a glyph and a gap on
+ * saying so. Below this the author steps aside entirely.
+ */
+export const MIN_FOOTER_AUTHOR_CHARS = 3;
+
+/** Between the author and the date. */
+export const FOOTER_ITEM_GAP = LARGE_PADDING;
+
+/**
+ * How much of the footer's trailing end the resize handle claims.
+ *
+ * Core's handle is 12px and the stylesheet pulls it a body inset in from the
+ * corner, which puts it squarely in the footer's row. The footer stops short of
+ * it rather than running underneath.
+ */
+export const FOOTER_HANDLE_CLEARANCE = 12 + LARGE_PADDING;
+
+/**
  * The smallest a note can be resized to.
  *
  * Core enforces a floor of its own and the larger of the two always wins, so

@@ -26,6 +26,8 @@ import * as Blockly from 'blockly/core';
 
 import {
   NOTE_CLASS,
+  FOOTER_CLASS,
+  FOOTER_TEXT_CLASS,
   PIN_CLASS,
   SELECTION_CLASS,
   PINNED_CLASS,
@@ -37,6 +39,8 @@ import {
   BAR_ICON_MARGIN,
   BAR_ICON_SIZE,
   BODY_INSET,
+  FOOTER_FONT_SIZE,
+  FOOTER_HEIGHT,
   SCROLLBAR_WIDTH,
   TITLE_FONT_SIZE,
   TOPBAR_HEIGHT,
@@ -168,6 +172,7 @@ Blockly.Css.register(`
 .${NOTE_CLASS} .blocklyMinimalBody {
   box-sizing: border-box;
   padding: ${BODY_INSET}px;
+  padding-bottom: ${BODY_INSET + FOOTER_HEIGHT}px;
 }
 
 /*
@@ -381,6 +386,54 @@ Blockly.Css.register(`
 .blocklySelected.${NOTE_CLASS}.blocklyCollapsed
   .blocklyCommentTopbarBackground {
   stroke: none;
+}
+
+/*
+ * The footer: the author and the date, in the note's ink at a caption's
+ * weight. Faded rather than given a second colour, so it recedes without
+ * leaving the palette.
+ *
+ * Hidden on a collapsed note, which has no body for it to sit under, and on
+ * one carrying neither an author nor a date - renderFooter sets the attribute,
+ * because a group whose children are all display:none still has a box and
+ * would leave a blank strip reserved at the foot.
+ */
+.${NOTE_CLASS} .${FOOTER_CLASS} {
+  fill: none;
+  stroke: var(--noteInkColour);
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.${NOTE_CLASS} .${FOOTER_TEXT_CLASS} {
+  fill: var(--noteInkColour);
+  stroke: none;
+  font-size: ${FOOTER_FONT_SIZE}px;
+  dominant-baseline: middle;
+}
+
+.${NOTE_CLASS}.blocklyCollapsed .${FOOTER_CLASS},
+.${NOTE_CLASS} .${FOOTER_CLASS}[data-empty='true'] {
+  display: none;
+}
+
+/*
+ * The footer is in the root group, which core does not mirror, so unlike the
+ * title there is no mirror to undo here - setting the direction is the whole
+ * of it.
+ *
+ * That is also all it needs. text-anchor is left at its default of start,
+ * which anchors to the start of the inline base direction: the left edge under
+ * ltr and the right edge under rtl. Since renderFooter measures its offsets
+ * from the note's leading edge either way, the two agree without a second
+ * rule. Setting end here would anchor the left edge and run the text back
+ * across the note.
+ */
+.blocklyRTL .${NOTE_CLASS} .${FOOTER_TEXT_CLASS} {
+  direction: rtl;
 }
 
 .${NOTE_CLASS} .${SELECTION_CLASS} {

@@ -12,6 +12,8 @@ import * as Blockly from 'blockly/core';
 
 import {
   NOTE_CLASS,
+  FOOTER_CLASS,
+  FOOTER_TEXT_CLASS,
   PIN_CLASS,
   SELECTION_CLASS,
   PINNED_CLASS,
@@ -21,6 +23,13 @@ import {
 } from '../constants/dom';
 import {
   BAR_INSET,
+  BODY_INSET,
+  FOOTER_HANDLE_CLEARANCE,
+  FOOTER_HEIGHT,
+  FOOTER_ICON_SIZE,
+  FOOTER_ITEM_GAP,
+  FOOTER_LABEL_GAP,
+  MIN_FOOTER_AUTHOR_CHARS,
   MIN_SIZE,
   PIN_GLYPH_GRID,
   PIN_GLYPH_INK,
@@ -31,9 +40,11 @@ import {
 import type {NoteCopyData} from '../types/clipboard';
 import {edgeFor, inkFor} from '../utils/colour';
 import {
+  CALENDAR_GLYPH,
   CHEVRON_GLYPH,
   PIN_GLYPH,
   TRASH_GLYPH,
+  USER_GLYPH,
   glyphToDataUri,
 } from '../ui/icons';
 import {editTitle} from '../ui/title_editor';
@@ -65,6 +76,21 @@ export class Note extends RenderedNoteBase {
 
   /** The rect that draws the selection ring. */
   private selection_?: SVGRectElement;
+
+  /** The footer group, and the four pieces laid out inside it. */
+  private footer_?: SVGGElement;
+
+  /** See `footer_`. */
+  private authorIcon_?: SVGGElement;
+
+  /** See `footer_`. */
+  private authorText_?: SVGTextElement;
+
+  /** See `footer_`. */
+  private dateIcon_?: SVGGElement;
+
+  /** See `footer_`. */
+  private dateText_?: SVGTextElement;
 
   /**
    * Core's two bar buttons.
@@ -134,6 +160,42 @@ export class Note extends RenderedNoteBase {
     } else {
       root.appendChild(this.pin_);
     }
+
+    /**
+     * The footer: who wrote the note, and when it last changed.
+     *
+     * Both are recorded on every note already and neither was ever shown. It
+     * sits along the foot rather than in the title bar because the bar is a
+     * row of controls and this is a caption - and because the body can give up
+     * a line at the bottom, where the bar has no room to give.
+     * @private
+     */
+    this.footer_ = Blockly.utils.dom.createSvgElement(
+      Blockly.utils.Svg.G,
+      {'class': FOOTER_CLASS, 'aria-hidden': 'true'},
+      root,
+    );
+    const glyph = (paths: string[]) => {
+      const g = Blockly.utils.dom.createSvgElement(
+        Blockly.utils.Svg.G,
+        {},
+        this.footer_,
+      );
+      for (const d of paths) {
+        Blockly.utils.dom.createSvgElement(Blockly.utils.Svg.PATH, {'d': d}, g);
+      }
+      return g;
+    };
+    const label = () =>
+      Blockly.utils.dom.createSvgElement(
+        Blockly.utils.Svg.TEXT,
+        {'class': FOOTER_TEXT_CLASS},
+        this.footer_,
+      );
+    this.authorIcon_ = glyph(USER_GLYPH);
+    this.authorText_ = label();
+    this.dateIcon_ = glyph(CALENDAR_GLYPH);
+    this.dateText_ = label();
 
     /**
      * The selection ring.
@@ -263,6 +325,7 @@ export class Note extends RenderedNoteBase {
     if (this.isDeadOrDying()) return;
     this.renderCard();
     this.renderTitle();
+    this.renderFooter();
   }
 
   /**
@@ -371,6 +434,102 @@ export class Note extends RenderedNoteBase {
   }
 
   /**
+   * Lays out the author and the date along the foot of the note.
+   *
+   * Both are read from the note's own metadata, so a host that supplies no
+   * `getAuthor` gets the date alone and the row shortens to match. The date is
+   * `updatedAt` rather than `createdAt`: on a working note the useful question
+   * is whether it is still current.
+   *
+   * The row stops short of the resize handle, which core puts in this same
+   * corner, and the author is what gives way when there is not enough width -
+   * the date is short and fixed, so truncating it would save nothing.
+   */
+  renderFooter() {
+    if (!this.footer_ || !this.authorText_ || !this.dateText_) return;
+    if (!this.authorIcon_ || !this.dateIcon_) return;
+
+    const {author, updatedAt} = this.getMeta();
+    const date = formatDate(updatedAt);
+    // Nothing worth a row: let the stylesheet's :empty rule hide it.
+    this.footer_.setAttribute('data-empty', author || date ? 'false' : 'true');
+
+    const dir = this.workspace.RTL ? -1 : 1;
+    const {width, height} = this.view.getSize();
+    const y = height - BODY_INSET - FOOTER_HEIGHT / 2;
+    const scale = FOOTER_ICON_SIZE / PIN_GLYPH_GRID;
+
+    // `offset` is measured from the note's leading edge. The footer sits in
+    // the root group, which core does not mirror - unlike the title bar - so
+    // nothing here flips itself. In RTL the local space runs from -width to 0,
+    // so an offset becomes a negative coordinate and the glyph is placed by
+    // its far edge; the artwork keeps its own orientation either way, which a
+    // calendar or a person very much needs.
+    const place = (
+      icon: SVGGElement,
+      text: SVGTextElement,
+      value: string,
+      offset: number,
+    ) => {
+      const shown = !!value;
+      icon.style.display = shown ? '' : 'none';
+      text.style.display = shown ? '' : 'none';
+      if (!shown) return 0;
+      const iconX = dir > 0 ? offset : -(offset + FOOTER_ICON_SIZE);
+      icon.setAttribute(
+        'transform',
+        `translate(${iconX}, ${y - FOOTER_ICON_SIZE / 2}) scale(${scale})`,
+      );
+      const textOffset = offset + FOOTER_ICON_SIZE + FOOTER_LABEL_GAP;
+      text.setAttribute('x', `${dir * textOffset}`);
+      text.setAttribute('y', `${y}`);
+      text.textContent = value;
+      return (
+        FOOTER_ICON_SIZE +
+        FOOTER_LABEL_GAP +
+        Blockly.utils.dom.getTextWidth(text)
+      );
+    };
+
+    // The date is placed first so its width is known, then the author is given
+    // whatever is left.
+    const room = Math.max(0, width - BODY_INSET * 2 - FOOTER_HANDLE_CLEARANCE);
+    this.dateText_.textContent = date;
+    const dateWidth = date
+      ? FOOTER_ICON_SIZE +
+        FOOTER_LABEL_GAP +
+        Blockly.utils.dom.getTextWidth(this.dateText_)
+      : 0;
+
+    let authorLabel = author;
+    const authorRoom =
+      room - dateWidth - (date && author ? FOOTER_ITEM_GAP : 0);
+    if (authorLabel) {
+      let trimmed = author;
+      this.authorText_.textContent = authorLabel;
+      while (
+        trimmed.length > 1 &&
+        FOOTER_ICON_SIZE +
+          FOOTER_LABEL_GAP +
+          Blockly.utils.dom.getTextWidth(this.authorText_) >
+          authorRoom
+      ) {
+        trimmed = trimmed.slice(0, -1);
+        authorLabel = `${trimmed}\u2026`;
+        this.authorText_.textContent = authorLabel;
+      }
+      // A name cut to a letter or two says nothing and still spends a glyph
+      // and a gap saying it, so below that the author gives up its place.
+      if (trimmed.length < MIN_FOOTER_AUTHOR_CHARS) authorLabel = '';
+    }
+
+    let x = BODY_INSET;
+    const used = place(this.authorIcon_, this.authorText_, authorLabel, x);
+    if (used) x += used + FOOTER_ITEM_GAP;
+    place(this.dateIcon_, this.dateText_, date, x);
+  }
+
+  /**
    * Places the pin marker between the collapse button and the title.
    *
    * The glyph is authored on a 24-unit grid, so it is scaled down to one line
@@ -424,4 +583,26 @@ export class Note extends RenderedNoteBase {
     data.noteState = this.saveNoteState();
     return data;
   }
+}
+
+/**
+ * Renders a stored timestamp as a short, local date.
+ *
+ * The metadata holds ISO 8601 strings so they survive a round trip verbatim;
+ * this is only for reading. An unparseable or absent value yields an empty
+ * string, which the footer treats as "nothing to show" rather than printing
+ * "Invalid Date" on the note.
+ *
+ * @param iso An ISO 8601 timestamp, or an empty string.
+ * @returns The date in the viewer's locale, or '' if there is not one.
+ */
+function formatDate(iso: string): string {
+  if (!iso) return '';
+  const date = new Date(iso);
+  if (isNaN(date.getTime())) return '';
+  return date.toLocaleDateString(undefined, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
 }

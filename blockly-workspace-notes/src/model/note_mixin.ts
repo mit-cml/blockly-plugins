@@ -149,6 +149,26 @@ const NoteMixin = <TBase extends CommentConstructor>(Base: TBase) =>
       this.getNoteState().meta = {...this.getNoteState().meta, ...meta};
     }
 
+    /**
+     * Records a body edit, then hands off to core.
+     *
+     * The note's own setters all touch the metadata through
+     * `changeNoteProperty_`, but the body is core's and goes nowhere near it -
+     * so without this, `updatedAt` would track the title, colour, pin and
+     * stacking order while ignoring the thing people actually spend their time
+     * changing, and a note edited all afternoon would still claim it was last
+     * touched when it was named.
+     *
+     * No event of our own: core already fires its own change event for the
+     * text, and the timestamp rides along in the note's state.
+     *
+     * @param text The new body text.
+     */
+    setText(text: string): void {
+      if (text !== this.getText()) this.touchMeta();
+      super.setText(text);
+    }
+
     /** Records that the note changed just now. */
     touchMeta(): void {
       this.getNoteState().meta.updatedAt = new Date().toISOString();
