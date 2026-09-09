@@ -12,6 +12,7 @@ import {assert} from 'chai';
 
 import {DEFAULT_COLOUR, NoteChange, NoteComment, isNote} from '../src/index';
 import {nextZIndex, previousZIndex} from '../src/model/stacking';
+import {NOTE_BRAND} from '../src/constants/brand';
 
 suite('Note model', function () {
   setup(function () {
@@ -150,6 +151,31 @@ suite('Note model', function () {
       note.setPinned(false);
       assert.isFalse(note.isPinned());
       assert.isTrue(note.isOwnMovable());
+    });
+  });
+
+  // `isNote` reads this mark instead of testing instanceof, and the mixin's
+  // `as new (...) => ...` cast means the brand reaches no .d.ts at all - so
+  // nothing type-checks that it is still there. Were it dropped, `isNote`
+  // would return false for everything and the serializer would write an empty
+  // payload without throwing.
+  suite('the note brand', function () {
+    test('every note carries it', function () {
+      assert.isTrue(new NoteComment(this.workspace)[NOTE_BRAND]);
+      assert.isFalse(isNote({title: 'not a note'}));
+      assert.isFalse(isNote(null));
+    });
+
+    test('it stays a prototype accessor, not an own field', function () {
+      const note = new NoteComment(this.workspace);
+      assert.notProperty(
+        Object.getOwnPropertyDescriptors(note),
+        NOTE_BRAND,
+        'an own field would be enumerable, and would land after super()',
+      );
+      const mixin = Object.getPrototypeOf(NoteComment.prototype);
+      const descriptor = Object.getOwnPropertyDescriptor(mixin, NOTE_BRAND);
+      assert.isFunction(descriptor?.get, 'the brand must be a getter');
     });
   });
 

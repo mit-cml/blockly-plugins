@@ -15,6 +15,7 @@
 
 import * as Blockly from 'blockly/core';
 
+import {NOTE_BRAND} from '../constants/brand';
 import {DEFAULT_COLOUR} from '../constants/colours';
 import {NoteChange} from '../events/note_change';
 import {asOneUndoStep} from '../utils/undo';
@@ -55,6 +56,20 @@ const NoteMixin = <TBase extends CommentConstructor>(Base: TBase) =>
      * built.
      */
     protected noteState_?: NoteState;
+
+    /**
+     * Marks this object as a note, for `utils/guards.isNote`.
+     *
+     * An accessor rather than a class field, so it lives on the prototype: it
+     * exists from the moment the class does, costs nothing per instance, and
+     * is non-enumerable where an own field would not be - which keeps it out
+     * of the `JSON.stringify` comparison in `changeNoteProperty_`.
+     *
+     * @returns Always true.
+     */
+    get [NOTE_BRAND](): true {
+      return true;
+    }
 
     /**
      * Returns this note's extra state, creating it on first access.
@@ -338,6 +353,16 @@ const NoteMixin = <TBase extends CommentConstructor>(Base: TBase) =>
 
     /** Applies the stacking order. Overridden by the rendered subclass. */
     applyZIndex(): void {}
+
+    /**
+     * Raises this note above its neighbours.
+     *
+     * A no-op here: raising something means moving it in the DOM, and a
+     * headless note has none. `restackNotes` calls this on every note it
+     * sorts, so the seam is what lets it work without knowing which kind it
+     * has in front of it.
+     */
+    bringToFront(): void {}
 
     /**
      * Disposes of the note.

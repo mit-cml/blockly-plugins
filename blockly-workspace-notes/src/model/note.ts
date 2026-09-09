@@ -635,6 +635,11 @@ export class Note extends RenderedNoteBase {
     restackNotes(this.workspace);
   }
 
+  /** Raises this note above its neighbours, by moving it in the DOM. */
+  bringToFront() {
+    this.view.bringToFront();
+  }
+
   /**
    * Includes the note's extra state in clipboard data so that duplicate and
    * paste keep the title and colour. Consumed by NotePaster.

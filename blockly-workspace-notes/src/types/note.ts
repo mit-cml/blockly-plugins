@@ -81,4 +81,5 @@ export interface NoteSurface {
   applyPinned(): void;
   applyLocked(): void;
   applyZIndex(): void;
+  bringToFront(): void;
 }

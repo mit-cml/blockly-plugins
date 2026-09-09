@@ -184,7 +184,16 @@ Four rules keep it that way:
   so the side effects are findable in one sweep and every one has a matching
   `unregister`.
 
-One import cycle exists on purpose: `model/note.ts` and `model/stacking.ts`
-need each other, since a note restacks its neighbours when its z-index changes
-and restacking needs the class to recognise a note. Both uses sit inside
-function bodies, so neither runs while the modules are still evaluating.
+The graph is acyclic, and a test says so. `test/imports.mocha.js` walks every
+file and fails on any loop, because a cycle here would not fail honestly: the
+production bundle flattens modules into one scope, where a cycle becomes an
+ordering problem, while the test bundle keeps them apart and papers over it. A
+cycle that broke would break only in `dist/`.
+
+The thing that keeps it acyclic is small and easy to undo by accident. A note
+restacks its neighbours when its z-index changes, so `model/note.ts` imports
+`model/stacking.ts`; for the graph to stay linear, nothing under that may
+import a note class back. So `restackNotes` recognises a note by a mark the
+mixin puts on it (`constants/brand.ts`) rather than by `instanceof`, and raises
+it through a `bringToFront` seam rather than by reaching for the rendered
+class. Both of those exist for this reason and no other.

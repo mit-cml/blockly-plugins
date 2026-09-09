@@ -6,16 +6,15 @@
  * below are what a caller uses to put a note in front of, or behind,
  * everything already on the workspace.
  *
- * This module and `model/note.ts` import each other: `Note.applyZIndex` calls
- * `restackNotes`, and `restackNotes` needs the class to recognise a note. Both
- * uses are inside function bodies, so neither runs during module evaluation
- * and the cycle resolves. Keep it that way — a top-level use of `Note` here
- * would hit the temporal dead zone.
+ * Nothing here imports from `model/`, deliberately. `Note.applyZIndex` calls
+ * `restackNotes`, so an import in the other direction would be a cycle; the
+ * three things this module needs from a note - recognising one, reading its
+ * z-index, and raising it - are all reached without naming the class, through
+ * `isNote` and the `bringToFront` seam.
  */
 
 import * as Blockly from 'blockly/core';
 
-import {Note} from './note';
 import {isNote} from '../utils/guards';
 
 /**
@@ -26,15 +25,14 @@ import {isNote} from '../utils/guards';
  */
 export function restackNotes(workspace: Blockly.Workspace): void {
   if (!workspace.rendered) return;
-  const notes = workspace
+  // Two passes rather than one predicate: combining them would need the
+  // narrowed type spelled out, which means naming the class again.
+  workspace
     .getTopComments(false)
-    .filter(
-      (comment): comment is Note =>
-        comment instanceof Note && !comment.isDeadOrDying(),
-    );
-  notes
+    .filter(isNote)
+    .filter((note) => !note.isDeadOrDying())
     .sort((a, b) => a.getZIndex() - b.getZIndex())
-    .forEach((note) => note.view.bringToFront());
+    .forEach((note) => note.bringToFront());
 }
 
 /**
