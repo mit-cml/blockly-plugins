@@ -128,9 +128,6 @@ export const BAR_INSET = BAR_ICON_MARGIN + BAR_ICON_SIZE + BAR_ICON_GAP;
  */
 export const BAR_DELETE_NUDGE = BAR_ICON_MARGIN;
 
-/** Corner radius of a note's card; Blockly's own CORNER_RADIUS. */
-export const FRAME_RADIUS = 8;
-
 /**
  * Width of the body's scrollbar, for engines styled through
  * ::-webkit-scrollbar. Half of `SMALL_PADDING` either side of a 2px thumb -
@@ -153,20 +150,20 @@ export const DEFAULT_SIZE = {width: 260, height: 180};
 /**
  * The smallest a note can be resized to.
  *
- * Core has a floor of its own, but it is not one a note can use. The width it
- * enforces is the width of the truncated preview text - which a note hides,
- * since the title stands in for it - so on a note with no body text the floor
- * is zero, and the resize handle drags the paper away to nothing. What is left
- * has no surface to grab and no title to read: the note is still there, still
- * saved, and only undo brings it back. The height it enforces is the top bar
- * plus 20px, which was measured for core's 24px bar and leaves a note less
- * than one line of writing under its own title row.
+ * Core enforces a floor of its own and the larger of the two always wins, so
+ * this is not the whole story - but it is the half that bites when core's is
+ * too low. Core's width is the truncated body preview plus whichever bar
+ * buttons are showing, which on a note with no text yet comes to just the two
+ * buttons; its height is the bar plus 20px, which leaves less than one line of
+ * writing under the title. Either would let the resize handle drag a note down
+ * to something with no surface to grab and no title to read - still there,
+ * still saved, and findable only by undo.
  *
- * So a note sets its own, and states it in the terms the rest of the layout
- * is built from: a note is never smaller than its title row plus one line of
- * body and the margin under it, and never narrower than a title of a few
- * characters between its two margins. Anything smaller is not a small note,
- * it is a lost one.
+ * So a note states its own in the terms the rest of the layout is built from:
+ * never shorter than its title bar plus one line of body and the margin under
+ * it, and never narrower than a title of a few characters between its two
+ * margins. Measured, that means this floor governs an empty note while core's
+ * takes over once there is enough body text to push past it.
  */
 export const MIN_SIZE = {
   width: NOTE_MARGIN * 2 + TITLE_LINE_HEIGHT * 4,

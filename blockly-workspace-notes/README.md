@@ -2,7 +2,7 @@
 
 [![Built on Blockly](https://tinyurl.com/built-on-blockly)](https://github.com/google/blockly)
 
-Sticky notes for a Blockly workspace: draggable, resizable, colour-coded paper
+Sticky notes for a Blockly workspace: draggable, resizable, colour-coded cards
 with a title, an author and a stacking order.
 
 <p align="center">

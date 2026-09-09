@@ -65,7 +65,7 @@ serif prompt box, which matches nothing else on the page.
 
 Using Blockly's field editor was only half the fix, because a field editor is
 built to be _seen_ — a white box with the text selected — and on a note that
-still read as a mode opening on the paper. The editor is now invisible: same
+still read as a mode opening on the note. The editor is now invisible: same
 position, same font, same placeholder, no box, no selection. The title should
 behave exactly like the body, and the body has never needed anything to open.
 

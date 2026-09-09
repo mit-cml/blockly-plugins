@@ -1,7 +1,7 @@
 # Using notes
 
-A note is a sheet of paper on the workspace. It has a title you can read at a
-glance, a colour, and room to write.
+A note is a card on the workspace: a title bar you can read at a glance, a
+colour of its own, and room to write underneath.
 
 <p align="center">
   <img src="./images/note-anatomy.svg" width="100%" alt="The parts of a note: title bar, collapse and delete buttons, title, body and resize handle" />

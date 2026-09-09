@@ -5,9 +5,9 @@
  * block's is, but a pale one — where Blockly's `hueToHex` is S 0.45 at V 0.65
  * and carries a white label, a note is a light wash carrying black text.
  *
- * One stored colour paints the whole card; the text is written straight onto
- * it. The only value read off it is the edge - the same hue a step down in
- * value - which draws the card's outline and the hairline under the title.
+ * One stored colour paints the body. Two values are read off it: the edge, a
+ * step down in value, which draws the border and the title bar; and the ink,
+ * darker still, which draws everything written on the note.
  */
 
 import * as Blockly from 'blockly/core';
@@ -54,10 +54,9 @@ export function hexToHsv(hex: string): [number, number, number] {
 /**
  * Derives the shade a note's edges are drawn in.
  *
- * The same hue a step down in value. It draws the card's hairline and the
- * border around the writing area — which is exactly what Blockly's own
- * comment does, since core's `.blocklyTextarea` rule already reads this from
- * `--commentBorderColour`.
+ * The same hue a step down in value. It draws the note's border and its title
+ * bar — which is exactly what Blockly's own comment does, since core paints
+ * `.blocklyCommentTopbarBackground` from `--commentBorderColour` already.
  *
  * @param colour The note's colour, as a hex string.
  * @returns The edge colour as hex.

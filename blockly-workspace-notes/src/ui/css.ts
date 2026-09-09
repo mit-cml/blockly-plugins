@@ -5,14 +5,16 @@
  * injections that happen afterwards, so importing this plugin before calling
  * Blockly.inject is required.
  *
- * A note is a plain rounded card. Almost everything here is a small
- * adjustment to elements core already builds and already sizes - the card is
- * core's own highlight rect, and the writing area is core's own textarea - so
- * that resizing, collapsing and selection keep working without help.
+ * A note is a Blockly comment, so it is shaped like one: square, thin
+ * bordered, with a title bar carrying its two controls. Almost everything here
+ * is a small adjustment to elements core already builds and already sizes -
+ * the card is core's own highlight rect, the bar and its buttons are core's
+ * own, and the writing area is core's own textarea - so that resizing,
+ * collapsing, selection and keyboard access keep working without help.
  *
  * Colours come from the --commentFillColour / --commentBorderColour custom
- * properties core's comment stylesheet reads, plus one of ours for the
- * writing area's fill.
+ * properties core's comment stylesheet already reads, plus --noteInkColour of
+ * ours for everything written on the note.
  *
  * NOTE: this stylesheet is a JavaScript template literal. A backtick anywhere
  * inside it, including in a comment quoting a selector, silently ends the
@@ -42,9 +44,9 @@ import {
 
 Blockly.Css.register(`
 /*
- * The sheet of paper. This is core's own highlight rect, which it resizes on
- * every pointer move of a drag and strokes when the note is selected; the
- * rounded corners are set as attributes by the note itself.
+ * The card. This is core's own highlight rect, which it resizes on every
+ * pointer move of a drag; a note fills it, where a plain comment leaves it
+ * empty. Left square, as core draws it.
  */
 .${NOTE_CLASS} .blocklyCommentHighlight {
   fill: var(--commentFillColour);
@@ -154,14 +156,14 @@ Blockly.Css.register(`
 }
 
 /*
- * You write on the paper, not in a box on it.
+ * You write on the card, not in a box on it.
  *
  * Core gives its textarea a fill and a 1px border, which is what makes a
  * comment read as a panel - and a lighter bordered panel inset in a coloured
  * body is precisely how Blockly draws a field on a block. Both come off here,
- * so the note stays one flat colour and only the rule under the title divides
- * it. Core's own 5px padding goes too, so the body's first character lines up
- * with the first letter of the title rather than sitting 5px right of it.
+ * so the body is one flat colour and the bar above is what divides it. Core's
+ * own 5px padding goes too, replaced by an even inset on all four sides so the
+ * text sits the same distance off the bar as off the edges.
  */
 .${NOTE_CLASS} .blocklyMinimalBody {
   box-sizing: border-box;
@@ -174,16 +176,16 @@ Blockly.Css.register(`
  *
  * Core's textarea scrolls with the platform's own bar, and on a system set to
  * show scrollbars always - rather than as an overlay that fades - that is a
- * full-width white track down the side of the sheet: the one piece of
- * furniture on a note that otherwise carries nothing but the words on it.
+ * full-width white track down the side of the card: a piece of furniture the
+ * note never asked for, on the one surface meant to hold nothing but words.
  *
  * So it is made quiet rather than removed. Removing it outright would take the
  * only sign that there is more text below, on the one element of a note that
  * can have more to show than fits. Instead the gutter is narrowed and always
  * reserved - the text keeps its width whether the bar is painted or not, so
  * nothing reflows - and the paint is what changes: nothing at rest, and while
- * the pointer is on the note or the caret is in it, a thumb in the paper's own
- * edge colour, the same hairline that draws the card and the rule.
+ * the pointer is on the note or the caret is in it, a thumb in the note's own
+ * edge colour, the same shade that draws the border and the title bar.
  */
 .${NOTE_CLASS} .blocklyTextarea {
   background-color: transparent;

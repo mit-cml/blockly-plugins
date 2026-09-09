@@ -243,15 +243,15 @@ export class Note extends RenderedNoteBase {
     // writing area's offset there from the measured height of the top bar
     // rect. That measurement happens before `super()` returns, which is
     // before this constructor can add NOTE_CLASS - so the rect is still core's
-    // own 24px bar, and the body is left starting a title row too high,
-    // overlapping the title and crossing the rule. It corrected itself on the
-    // first resize, collapse or keystroke, which is what made it look like a
-    // rendering glitch rather than a wrong number.
+    // own 24px bar, and the body is left starting too high, overlapping the
+    // title row. It corrected itself on the first resize, collapse or
+    // keystroke, which is what made it look like a rendering glitch rather
+    // than a wrong number.
     //
-    // The class is on the root by now, so one more size pass measures 48 and
-    // puts the body under the rule. Without firing events: the note is still
-    // being constructed, and a size change nobody made does not belong on the
-    // undo stack.
+    // The class is on the root by now, so one more size pass measures the
+    // note's own bar height and puts the body below it. Without firing events:
+    // the note is still being constructed, and a size change nobody made does
+    // not belong on the undo stack.
     this.view.setSizeWithoutFiringEvents(this.view.getSize());
   }
 
@@ -291,9 +291,10 @@ export class Note extends RenderedNoteBase {
    * Paints the note by overriding the CSS custom properties core's comment
    * stylesheet already reads, which avoids restyling its elements directly.
    *
-   * Two values off the one stored colour: the paper, and the edge that draws
-   * both the card's outline and the rule under the title. The text is written
-   * straight onto the paper, so there is no third.
+   * Three values off the one stored colour: the body, the edge that draws both
+   * the border and the title bar, and the ink that everything written on the
+   * note is drawn in. The ink is the one core has no property for, so it also
+   * has to be painted into the bar buttons by hand - see below.
    */
   renderColour() {
     const colour = this.getColour();
