@@ -41,6 +41,15 @@ import {
   BAR_ICON_MARGIN,
   BAR_ICON_SIZE,
   BODY_INSET,
+  CARD_BORDER_WIDTH,
+  FOOTER_OPACITY,
+  GLYPH_STROKE_WIDTH,
+  OUTLINE_OFFSET,
+  OUTLINE_RADIUS,
+  OUTLINE_WIDTH,
+  PINNED_CARD_BORDER_WIDTH,
+  PLACEHOLDER_OPACITY,
+  SELECTION_STROKE_WIDTH,
   FOOTER_FONT_SIZE,
   FOOTER_HEIGHT,
   SCROLLBAR_WIDTH,
@@ -57,7 +66,7 @@ Blockly.Css.register(`
 .${NOTE_CLASS} .blocklyCommentHighlight {
   fill: var(--commentFillColour);
   stroke: var(--commentBorderColour);
-  stroke-width: 1px;
+  stroke-width: ${CARD_BORDER_WIDTH}px;
 }
 
 /*
@@ -69,7 +78,7 @@ Blockly.Css.register(`
  * pushed the marker to the very corner of the note.
  */
 .${NOTE_CLASS}.${PINNED_CLASS} .blocklyCommentHighlight {
-  stroke-width: 2px;
+  stroke-width: ${PINNED_CARD_BORDER_WIDTH}px;
 }
 
 /*
@@ -92,7 +101,7 @@ Blockly.Css.register(`
   display: none;
   fill: none;
   stroke: var(--noteInkColour);
-  stroke-width: 2px;
+  stroke-width: ${GLYPH_STROKE_WIDTH}px;
   stroke-linecap: round;
   stroke-linejoin: round;
   pointer-events: none;
@@ -205,9 +214,9 @@ Blockly.Css.register(`
  */
 .${NOTE_CLASS} .blocklyFoldoutIcon:focus-visible,
 .${NOTE_CLASS} .blocklyDeleteIcon:focus-visible {
-  outline: 2px solid var(--noteInkColour);
-  outline-offset: 1px;
-  border-radius: 2px;
+  outline: ${OUTLINE_WIDTH}px solid var(--noteInkColour);
+  outline-offset: ${OUTLINE_OFFSET}px;
+  border-radius: ${OUTLINE_RADIUS}px;
 }
 
 /*
@@ -363,7 +372,7 @@ Blockly.Css.register(`
 .${NOTE_CLASS}.blocklyComment:not(.${TITLED_CLASS})
   .${TITLE_CLASS}.blocklyText {
   fill: var(--noteInkColour);
-  opacity: 0.55;
+  opacity: ${PLACEHOLDER_OPACITY};
 }
 
 .blocklyRTL .${TITLE_CLASS} {
@@ -413,7 +422,7 @@ Blockly.Css.register(`
  * --noteInkColour never reaches it.
  */
 .blocklyNoteTitleInput::placeholder {
-  opacity: 0.55;
+  opacity: ${PLACEHOLDER_OPACITY};
 }
 
 .blocklyRTL .blocklyNoteTitleInput {
@@ -458,10 +467,10 @@ Blockly.Css.register(`
 .${NOTE_CLASS} .${FOOTER_CLASS} {
   fill: none;
   stroke: var(--noteInkColour);
-  stroke-width: 2px;
+  stroke-width: ${GLYPH_STROKE_WIDTH}px;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.6;
+  opacity: ${FOOTER_OPACITY};
   pointer-events: none;
 }
 
@@ -509,6 +518,6 @@ Blockly.Css.register(`
 
 .blocklySelected.${NOTE_CLASS} .${SELECTION_CLASS} {
   stroke: #fc3;
-  stroke-width: 3px;
+  stroke-width: ${SELECTION_STROKE_WIDTH}px;
 }
 `);

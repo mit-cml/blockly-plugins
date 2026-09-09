@@ -19,6 +19,8 @@
  * on screen - heavy enough to hold its own beside a bold heading.
  */
 
+import {GLYPH_STROKE_WIDTH} from '../constants/layout';
+
 /** Tabler's `chevron-down`, for the collapse button. */
 export const CHEVRON_GLYPH = ['M6 9l6 6l6 -6'];
 
@@ -85,7 +87,7 @@ export const LOCK_GLYPH = [
 export function glyphToDataUri(paths: string[], colour: string): string {
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" ` +
-    `fill="none" stroke="${colour}" stroke-width="2" ` +
+    `fill="none" stroke="${colour}" stroke-width="${GLYPH_STROKE_WIDTH}" ` +
     `stroke-linecap="round" stroke-linejoin="round">` +
     paths.map((d) => `<path d="${d}"/>`).join('') +
     `</svg>`;
