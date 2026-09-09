@@ -21,6 +21,9 @@ export const PIN_CLASS = 'blocklyNotePin';
 /** CSS class of the SVG text element that renders a note's title. */
 export const TITLE_CLASS = 'blocklyNoteTitle';
 
+/** CSS class of the rect that draws the selection ring. */
+export const SELECTION_CLASS = 'blocklyNoteSelection';
+
 /**
  * Shown in the title row of a note that has not been named yet.
  *

@@ -25,6 +25,7 @@ import * as Blockly from 'blockly/core';
 import {
   NOTE_CLASS,
   PIN_CLASS,
+  SELECTION_CLASS,
   PINNED_CLASS,
   TITLED_CLASS,
   TITLE_CLASS,
@@ -164,7 +165,7 @@ Blockly.Css.register(`
  */
 .${NOTE_CLASS} .blocklyMinimalBody {
   box-sizing: border-box;
-  padding: 0 ${BODY_INSET}px ${BODY_INSET}px;
+  padding: ${BODY_INSET}px;
 }
 
 /*
@@ -363,24 +364,31 @@ Blockly.Css.register(`
 /*
  * Selection, last in this sheet and over-specific on purpose.
  *
- * Core's ring is .blocklySelected .blocklyCommentHighlight - two classes,
- * exactly what the card rule above is - and this stylesheet is registered
- * after core's, so without a third class the card's own hairline would
- * quietly win and a selected note would show no ring at all.
+ * Core strokes its own highlight rect, which for a note is the card - painted
+ * before the title bar, so the bar covers the ring's inner half for its whole
+ * height and leaves it full thickness below. The ring gets its own rect,
+ * painted last, instead. Core's rules are switched off rather than overridden,
+ * both the expanded one and the collapsed pair that moves the ring onto the
+ * bar.
  *
- * The collapsed selectors undo core's own pair, which drops the ring from the
- * highlight rect and moves it onto the top bar. That is right for a comment
- * whose bar is its whole collapsed body; here the card is still the shape to
- * outline, and the bar has no fill to carry a stroke.
+ * #fc3 is Blockly's selection colour, not the note's, and stays fixed: a
+ * selected note should look selected the same way a selected block does.
  */
 .blocklySelected.${NOTE_CLASS} .blocklyCommentHighlight,
-.blocklySelected.${NOTE_CLASS}.blocklyCollapsed .blocklyCommentHighlight {
-  stroke: #fc3;
-  stroke-width: 3px;
-}
-
+.blocklySelected.${NOTE_CLASS}.blocklyCollapsed .blocklyCommentHighlight,
 .blocklySelected.${NOTE_CLASS}.blocklyCollapsed
   .blocklyCommentTopbarBackground {
   stroke: none;
+}
+
+.${NOTE_CLASS} .${SELECTION_CLASS} {
+  fill: none;
+  stroke: none;
+  pointer-events: none;
+}
+
+.blocklySelected.${NOTE_CLASS} .${SELECTION_CLASS} {
+  stroke: #fc3;
+  stroke-width: 3px;
 }
 `);

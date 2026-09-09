@@ -13,6 +13,7 @@ import * as Blockly from 'blockly/core';
 import {
   NOTE_CLASS,
   PIN_CLASS,
+  SELECTION_CLASS,
   PINNED_CLASS,
   TITLED_CLASS,
   TITLE_CLASS,
@@ -61,6 +62,9 @@ export class Note extends RenderedNoteBase {
 
   /** The marker shown while the note is pinned. */
   private pin_?: SVGGElement;
+
+  /** The rect that draws the selection ring. */
+  private selection_?: SVGRectElement;
 
   /**
    * Core's two bar buttons.
@@ -130,6 +134,22 @@ export class Note extends RenderedNoteBase {
     } else {
       root.appendChild(this.pin_);
     }
+
+    /**
+     * The selection ring.
+     *
+     * A rect of its own rather than a stroke on the card, because the card is
+     * painted first and the title bar is painted over it: a stroke there is
+     * half-covered for the bar's whole height and full thickness below, which
+     * reads as a ring that changes width halfway down. Drawn last, it is even
+     * the whole way round.
+     * @private
+     */
+    this.selection_ = Blockly.utils.dom.createSvgElement(
+      Blockly.utils.Svg.RECT,
+      {'class': SELECTION_CLASS, 'aria-hidden': 'true'},
+      root,
+    );
     for (const d of PIN_GLYPH) {
       Blockly.utils.dom.createSvgElement(
         Blockly.utils.Svg.PATH,
@@ -256,8 +276,15 @@ export class Note extends RenderedNoteBase {
    * collapse-aware measurement, so the height is taken from that instead.
    */
   renderCard() {
-    if (!this.card_) return;
-    this.card_.setAttribute('height', `${this.view.getSize().height}`);
+    const {width, height} = this.view.getSize();
+    this.card_?.setAttribute('height', `${height}`);
+
+    // The ring traces the card, so it takes the same box - including core's
+    // convention of hanging the card off the leading edge in RTL.
+    this.selection_?.setAttribute('x', `${this.workspace.RTL ? -width : 0}`);
+    this.selection_?.setAttribute('y', '0');
+    this.selection_?.setAttribute('width', `${width}`);
+    this.selection_?.setAttribute('height', `${height}`);
   }
 
   /**
