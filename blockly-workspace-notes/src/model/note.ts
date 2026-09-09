@@ -19,8 +19,7 @@ import {
   UNTITLED_TITLE_TEXT,
 } from '../constants/dom';
 import {
-  BAR_LEADING_INSET,
-  BAR_TRAILING_INSET,
+  BAR_INSET,
   MIN_SIZE,
   PIN_GLYPH_GRID,
   PIN_GLYPH_INK,
@@ -318,7 +317,7 @@ export class Note extends RenderedNoteBase {
     const pinAdvance = this.isPinned()
       ? (PIN_GLYPH_INK.width * PIN_ICON_SIZE) / PIN_GLYPH_GRID + PIN_ICON_GAP
       : 0;
-    const leading = BAR_LEADING_INSET + pinAdvance;
+    const leading = BAR_INSET + pinAdvance;
 
     // Inside core's top bar group, which it mirrors in RTL - so x counts
     // inwards from the note's edge either way, and the sign follows.
@@ -331,7 +330,7 @@ export class Note extends RenderedNoteBase {
     // Trim a character at a time; titles are short, so this settles fast.
     const maxWidth = Math.max(
       0,
-      this.view.getSize().width - leading - BAR_TRAILING_INSET,
+      this.view.getSize().width - leading - BAR_INSET,
     );
     let text = title;
     while (
@@ -358,7 +357,7 @@ export class Note extends RenderedNoteBase {
     const scale = PIN_ICON_SIZE / PIN_GLYPH_GRID;
     // Offset by the glyph's own padding so it is the ink that starts where the
     // title row's contents do, rather than the empty box around it.
-    const x = dir * (BAR_LEADING_INSET - PIN_GLYPH_INK.x * scale);
+    const x = dir * (BAR_INSET - PIN_GLYPH_INK.x * scale);
     const y =
       TOPBAR_HEIGHT / 2 - (PIN_GLYPH_INK.y + PIN_GLYPH_INK.height / 2) * scale;
     this.pin_.setAttribute(

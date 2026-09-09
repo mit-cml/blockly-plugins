@@ -70,15 +70,13 @@ export const PIN_GLYPH_INK = {x: 7, y: 4, width: 10, height: 17};
  * The margin on every side of a note, and the single number the rest of the
  * layout is built from.
  *
- * This one deliberately steps outside Blockly's chrome scale, which tops out
- * at `LARGE_PADDING` 10. Block chrome is packed tight because a block is an
- * operator with as much crammed onto it as will fit; paper is the opposite,
- * and margins are most of what makes a page read as one. It is set to
- * `TITLE_LINE_HEIGHT` so the margin is exactly one line of text on every
- * side - the oldest rule in page layout, and the reason the note reads as
- * even rather than as merely roomy.
+ * A full line of text on every side reads as generous on a sheet of paper, but
+ * a note is not one any more - it is a titled card with a bar of controls, and
+ * at that scale the same margin leaves the bar looking inflated and the body
+ * indented. So it comes back to the top of Blockly's own chrome scale, which
+ * is what the bar's contents are sized against anyway.
  */
-export const NOTE_MARGIN = TITLE_LINE_HEIGHT;
+export const NOTE_MARGIN = LARGE_PADDING;
 
 /**
  * Height of a note's title row: one line of text with a margin above and
@@ -88,9 +86,14 @@ export const NOTE_MARGIN = TITLE_LINE_HEIGHT;
 export const TOPBAR_HEIGHT = TITLE_LINE_HEIGHT + NOTE_MARGIN * 2;
 
 /**
- * The box each of core's bar buttons is drawn in. Core's own default, kept.
+ * The box each of core's bar buttons is drawn in.
+ *
+ * One line box, the same as the title beside it, so the glyphs and the heading
+ * share a cap height and the row reads as one line rather than as icons with
+ * text between them. Smaller than core's 20px, which was sized for a bar
+ * carrying nothing but icons.
  */
-export const BAR_ICON_SIZE = 20;
+export const BAR_ICON_SIZE = TITLE_LINE_HEIGHT;
 
 /** The gap between a bar button and whatever it sits next to. */
 export const BAR_ICON_GAP = MEDIUM_PADDING;
@@ -106,24 +109,24 @@ export const BAR_ICON_GAP = MEDIUM_PADDING;
 export const BAR_ICON_MARGIN = (TOPBAR_HEIGHT - BAR_ICON_SIZE) / 2;
 
 /**
- * Where the title row's contents begin, past the collapse button.
+ * How much of each end of the title row a button takes, gap included.
  *
- * Core puts that button at `BAR_ICON_MARGIN` from the leading edge, so this is
- * its far side plus a gap. The pin marker starts here when there is one, and
- * the title follows it.
+ * One number for both ends, because the buttons are inset equally once the
+ * correction below is applied. The pin marker starts here when there is one,
+ * and the title follows it.
  */
-export const BAR_LEADING_INSET = BAR_ICON_MARGIN + BAR_ICON_SIZE + BAR_ICON_GAP;
+export const BAR_INSET = BAR_ICON_MARGIN + BAR_ICON_SIZE + BAR_ICON_GAP;
 
 /**
- * How much room the delete button needs at the trailing edge.
+ * How far the delete button moves to line up with the collapse button.
  *
- * Core sets its x to the bar's width minus the button's size *including both
- * margins*, so the icon's near edge is one full margin further in than the
- * collapse button's - hence the doubled margin here rather than a single one.
- * This is what the title's truncation has to stop short of.
+ * Core positions it at the bar's width minus the button's size *including both
+ * its margins*, while the collapse button gets a single margin from the
+ * leading edge. So the two sit at different insets - one margin further in on
+ * the right than on the left - which is plain to see once you look for it.
+ * Shifting it out by that extra margin makes the row symmetric.
  */
-export const BAR_TRAILING_INSET =
-  BAR_ICON_MARGIN * 2 + BAR_ICON_SIZE + BAR_ICON_GAP;
+export const BAR_DELETE_NUDGE = BAR_ICON_MARGIN;
 
 /** Corner radius of a note's card; Blockly's own CORNER_RADIUS. */
 export const FRAME_RADIUS = 8;

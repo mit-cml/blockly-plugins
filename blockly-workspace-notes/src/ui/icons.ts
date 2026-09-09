@@ -14,8 +14,9 @@
  * core's; only the picture changes, and it changes again whenever the note is
  * recoloured.
  *
- * The glyphs are Tabler's, all authored on a 24-unit grid at stroke-width 1 so
- * the three read as one set.
+ * The glyphs are Tabler's, all authored on a 24-unit grid at stroke-width 2 so
+ * the three read as one set. Scaled into a 16px box that lands at about 1.3px
+ * on screen - heavy enough to hold its own beside a bold heading.
  */
 
 /** Tabler's `chevron-down`, for the collapse button. */
@@ -57,7 +58,7 @@ export const PIN_GLYPH = [
 export function glyphToDataUri(paths: string[], colour: string): string {
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" ` +
-    `fill="none" stroke="${colour}" stroke-width="1" ` +
+    `fill="none" stroke="${colour}" stroke-width="2" ` +
     `stroke-linecap="round" stroke-linejoin="round">` +
     paths.map((d) => `<path d="${d}"/>`).join('') +
     `</svg>`;

@@ -22,7 +22,7 @@ import * as Blockly from 'blockly/core';
 
 import {TITLE_CLASS, UNTITLED_TITLE_TEXT} from '../constants/dom';
 import {
-  BAR_TRAILING_INSET,
+  BAR_INSET,
   TITLE_FONT_SIZE,
   TITLE_LINE_HEIGHT,
 } from '../constants/layout';
@@ -66,7 +66,7 @@ function editorBox(note: Note): EditorBox | null {
   const room =
     note.getSvgRoot().getBoundingClientRect().right -
     box.left -
-    BAR_TRAILING_INSET * scale;
+    BAR_INSET * scale;
   return {
     left: box.left,
     top: box.top,

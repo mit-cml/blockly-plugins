@@ -30,6 +30,7 @@ import {
   TITLE_CLASS,
 } from '../constants/dom';
 import {
+  BAR_DELETE_NUDGE,
   BAR_ICON_MARGIN,
   BAR_ICON_SIZE,
   BODY_INSET,
@@ -128,6 +129,15 @@ Blockly.Css.register(`
 .${NOTE_CLASS} .blocklyFoldoutIcon {
   transform-origin: ${BAR_ICON_MARGIN + BAR_ICON_SIZE / 2}px
     ${BAR_ICON_MARGIN + BAR_ICON_SIZE / 2}px;
+}
+
+/*
+ * Core insets this one by a doubled margin while the collapse button gets a
+ * single one, so without this the two ends of the bar do not match. See
+ * BAR_DELETE_NUDGE.
+ */
+.${NOTE_CLASS} .blocklyDeleteIcon {
+  transform: translateX(${BAR_DELETE_NUDGE}px);
 }
 
 /*

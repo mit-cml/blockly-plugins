@@ -1,24 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="920" height="320" viewBox="0 0 920 320" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="300" viewBox="0 0 920 300" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
   <title>The parts of a note</title>
   <desc>A note at its default size of 260 by 180, with its title bar, collapse and delete buttons, title, body and resize handle labelled.</desc>
 
-  <rect width="920" height="320" fill="#ffffff"/>
+  <rect width="920" height="300" fill="#ffffff"/>
 
-  <!-- The note: 260 x 180, square, at (332, 60). Yellow #f9edbb, bar and
-       border one step darker at #dbd0a4, everything written in ink #4c4217. -->
-  <g transform="translate(332, 60)">
+  <!-- The note: 260 x 180, square, at (332, 55). Yellow #f9edbb, bar and border
+       one step darker at #dbd0a4, everything written in ink #4c4217. The bar is
+       36 tall, its two buttons 16 in a 16 box, both inset 10 from their end. -->
+  <g transform="translate(332, 55)">
     <rect width="260" height="180" fill="#f9edbb" stroke="#dbd0a4" stroke-width="1"/>
-    <rect width="260" height="48" fill="#dbd0a4"/>
+    <rect width="260" height="36" fill="#dbd0a4"/>
 
-    <!-- Collapse button: 20px, at the 14px margin core leaves. -->
-    <g transform="translate(14, 14) scale(0.8333)" fill="none" stroke="#4c4217"
-       stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+    <g transform="translate(10, 10) scale(0.6667)" fill="none" stroke="#4c4217"
+       stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M6 9l6 6l6 -6"/>
     </g>
 
-    <!-- Delete button: flush right, 48px in from the edge. -->
-    <g transform="translate(212, 14) scale(0.8333)" fill="none" stroke="#4c4217"
-       stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+    <g transform="translate(234, 10) scale(0.6667)" fill="none" stroke="#4c4217"
+       stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M4 7l16 0"/>
       <path d="M10 11l0 6"/>
       <path d="M14 11l0 6"/>
@@ -26,50 +25,49 @@
       <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
     </g>
 
-    <text x="39" y="24" font-size="16" font-weight="bold" fill="#4c4217" dominant-baseline="middle">Shopping list</text>
+    <text x="31" y="18" font-size="16" font-weight="bold" fill="#4c4217" dominant-baseline="middle">Shopping list</text>
 
     <g font-size="14.67" fill="#4c4217">
-      <text x="16" y="78">milk</text>
-      <text x="16" y="98">bread</text>
-      <text x="16" y="118">coffee</text>
+      <text x="10" y="58">milk</text>
+      <text x="10" y="78">bread</text>
+      <text x="10" y="98">coffee</text>
     </g>
 
     <g stroke="#4c4217" stroke-width="1.4" fill="none" opacity="0.6" stroke-linecap="round">
-      <path d="M232 156 L 244 144"/>
-      <path d="M238 162 L 244 156"/>
+      <path d="M238 162 L 250 150"/>
+      <path d="M244 168 L 250 162"/>
     </g>
   </g>
 
   <g stroke="#9aa0a6" stroke-width="1" fill="none" stroke-linecap="round">
-    <path d="M258 84 H 300 L 326 84"/>
-    <path d="M258 212 H 300 L 326 230"/>
-    <path d="M652 84 H 620 L 600 84"/>
-    <path d="M652 152 H 596"/>
-    <path d="M652 224 H 600 L 578 216"/>
+    <path d="M258 73 H 300 L 326 73"/>
+    <path d="M258 200 H 300 L 326 220"/>
+    <path d="M652 73 H 620 L 600 73"/>
+    <path d="M652 140 H 596"/>
+    <path d="M652 214 H 600 L 584 210"/>
   </g>
 
   <g font-size="14" fill="#202124">
-    <text x="250" y="80" text-anchor="end" font-weight="600">Collapse</text>
-    <text x="250" y="98" text-anchor="end" font-size="12.5" fill="#5f6368">folds the note to its bar</text>
+    <text x="250" y="69" text-anchor="end" font-weight="600">Collapse</text>
+    <text x="250" y="87" text-anchor="end" font-size="12.5" fill="#5f6368">folds the note to its bar</text>
 
-    <text x="250" y="208" text-anchor="end" font-weight="600">The card</text>
-    <text x="250" y="226" text-anchor="end" font-size="12.5" fill="#5f6368">square, thin border</text>
+    <text x="250" y="196" text-anchor="end" font-weight="600">The card</text>
+    <text x="250" y="214" text-anchor="end" font-size="12.5" fill="#5f6368">square, thin border</text>
 
-    <text x="664" y="80" font-weight="600">Delete</text>
-    <text x="664" y="98" font-size="12.5" fill="#5f6368">one undo brings it back</text>
+    <text x="664" y="69" font-weight="600">Delete</text>
+    <text x="664" y="87" font-size="12.5" fill="#5f6368">one undo brings it back</text>
 
-    <text x="664" y="148" font-weight="600">The body</text>
-    <text x="664" y="166" font-size="12.5" fill="#5f6368">written in the note's own ink</text>
+    <text x="664" y="136" font-weight="600">The body</text>
+    <text x="664" y="154" font-size="12.5" fill="#5f6368">written in the note's own ink</text>
 
-    <text x="664" y="220" font-weight="600">Resize handle</text>
-    <text x="664" y="238" font-size="12.5" fill="#5f6368">inside the sheet, not on its corner</text>
+    <text x="664" y="210" font-weight="600">Resize handle</text>
+    <text x="664" y="228" font-size="12.5" fill="#5f6368">inside the sheet, not on its corner</text>
   </g>
 
-  <!-- The title bar, called out under the note. -->
   <g stroke="#bdc1c6" stroke-width="1" fill="none">
-    <path d="M332 268 H 592"/>
-    <path d="M332 263 V 273"/>
-    <path d="M592 263 V 273"/>
+    <path d="M332 258 H 592"/>
+    <path d="M332 253 V 263"/>
+    <path d="M592 253 V 263"/>
   </g>
-  <text x="462" y="288" font-size="12" fill="#80868b" text-anchor="middle">the title bar, one step darker than the body</text>
+  <text x="462" y="278" font-size="12" fill="#80868b" text-anchor="middle">the title bar, one step darker than the body</text>
 </svg>
