@@ -4,7 +4,7 @@ A note is a card on the workspace: a title bar you can read at a glance, a
 colour of its own, and room to write underneath.
 
 <p align="center">
-  <img src="./images/note-anatomy.svg" width="100%" alt="The parts of a note: title bar, collapse and delete buttons, title, body, author and date, and resize handle" />
+  <img src="./images/note-anatomy.svg" width="100%" alt="The parts of a note: title bar, collapse and delete buttons, title, body, author and date, and resize handle; and below it a locked note with a padlock, no delete button and no resize handle" />
 </p>
 
 The title bar carries two buttons — collapse on the left, delete on the right —

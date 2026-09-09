@@ -1,13 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="920" height="300" viewBox="0 0 920 300" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
-  <title>The parts of a note</title>
-  <desc>A note at its default size of 260 by 180, with its title bar, collapse and delete buttons, title, body and resize handle labelled.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="672" viewBox="0 0 920 672" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <title>The parts of a note, and what locking changes</title>
+  <desc>Two notes at the default size of 260 by 180. The first labels the collapse button, the title, the delete button, the body, the author and date line, and the resize handle. The second is locked: it shows a padlock in the marker slot, and has no delete button and no resize handle.</desc>
 
-  <rect width="920" height="300" fill="#ffffff"/>
+  <rect width="920" height="672" fill="#ffffff"/>
 
-  <!-- The note: 260 x 180, square, at (332, 55). Yellow #f9edbb, bar and border
-       one step darker at #dbd0a4, everything written in ink #4c4217. The bar is
-       36 tall, its two buttons 16 in a 16 box, both inset 10 from their end. -->
-  <g transform="translate(332, 55)">
+  <text x="40" y="30" font-size="15" font-weight="600" fill="#202124">The parts of a note</text>
+
+  <!-- Note A: an ordinary note. 260 x 180 at (332, 110). Yellow #f9edbb, bar
+       and border one step darker at #dbd0a4, everything written in ink
+       #4c4217. The bar is 36 tall, its two buttons 16 in a 16 box, both inset
+       10 from their end. -->
+  <g transform="translate(332, 110)">
     <rect width="260" height="180" fill="#f9edbb" stroke="#dbd0a4" stroke-width="1"/>
     <rect width="260" height="36" fill="#dbd0a4"/>
 
@@ -60,34 +63,106 @@
   </g>
 
   <g stroke="#9aa0a6" stroke-width="1" fill="none" stroke-linecap="round">
-    <path d="M258 73 H 300 L 326 73"/>
-    <path d="M258 205 H 300 L 326 216"/>
-    <path d="M652 73 H 620 L 600 73"/>
-    <path d="M652 140 H 596"/>
-    <path d="M652 214 H 600 L 584 210"/>
+    <path d="M440 86 V 106"/>
+    <path d="M258 128 H 300 L 326 128"/>
+    <path d="M258 260 H 300 L 326 271"/>
+    <path d="M652 128 H 620 L 600 128"/>
+    <path d="M652 195 H 596"/>
+    <path d="M652 269 H 600 L 584 265"/>
   </g>
 
   <g font-size="14" fill="#202124">
-    <text x="250" y="69" text-anchor="end" font-weight="600">Collapse</text>
-    <text x="250" y="87" text-anchor="end" font-size="12.5" fill="#5f6368">folds the note to its bar</text>
+    <text x="440" y="62" text-anchor="middle" font-weight="600">Title</text>
+    <text x="440" y="80" text-anchor="middle" font-size="12.5" fill="#5f6368">click it to rename, in place</text>
 
-    <text x="250" y="201" text-anchor="end" font-weight="600">Author and date</text>
-    <text x="250" y="219" text-anchor="end" font-size="12.5" fill="#5f6368">recorded automatically</text>
+    <text x="250" y="124" text-anchor="end" font-weight="600">Collapse</text>
+    <text x="250" y="142" text-anchor="end" font-size="12.5" fill="#5f6368">folds the note to its bar</text>
 
-    <text x="664" y="69" font-weight="600">Delete</text>
-    <text x="664" y="87" font-size="12.5" fill="#5f6368">one undo brings it back</text>
+    <text x="250" y="256" text-anchor="end" font-weight="600">Author and date</text>
+    <text x="250" y="274" text-anchor="end" font-size="12.5" fill="#5f6368">recorded automatically</text>
 
-    <text x="664" y="136" font-weight="600">The body</text>
-    <text x="664" y="154" font-size="12.5" fill="#5f6368">written in the note's own ink</text>
+    <text x="664" y="124" font-weight="600">Delete</text>
+    <text x="664" y="142" font-size="12.5" fill="#5f6368">one undo brings it back</text>
 
-    <text x="664" y="210" font-weight="600">Resize handle</text>
-    <text x="664" y="228" font-size="12.5" fill="#5f6368">inside the sheet, not on its corner</text>
+    <text x="664" y="191" font-weight="600">The body</text>
+    <text x="664" y="209" font-size="12.5" fill="#5f6368">written in the note's own ink</text>
+
+    <text x="664" y="265" font-weight="600">Resize handle</text>
+    <text x="664" y="283" font-size="12.5" fill="#5f6368">inside the sheet, not on its corner</text>
   </g>
 
   <g stroke="#bdc1c6" stroke-width="1" fill="none">
-    <path d="M332 258 H 592"/>
-    <path d="M332 253 V 263"/>
-    <path d="M592 253 V 263"/>
+    <path d="M332 313 H 592"/>
+    <path d="M332 308 V 318"/>
+    <path d="M592 308 V 318"/>
   </g>
-  <text x="462" y="278" font-size="12" fill="#80868b" text-anchor="middle">the title bar, one step darker than the body</text>
+  <text x="462" y="333" font-size="12" fill="#80868b" text-anchor="middle">the title bar, one step darker than the body</text>
+
+  <text x="40" y="376" font-size="15" font-weight="600" fill="#202124">What locking changes</text>
+
+  <!-- Note B: the same note locked. Peach #f9d8bb, bar and border #dbbea4,
+       ink #4c3017. The padlock sits in the marker slot at x 27.667, and the
+       title starts 14.333 further along than on note A to make room for it.
+       No delete button and no resize handle: that absence is the point. -->
+  <g transform="translate(332, 456)">
+    <rect width="260" height="180" fill="#f9d8bb" stroke="#dbbea4" stroke-width="1"/>
+    <rect width="260" height="36" fill="#dbbea4"/>
+
+    <g transform="translate(10, 10) scale(0.6667)" fill="none" stroke="#4c3017"
+       stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 9l6 6l6 -6"/>
+    </g>
+
+    <g transform="translate(27.667, 10) scale(0.6667)" fill="none" stroke="#4c3017"
+       stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6"/>
+      <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"/>
+      <path d="M8 11v-4a4 4 0 1 1 8 0v4"/>
+    </g>
+
+    <text x="45.333" y="18" font-size="16" font-weight="bold" fill="#4c3017" dominant-baseline="central">Read the brief</text>
+
+    <g font-size="14.67" fill="#4c3017">
+      <text x="10" y="58">Written by your teacher.</text>
+    </g>
+
+    <g transform="translate(10, 156)" fill="none" stroke="#4c3017" stroke-width="2"
+       stroke-linecap="round" stroke-linejoin="round" opacity="0.6">
+      <g transform="scale(0.5)">
+        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/>
+        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>
+      </g>
+    </g>
+    <text x="25" y="162" font-size="11" fill="#4c3017" opacity="0.6" dominant-baseline="central">ada</text>
+    <g transform="translate(52, 156)" fill="none" stroke="#4c3017" stroke-width="2"
+       stroke-linecap="round" stroke-linejoin="round" opacity="0.6">
+      <g transform="scale(0.5)">
+        <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12"/>
+        <path d="M16 3l0 4"/><path d="M8 3l0 4"/><path d="M4 11l16 0"/>
+        <path d="M8 15h2v2h-2l0 -2"/>
+      </g>
+    </g>
+    <text x="67" y="162" font-size="11" fill="#4c3017" opacity="0.6" dominant-baseline="central">9 Sep 2026</text>
+  </g>
+
+  <g stroke="#9aa0a6" stroke-width="1" fill="none" stroke-linecap="round">
+    <path d="M368 432 V 452"/>
+    <path d="M258 551 H 300 L 326 551"/>
+    <path d="M652 474 H 620 L 600 474"/>
+    <path d="M652 615 H 600 L 584 611"/>
+  </g>
+
+  <g font-size="14" fill="#202124">
+    <text x="368" y="408" text-anchor="middle" font-weight="600">Marker slot</text>
+    <text x="368" y="426" text-anchor="middle" font-size="12.5" fill="#5f6368">a padlock here, or a pin when pinned</text>
+
+    <text x="250" y="547" text-anchor="end" font-weight="600">The body</text>
+    <text x="250" y="565" text-anchor="end" font-size="12.5" fill="#5f6368">read-only, and the title with it</text>
+
+    <text x="664" y="470" font-weight="600">No delete button</text>
+    <text x="664" y="488" font-size="12.5" fill="#5f6368">and no Delete in the menu</text>
+
+    <text x="664" y="611" font-weight="600">No resize handle</text>
+    <text x="664" y="629" font-size="12.5" fill="#5f6368">the note keeps the size it was left</text>
+  </g>
 </svg>
