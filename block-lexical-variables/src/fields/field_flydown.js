@@ -8,6 +8,11 @@
  * and mouse click edits the field name.
  * Flydowns are used in App Inventor for displaying get/set blocks for
  *     parameter names and callers for procedure declarations.
+ *
+ * Touch screens have no hover, so a finger gets tap gestures instead: one tap
+ * opens the flydown and a second tap on the same field within
+ * FieldFlydown.DOUBLE_TAP_TIMEOUT opens the editor (if the field is editable).
+ * Mouse and pen input keep the hover/click behaviour.
  * @author fturbak@wellesley.edu (Lyn Turbak)
  */
 
@@ -57,6 +62,30 @@ export class FieldFlydown extends Blockly.FieldTextInput {
    */
   static openFieldFlydown_ = null;
 
+  /**
+   * Maximum milliseconds between two touch taps on the same field for the
+   * second one to count as a double-tap.
+   * @type {number}
+   * @const
+   */
+  static DOUBLE_TAP_TIMEOUT = 500;
+
+  /**
+   * The field that received the most recent single touch tap, or null.
+   * Used with lastTapTime_ to detect a double-tap. Kept as a static like
+   * showPid_ because at most one flydown is open at a time.
+   * @type {FieldFlydown}
+   * @private
+   */
+  static lastTapField_ = null;
+
+  /**
+   * Time (ms since epoch) of the tap recorded in lastTapField_.
+   * @type {number}
+   * @private
+   */
+  static lastTapTime_ = 0;
+
 // These control the positions of the flydown.
   static DISPLAY_BELOW = 'BELOW';
   static DISPLAY_RIGHT = 'RIGHT';
@@ -72,17 +101,78 @@ export class FieldFlydown extends Blockly.FieldTextInput {
           FieldFlydown.DISPLAY_RIGHT;
   };
 
-  // Override FieldTextInput's showEditor_ so it's only called for EDITABLE field.
-  showEditor_() {
-    if (!this.EDITABLE) {
+  /**
+   * Handles a click (mouse/pen) or a tap (touch) on the field.
+   *
+   * Mouse and pen: the flydown is opened by hovering (see onMouseOver_), so a
+   * click only opens the editor, and only for EDITABLE fields.
+   *
+   * Touch: there is no hover, so the first tap opens the flydown and a second
+   * tap on the same field within DOUBLE_TAP_TIMEOUT opens the editor (if the
+   * field is EDITABLE; otherwise the second tap does nothing). Note that the
+   * pointerdown of every tap already hides any open flydown through
+   * hideChaff(), which is why the double-tap is detected with a timestamp
+   * rather than by looking at the flydown.
+   *
+   * @param {Event=} e The pointerup event that ended the click, as passed by
+   *     Blockly.Field.showEditor. May be undefined when called directly.
+   * @override
+   */
+  showEditor_(e) {
+    const block = this.getSourceBlock();
+    if (!block || block.isInFlyout || !this.isTouchTap_(e)) {
+      // Mouse / pen / field in a flyout: click edits, hover opens the flydown.
+      if (!this.EDITABLE) {
+        return;
+      }
+      if (FieldFlydown.showPid_) { // cancel a pending flydown for editing
+        clearTimeout(FieldFlydown.showPid_);
+        FieldFlydown.showPid_ = 0;
+        Blockly.common.getMainWorkspace().hideChaff();
+      }
+      super.showEditor_(e);
       return;
     }
-    if (FieldFlydown.showPid_) { // cancel a pending flydown for editing
+
+    // Touch tap. A hover timer should never be armed for touch (see
+    // onMouseOver_), but make sure one can't fire underneath us.
+    if (FieldFlydown.showPid_) {
       clearTimeout(FieldFlydown.showPid_);
       FieldFlydown.showPid_ = 0;
-      Blockly.common.getMainWorkspace().hideChaff();
     }
-    super.showEditor_();
+    const now = Date.now();
+    const isDoubleTap = FieldFlydown.lastTapField_ === this &&
+        now - FieldFlydown.lastTapTime_ <= FieldFlydown.DOUBLE_TAP_TIMEOUT;
+    if (isDoubleTap) {
+      FieldFlydown.lastTapField_ = null;
+      FieldFlydown.lastTapTime_ = 0;
+      if (this.EDITABLE) {
+        Blockly.common.getMainWorkspace().hideChaff();
+        super.showEditor_(e);
+      }
+      return;
+    }
+    FieldFlydown.lastTapField_ = this;
+    FieldFlydown.lastTapTime_ = now;
+    if (!block.workspace.isDragging()) {
+      try {
+        this.showFlydown_();
+      } catch (err) {
+        console.error('Failed to show flydown', err);
+      }
+    }
+  };
+
+  /**
+   * Whether an event comes from a finger on a touch screen. Only 'touch'
+   * counts: a pen behaves like a mouse (hover opens, tap edits) so that pens
+   * which can hover keep working the way they do today.
+   * @param {Event=} e A pointer event, or undefined.
+   * @return {boolean} True for a touch tap.
+   * @private
+   */
+  isTouchTap_(e) {
+    return !!e && e.pointerType === 'touch';
   };
 
   init(block) {
@@ -123,7 +213,11 @@ FieldFlydown.prototype.flyoutCSSClassName =
 
 FieldFlydown.prototype.onMouseOver_ = function(e) {
   // [lyn, 10/22/13] No flydowns in a flyout!
-  if (!this.getSourceBlock().isInFlyout && FieldFlydown.showPid_ == 0) {
+  // A finger fires pointerover/pointerout around every tap, so the hover
+  // timer would be armed and cancelled uselessly; touch opens the flydown by
+  // tapping instead (see showEditor_).
+  if (!this.getSourceBlock().isInFlyout && FieldFlydown.showPid_ == 0 &&
+      !this.isTouchTap_(e)) {
     FieldFlydown.showPid_ =
         window.setTimeout(this.showFlydownMaker_(),
             FieldFlydown.timeout);
@@ -150,7 +244,7 @@ FieldFlydown.prototype.showFlydownMaker_ = function() {
   return function() {
     if (FieldFlydown.showPid_ !== 0 &&
         !field.getSourceBlock().workspace.isDragging() &&
-        !this.htmlInput_) {
+        !field.htmlInput_) {
       try {
         field.showFlydown_();
       } catch (e) {
@@ -285,6 +379,10 @@ FieldFlydown.prototype.onHtmlInputChange = function(e) {
 FieldFlydown.prototype.dispose = function() {
   if (FieldFlydown.openFieldFlydown_ == this) {
     FieldFlydown.hide();
+  }
+  if (FieldFlydown.lastTapField_ === this) {
+    FieldFlydown.lastTapField_ = null;
+    FieldFlydown.lastTapTime_ = 0;
   }
   // Call parent's destructor.
   Blockly.FieldTextInput.prototype.dispose.call(this);

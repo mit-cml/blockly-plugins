@@ -57,7 +57,8 @@ within the body of the block.
 
 ![A picture of a lexical variable block](readme-media/lexvar.png "Lexical variable")
 
-While hovering over the variable name:
+While hovering over the variable name (on a touch screen, tap it instead; a
+second tap within half a second opens the rename editor):
 
 ![A picture of a lexical variable block with getter and setter blocks](readme-media/lexvar-with-flydown.png "Lexical variable with flydown")
 

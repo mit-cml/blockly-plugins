@@ -1,6 +1,6 @@
 {
   "name": "@mit-app-inventor/blockly-block-lexical-variables",
-  "version": "11.0.3",
+  "version": "11.0.4",
   "description": "A Blockly plugin providing lexical/local variable support and flydown variable getters and setters.",
   "scripts": {
     "audit:fix": "blockly-scripts auditFix",
@@ -50,7 +50,8 @@
     "@blockly/dev-tools": "^8.1.2",
     "blockly": "^11.2.2",
     "chai": "^4.5.0",
-    "mocha": "^10.2.0"
+    "mocha": "^10.2.0",
+    "sinon": "^22.1.0"
   },
   "peerDependencies": {
     "blockly": "^11.2.2"
