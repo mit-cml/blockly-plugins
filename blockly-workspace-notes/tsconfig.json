@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "module": "es2015",
+    "moduleResolution": "bundler",
+    "target": "es6",
+    "strict": true,
+
+    // Explicit rather than inherited. At `target: es6` the implied lib is
+    // ES2015, which has no `Object.values`; this compiled only because
+    // `@types/node` happens to reference `lib es2020`. `types: []` stops that
+    // accident — src/ is browser-only, and the Node-flavoured code lives in
+    // test/*.js, which is not part of this program.
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "types": [],
+
+    "skipLibCheck": true,
+
+    // Already the default at `target: es6`, set explicitly because it is
+    // load-bearing: a field definition emitted after `super()` would wipe
+    // state the base constructor had already caused to be built.
+    "useDefineForClassFields": false,
+
+    "isolatedModules": true
+  },
+  // test/**/* is JavaScript on purpose — @blockly/dev-scripts finds test
+  // entries with a literal `.mocha.js` filter — so it is never in the program.
+  "include": ["src"]
+}

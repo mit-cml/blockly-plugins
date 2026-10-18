@@ -1,0 +1,70 @@
+name: Test blockly-workspace-notes
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  quality:
+    name: Lint and format
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: blockly-workspace-notes
+        run: npm ci
+
+      - name: Lint
+        working-directory: blockly-workspace-notes
+        run: npm run lint
+
+      - name: Check formatting
+        working-directory: blockly-workspace-notes
+        run: npm run format:check
+
+      # `build:types`, not `typecheck`: `tsc --noEmit` returns before
+      # declaration diagnostics run, so it cannot see the TS4xxx errors that
+      # declaration emit surfaces.
+      - name: Typecheck
+        working-directory: blockly-workspace-notes
+        run: npm run build:types
+
+  test-workspace-notes:
+    name: Test on Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The minimum supported version from package.json engines, plus the
+        # current LTS releases. Node 18 is excluded deliberately: it is past
+        # end of life, and jsdom (which blockly/core-node.js pulls in for XML
+        # handling) now reaches an ES module through require(), which only
+        # works from Node 20.19 onwards.
+        node: [20, 22, 24]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install dependencies
+        working-directory: blockly-workspace-notes
+        run: npm ci
+
+      - name: Run blockly-workspace-notes tests
+        working-directory: blockly-workspace-notes
+        run: npm run test
+
+      - name: Build
+        working-directory: blockly-workspace-notes
+        run: npm run build
