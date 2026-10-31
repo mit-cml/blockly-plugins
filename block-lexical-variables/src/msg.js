@@ -72,6 +72,8 @@ Blockly.Msg['LANG_PROCEDURES_DEFRETURN_RETURN'] = 'result';
 Blockly.Msg['LANG_PROCEDURES_DEFRETURN_COLLAPSED_PREFIX'] = 'to ';
 Blockly.Msg['LANG_PROCEDURES_DEFRETURN_TOOLTIP'] =
     'A procedure returning a result value.';
+Blockly.Msg['LANG_PROCEDURES_DEFRETURN_ENABLE_STACK'] = 'allow statements'
+Blockly.Msg['LANG_PROCEDURES_DEFRETURN_STACK_ENABLE_FIELD'] = 'STACK_ENABLED'
 Blockly.Msg['LANG_PROCEDURES_DEF_DUPLICATE_WARNING'] =
     'Warning:\nThis procedure has\nduplicate inputs.';
 Blockly.Msg['LANG_PROCEDURES_CALLNORETURN_CALL'] = 'call ';
