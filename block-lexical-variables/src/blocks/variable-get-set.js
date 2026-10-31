@@ -14,7 +14,7 @@ import {NameSet} from "../nameSet.js";
 /**
  * Prototype bindings for a variable getter block.
  */
-Blockly.Blocks['lexical_variable_get'] = {
+export const lexical_variable_get = {
     // Variable getter.
     category: 'Variables',
     helpUrl: Blockly.Msg.LANG_VARIABLES_GET_HELPURL,
@@ -134,7 +134,7 @@ Blockly.Blocks['lexical_variable_get'] = {
 /**
  * Prototype bindings for a variable setter block.
  */
-Blockly.Blocks['lexical_variable_set'] = {
+export const lexical_variable_set = {
     // Variable setter.
     category: 'Variables',
     helpUrl: Blockly.Msg.LANG_VARIABLES_SET_HELPURL, // *** [lyn, 11/10/12] Fix
@@ -160,11 +160,11 @@ Blockly.Blocks['lexical_variable_set'] = {
             this.workspace.getWarningHandler().checkErrors(this);
         });
     },
-    referenceResults: Blockly.Blocks.lexical_variable_get.referenceResults,
+    referenceResults: lexical_variable_get.referenceResults,
     getDeclaredVars: function() {
         return [this.getFieldValue('VAR')];
     },
-    renameLexicalVar: Blockly.Blocks.lexical_variable_get.renameLexicalVar,
+    renameLexicalVar: lexical_variable_get.renameLexicalVar,
     renameFree: function(freeSubstitution) {
         // potentially rename the set variable
         const prefixPair = Shared.unprefixName(this.getFieldValue('VAR'));
@@ -199,3 +199,11 @@ Blockly.Blocks['lexical_variable_set'] = {
         return result;
     },
 };
+
+// Register the blocks with Blockly (idempotent - safe to call multiple times)
+if (!Blockly.Blocks['lexical_variable_get']) {
+    Blockly.Blocks['lexical_variable_get'] = lexical_variable_get;
+}
+if (!Blockly.Blocks['lexical_variable_set']) {
+    Blockly.Blocks['lexical_variable_set'] = lexical_variable_set;
+}
